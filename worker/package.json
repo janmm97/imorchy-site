@@ -1,0 +1,16 @@
+{
+  "name": "orchy-site-worker",
+  "private": true,
+  "type": "module",
+  "description": "The landing page's Cloudflare Worker: static files, the launch video and the live playground API. Bundled and deployed by site/deploy.mjs.",
+  "scripts": {
+    "test": "node test.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.133.0",
+    "@withone/connect": "0.18.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

@@ -1,0 +1,511 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Orchy AI — Build your squad. Keep your life.</title>
+    <meta
+      name="description"
+      content="A little Orchy. A whole team behind you. Bring your AI agents, apps, and workspaces together on your own computer. Free and open source."
+    />
+    <meta name="theme-color" content="#080a0d" />
+    <meta
+      property="og:title"
+      content="Orchy AI — Build your squad. Keep your life."
+    />
+    <meta
+      property="og:description"
+      content="Your own AI squad. Your own computer. Your call."
+    />
+    <link rel="icon" href="assets/orchy-main.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="fonts/JetBrainsMono-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="fonts/JetBrainsMono-Bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="importmap">
+      { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
+    </script>
+    <script type="module" src="js/main.mjs"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <canvas id="squadStage" aria-hidden="true"></canvas>
+    <div id="squadCallouts" aria-hidden="true"></div>
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <header class="nav">
+      <div class="nav-inner wrap">
+        <a class="brand" href="#top" aria-label="Orchy home"
+          ><img
+            class="brand-logo"
+            src="assets/orchy-main.svg"
+            width="42"
+            height="42"
+            alt=""
+          /><span>Orchy</span></a
+        >
+        <nav id="navLinks" aria-label="Main navigation">
+          <a href="#how">How it works</a><a href="#your-rules">Your rules</a
+          ><a
+            href="https://github.com/janmm97/orchy-ai/tree/main/docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Docs <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+        <div class="nav-actions">
+          <a class="button button-small button-light" href="#install"
+            >Get Orchy
+            <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M2 10 9.5 2.5M3.5 2.5h6v6" /></svg></a
+          ><button
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="navLinks"
+            aria-label="Open navigation"
+          >
+            <span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="heroTitle">
+        <div class="hero-visual">
+          <div class="scene-glow glow-mint"></div>
+          <div class="scene-glow glow-violet"></div>
+          <div class="scene hero-fallback" aria-hidden="true">
+            <div class="hero-character">
+              <img
+                src="assets/orchy-main.svg"
+                alt=""
+                width="500"
+                height="500"
+                fetchpriority="high"
+                draggable="false"
+              />
+            </div>
+          </div>
+        </div>
+        <h1 id="heroTitle" class="hero-title"><span id="heroFloor" data-perch>Orchy <span class="hero-ai">AI</span></span></h1>
+        <button class="hero-tagline hero-video" type="button" aria-haspopup="dialog" aria-controls="launchVideo">
+          <span class="play-mark" aria-hidden="true"></span>Watch Launch Video
+        </button>
+      </section>
+
+      <section class="section wrap" id="how" aria-labelledby="howTitle">
+        <div class="section-heading reveal">
+          <div>
+            <h2 id="howTitle">One ask.<br />A little orchestration.</h2>
+          </div>
+          <p>
+            You bring the idea. Orchy finds the right workspace, teammate, and
+            model to make it happen.
+          </p>
+        </div>
+        <div class="workflow reveal" data-perch>
+          <div class="workflow-steps">
+            <div class="workflow-step is-active" data-step="0">
+              <span class="step-number">01</span>
+              <div>
+                <h3>Tell Orchy what you need.</h3>
+                <p>
+                  Type it out. Or say it out loud with optional voice. One
+                  conversation starts the work.
+                </p>
+              </div>
+            </div>
+            <div class="workflow-step" data-step="1">
+              <span class="step-number">02</span>
+              <div>
+                <h3>The right squad gets to work.</h3>
+                <p>
+                  Orchy routes the task. Your agents work inside the right
+                  workspace, with the right account.
+                </p>
+              </div>
+            </div>
+            <div class="workflow-step" data-step="2">
+              <span class="step-number">03</span>
+              <div>
+                <h3>You keep the final say.</h3>
+                <p>
+                  Routine work moves along. Sending, posting, spending, and
+                  deleting wait for your OK.
+                </p>
+              </div>
+            </div>
+            <a
+              class="inline-link"
+              href="https://github.com/janmm97/orchy-ai#how-it-works"
+              target="_blank"
+              rel="noopener noreferrer"
+              >See what’s under the hood <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div class="demo-console" data-perch>
+            <div class="console-header">
+              <span><span class="status-dot"></span> ORCHY / PLAYGROUND</span
+              ><span class="demo-badge" id="demoBadge">INTERACTIVE DEMO</span>
+            </div>
+            <div class="console-body">
+              <div class="chat-message">
+                <img
+                  src="assets/orchy-main.svg"
+                  width="44"
+                  height="44"
+                  alt=""
+                />
+                <div>
+                  <span class="message-name">ORCHY</span>
+                  <p>Hey, human. What’s on your list?</p>
+                </div>
+              </div>
+              <form id="taskForm" autocomplete="off">
+                <label for="task" class="sr-only"
+                  >Give Orchy a sample task</label
+                ><input
+                  id="task"
+                  name="task"
+                  maxlength="180"
+                  placeholder="Draft this week’s project update…"
+                  required
+                /><button type="submit" aria-label="Run sample task">↗</button>
+              </form>
+              <div class="task-chips" aria-label="Try a sample task">
+                <button type="button" data-task="update">
+                  Draft an update <span>↗</span></button
+                ><button type="button" data-task="research">
+                  Research an idea <span>↗</span></button
+                ><button type="button" data-task="invoice">
+                  Reply to an email <span>↗</span>
+                </button>
+              </div>
+              <div id="liveBar" class="live-bar" hidden></div>
+              <div
+                id="demoOutput"
+                class="demo-output"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                <div class="demo-placeholder">
+                  <span aria-hidden="true">⌘</span>
+                  <p>
+                    A small ask can start something big.<br /><span
+                      >Pick a task to watch the squad work.</span
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="console-footer">
+              <span id="footNote"
+                ><span aria-hidden="true">◇</span> All sample data. Nothing is
+                sent.</span
+              ><span id="footWhere">100% IN YOUR BROWSER</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="section wrap"
+        id="your-rules"
+        aria-labelledby="rulesTitle"
+      >
+        <div class="section-heading reveal">
+          <div>
+            <h2 id="rulesTitle">
+              Let go of the busywork.<br />Keep the controls.
+            </h2>
+          </div>
+          <p>
+            Your squad should make life simpler. That starts with clear
+            boundaries and a home on your machine.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature feature-approval reveal" data-perch>
+            <h3>A little pause.<br />A lot of peace of mind.</h3>
+            <p>
+              It asks before it sends, posts, spends, deletes, shares, or
+              changes your calendar.
+            </p>
+            <div class="approval-card" data-perch>
+              <div>
+                <span class="approval-dot"></span><span>YOUR CALL</span
+                ><span class="micro-label">SAMPLE</span>
+              </div>
+              <p>Ready to send the project update.</p>
+              <span class="approval-meta">1 draft · Your studio workspace</span>
+              <div class="approval-actions">
+                <button
+                  class="button button-mint button-small"
+                  type="button"
+                  data-approve="yes"
+                >
+                  Approve <span>✓</span></button
+                ><button
+                  class="button button-outline button-small"
+                  type="button"
+                  data-approve="no"
+                >
+                  Hold for now
+                </button>
+              </div>
+              <p id="approvalStatus" class="approval-status" aria-live="polite">
+                Nothing goes out without your OK.
+              </p>
+            </div>
+          </article>
+          <article class="feature feature-workspaces reveal" data-perch>
+            <h3>Different worlds.<br />No crossed wires.</h3>
+            <p>
+              Each client gets its own workspace, logins, agents, and
+              instructions. Accounts are checked before every run.
+            </p>
+            <div
+              class="workspace-stack"
+              aria-label="Example separate workspaces"
+            >
+              <div>
+                <span class="workspace-mark">S</span
+                ><span>Your studio<small>3 agents · own account</small></span
+                ><span class="workspace-lock" aria-hidden="true">◇</span>
+              </div>
+              <div>
+                <span class="workspace-mark">C</span
+                ><span>Client project<small>2 agents · own account</small></span
+                ><span class="workspace-lock" aria-hidden="true">◇</span>
+              </div>
+              <div>
+                <span class="workspace-mark">P</span
+                ><span
+                  >Personal projects<small>4 agents · own account</small></span
+                ><span class="workspace-lock" aria-hidden="true">◇</span>
+              </div>
+            </div>
+          </article>
+          <article class="feature feature-local reveal" data-perch>
+            <h3>Your computer.<br />Your command center.</h3>
+            <p>
+              A local dashboard. Access from paired browsers. Orchy sends
+              nothing to its authors.
+            </p>
+            <div class="local-visual" aria-hidden="true">
+              <div class="local-ring"></div>
+              <div class="local-window">
+                <span>127.0.0.1:8008 <i></i></span
+                ><img
+                  src="assets/orchy-main.svg"
+                  width="112"
+                  height="112"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
+              <span class="local-caption"
+                >THERE’S NO PLACE LIKE LOCALHOST.</span
+              >
+            </div>
+            <a class="inline-link" href="https://github.com/janmm97/orchy-ai#what-leaves-your-machine" target="_blank" rel="noopener noreferrer"
+              >See what leaves your machine <span aria-hidden="true">↗</span></a
+            >
+          </article>
+        </div>
+        <div class="connections reveal" id="engines" data-perch>
+          <div>
+            <h3>Your tools. Now a team.</h3>
+            <p>
+              7 harnesses. 1000+ apps through One.<br />Choose what works for
+              each workspace.
+            </p>
+          </div>
+          <div class="connection-details">
+            <div class="connection-row">
+              <span class="micro-label">THE BRAINS</span>
+              <p>
+                Claude Code · Codex · Hermes · Cursor<br />Antigravity · Aider ·
+                Custom CLI
+              </p>
+            </div>
+            <div class="connection-row">
+              <span class="micro-label">THE CONNECTIONS</span>
+              <p>
+                Gmail · Slack · Notion · Stripe
+                <a
+                  href="https://withone.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >+ more via One ↗</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="install-section"
+        id="install"
+        aria-labelledby="installTitle"
+      >
+        <div class="wrap install-layout">
+          <div class="install-copy reveal">
+            <h2 id="installTitle">
+              Your next chapter.<br /><span class="gradient-text"
+                >A little less solo.</span
+              >
+            </h2>
+            <p>
+              Three lines. One new teammate.<br />A whole lot of room for what’s
+              next.
+            </p>
+            <div class="install-links">
+              <a
+                class="button button-mint"
+                href="https://github.com/janmm97/orchy-ai/archive/refs/heads/main.zip"
+                >Download Orchy
+                <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
+                  <path d="M6 1.25v8M2.5 6 6 9.5 9.5 6" /></svg></a
+              ><a
+                class="text-button"
+                href="https://github.com/janmm97/orchy-ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Star on GitHub <span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <p class="install-platforms">
+              WINDOWS / MACOS / LINUX <span>·</span> MIT
+            </p>
+          </div>
+          <div class="setup-panel reveal" data-perch>
+            <div class="terminal-header">
+              <span><i></i><i></i><i></i></span
+              ><span>YOUR NEXT THREE LINES</span
+              ><button type="button" id="copySetup">
+                <span aria-hidden="true">⧉</span>
+                <span id="copyLabel">Copy</span>
+              </button>
+            </div>
+            <pre
+              id="setupLines"
+            ><code><span class="terminal-prompt">$</span> git clone https://github.com/janmm97/orchy-ai
+<span class="terminal-prompt">$</span> cd orchy-ai
+<span class="terminal-prompt">$</span> npm run setup</code></pre>
+            <div class="setup-bottom">
+              <span class="status-dot"></span> YOUR SQUAD IS ONE SETUP AWAY<span
+                class="terminal-cursor"
+                aria-hidden="true"
+                >_</span
+              >
+            </div>
+            <p>
+              No terminal today? Download Orchy, open <code>launchers</code>,
+              and double-click the launcher for your computer.
+            </p>
+            <a
+              class="inline-link"
+              href="https://github.com/janmm97/orchy-ai#quick-start"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Full setup guide & requirements ↗</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer wrap">
+      <div class="footer-top" data-perch>
+        <a class="brand" href="#top" aria-label="Back to top"
+          ><img
+            class="brand-logo"
+            src="assets/orchy-main.svg"
+            width="42"
+            height="42"
+            alt=""
+          /><span>Orchy</span></a
+        >
+        <nav class="footer-social" aria-label="Orchy on social media">
+          <a
+            class="social social-facebook"
+            href="https://www.facebook.com/OrchyAI/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Orchy on Facebook"
+            title="Facebook"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"
+              /></svg
+          ></a
+          ><a
+            class="social social-youtube"
+            href="https://www.youtube.com/@orchy-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Orchy on YouTube"
+            title="YouTube"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+              /></svg
+          ></a
+          ><a
+            class="social social-github"
+            href="https://github.com/janmm97/orchy-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Orchy on GitHub"
+            title="GitHub"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+              /></svg
+          ></a>
+        </nav>
+        <nav class="footer-links" aria-label="Project links">
+          <a
+            href="https://github.com/janmm97/orchy-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub ↗</a
+          ><a
+            href="https://github.com/janmm97/orchy-ai/tree/main/docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Docs ↗</a
+          ><a
+            href="https://github.com/janmm97/orchy-ai/blob/main/docs/SECURITY.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Security ↗</a
+          >
+        </nav>
+      </div>
+    </footer>
+    <dialog class="video-dialog" id="launchVideo" aria-label="Orchy launch video">
+      <div class="video-frame">
+        <video src="assets/video.mp4" controls playsinline preload="none"></video>
+      </div>
+      <form method="dialog">
+        <button class="video-close" type="submit" aria-label="Close video">
+          <span aria-hidden="true">×</span>
+        </button>
+      </form>
+    </dialog>
+    <div class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
