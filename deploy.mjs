@@ -8,7 +8,7 @@
 // site/worker/.env.example); later deploys keep them.
 //
 //   node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www]
-//                                 [--secrets site/worker/.env] [--model <id>] [--effort low|medium|high]
+//                                 [--secrets site/worker/.env] [--model <openrouter model id>]
 import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
@@ -47,7 +47,7 @@ const opt = (name) => {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : undefined;
 };
-const domain = args.find((a, i) => !a.startsWith("--") && !["--name", "--file", "--secrets", "--model", "--effort"].includes(args[i - 1]));
+const domain = args.find((a, i) => !a.startsWith("--") && !["--name", "--file", "--secrets", "--model"].includes(args[i - 1]));
 const name = opt("--name") || "orchy-site";
 const dryRun = flag("--dry-run");
 const hosts = flag("--no-www") ? [domain] : [domain, `www.${domain}`];
@@ -55,10 +55,10 @@ const overrides = Object.fromEntries(
   args.flatMap((a, i) => (a === "--file" ? [args[i + 1].split("=")] : [])),
 );
 if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
-  console.error("Usage: node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www] [--secrets <file>] [--model <id>] [--effort <level>]");
+  console.error("Usage: node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www] [--secrets <file>] [--model <openrouter model id>]");
   process.exit(1);
 }
-const SECRET_NAMES = ["ONE_CLIENT_ID", "ONE_CLIENT_SECRET", "ONE_CONNECT_KEY", "ONE_PERMISSION_SET", "ANTHROPIC_API_KEY", "SESSION_SECRET"];
+const SECRET_NAMES = ["ONE_CLIENT_ID", "ONE_CLIENT_SECRET", "ONE_CONNECT_KEY", "ONE_PERMISSION_SET", "OPENROUTER_API_KEY", "SESSION_SECRET"];
 const secrets = {};
 if (opt("--secrets")) {
   for (const line of fs.readFileSync(path.resolve(opt("--secrets")), "utf8").split(/\r?\n/)) {
@@ -209,7 +209,7 @@ for (const [i, bucket] of (session.buckets || []).entries()) {
 }
 
 // 2. The Worker. Static files are served straight from assets; only the API and videos run the Worker first.
-const vars = { ONE_REDIRECT_URI: `https://${domain}/api/one/callback`, ...(opt("--model") ? { MODEL: opt("--model") } : {}), ...(opt("--effort") ? { EFFORT: opt("--effort") } : {}) };
+const vars = { ONE_REDIRECT_URI: `https://${domain}/api/one/callback`, ...(opt("--model") ? { MODEL: opt("--model") } : {}) };
 const worker = new FormData();
 worker.append(
   "metadata",
@@ -227,6 +227,8 @@ worker.append(
           ...Object.entries(secrets).map(([k, text]) => ({ type: "secret_text", name: k, text })),
         ],
         keep_bindings: ["secret_text"],
+        // Workers Logs: the Worker's console lines (codes only, never mail), kept by Cloudflare for a few days.
+        observability: { enabled: true, head_sampling_rate: 1 },
         assets: { jwt: completion, config: { run_worker_first: ["/api/*", "/**/*.mp4"] } },
       }),
     ],

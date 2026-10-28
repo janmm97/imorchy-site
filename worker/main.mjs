@@ -1,16 +1,19 @@
 // The landing page's Worker: static files, the launch video, and the live playground's API.
 //
 // The live playground: a visitor signs in to One (or signs up) through One Connect and grants this app four Gmail
-// actions (agent.mjs / gmail.mjs). Orchy then does one small task in their own inbox. Sends only happen through
+// actions (agent.mjs / gmail.mjs). The playground then turns into a short chat with Orchy in their own inbox: a peek
+// at the newest mail first (POST /api/peek, which isn't a task), then a few requests. The page opens the flow in a
+// popup (?popup=1), with the address typed in the chat as One's sign-in hint (flow.mjs). Sends only happen through
 // POST /api/approve, with a sealed token that names the draft and is bound to the visitor's session.
 //
 // Nothing is stored server-side: the session (One grant reference, Gmail connection key, the visitor's address,
 // runs used) lives in a sealed, HttpOnly cookie (seal.mjs). Secrets: ONE_CLIENT_ID, ONE_CLIENT_SECRET,
-// ONE_CONNECT_KEY, ONE_PERMISSION_SET, ANTHROPIC_API_KEY, SESSION_SECRET. Vars: ONE_REDIRECT_URI, MODEL, EFFORT.
-import Anthropic from "@anthropic-ai/sdk";
+// ONE_CONNECT_KEY, ONE_PERMISSION_SET, OPENROUTER_API_KEY, SESSION_SECRET. Vars: ONE_REDIRECT_URI, MODEL (an OpenRouter model ID).
 import { createOneConnect } from "@withone/connect/server";
-import { runAgent } from "./agent.mjs";
+import { historyOf, runAgent } from "./agent.mjs";
+import { addressOf, loginHint, returnPath } from "./flow.mjs";
 import { gmailFor } from "./gmail.mjs";
+import { DEFAULT_MODEL, openrouter } from "./openrouter.mjs";
 import { open, seal } from "./seal.mjs";
 
 const SESSION = "orchy_session";
@@ -18,6 +21,7 @@ const SESSION_TTL = 30 * 60;
 const APPROVE_TTL = 15 * 60;
 export const RUNS_PER_SESSION = 3;
 const TASK_CHARS = 300;
+const PEEK = 3;
 const enc = new TextEncoder();
 
 const json = (data, status = 200, headers = {}) =>
@@ -78,13 +82,14 @@ const sameOrigin = (request, url) => request.headers.get("Origin") === url.origi
 function friendly(error) {
   if (error?.code === "reconnect_required") return "Your One connection was revoked. Connect again to keep going.";
   if (error?.grant) return "That needs more than you granted Orchy.";
-  if (error instanceof Anthropic.RateLimitError) return "Orchy is busy right now. Try again in a minute.";
+  if (error?.status === 429) return "Orchy is busy right now. Try again in a minute.";
+  if (error?.status === 402) return "The live playground is out of credit for now. Try again later.";
   return "Something went wrong on our side. Try again in a moment.";
 }
 
 // Until every secret is set, the page keeps its sample-only playground.
 const ready = (env) =>
-  ["ONE_CLIENT_ID", "ONE_CLIENT_SECRET", "ONE_CONNECT_KEY", "ONE_REDIRECT_URI", "ANTHROPIC_API_KEY", "SESSION_SECRET"].every((k) => env[k]);
+  ["ONE_CLIENT_ID", "ONE_CLIENT_SECRET", "ONE_CONNECT_KEY", "ONE_REDIRECT_URI", "OPENROUTER_API_KEY", "SESSION_SECRET"].every((k) => env[k]);
 
 async function api(request, env, url, ctx) {
   const path = url.pathname;
@@ -100,31 +105,51 @@ async function api(request, env, url, ctx) {
   }
 
   if (path === "/api/one/authorize" && request.method === "GET") {
-    if (!(await allowed(env, request))) return redirect("/?playground=busy#how");
+    const popup = url.searchParams.get("popup") === "1";
+    if (!(await allowed(env, request))) return redirect(returnPath(popup, "playground=busy"));
     const known = await readSession(env, request);
     const sid = known?.sid || crypto.randomUUID();
-    const { redirectUrl, cookie: flow } = connectFor(env, { sid }).startAuthorization({ returnTo: "/" });
+    const { redirectUrl, cookie: flow } = connectFor(env, { sid }).startAuthorization({
+      returnTo: popup ? "/connected" : "/",
+      loginHint: loginHint(url.searchParams.get("hint")),
+    });
     return redirect(redirectUrl, [
       `${flow.name}=${encodeURIComponent(flow.value)}; Path=${flow.options.path}; Max-Age=${flow.options.maxAge}; HttpOnly; Secure; SameSite=Lax`,
-      await sessionCookie(env, { sid, runs: known?.runs || 0 }),
+      await sessionCookie(env, { sid, runs: known?.runs || 0, popup }),
     ]);
   }
 
   if (path === "/api/one/callback" && request.method === "GET") {
     const s = await readSession(env, request);
-    if (!s?.sid) return redirect("/?one_connect=error&one_connect_error=expired");
+    // With no session there's no telling whether this is the popup; /connected reads fine either way.
+    if (!s?.sid) return redirect(returnPath(true, "one_connect=error&one_connect_error=expired"));
     const state = { sid: s.sid };
     const connect = connectFor(env, state);
     const result = await connect.completeAuthorization({ userId: s.sid, url: request.url, getCookie: (name) => cookies(request)[name] });
     const out = result.clearCookieName ? [cookie(result.clearCookieName, "", 0)] : [];
+    // Logged as codes only: never the visitor's address or mail.
+    console.log("callback:", result.outcome, result.code || "", state.ref ? "grant saved" : "no grant", s.popup ? "popup" : "tab");
     if (result.outcome !== "connected" || !state.ref) {
       if (result.message) console.warn("One Connect:", result.outcome, result.code, result.message);
       return redirect(result.redirectUrl, out);
     }
-    const gmail = (await connect.listConnections(s.sid)).find((c) => c.platform === "gmail");
-    if (!gmail) return redirect("/?playground=no-gmail#how", [...out, clearSession()]);
-    const me = await gmailFor((input) => connect.runAction(s.sid, input), gmail.key).address();
-    return redirect(result.redirectUrl, [...out, await sessionCookie(env, { sid: s.sid, ref: state.ref, gmailKey: gmail.key, me, runs: s.runs || 0 })]);
+    // From here on, a failure lands on the page's own "not connected" card, never on a bare error.
+    try {
+      const gmail = (await connect.listConnections(s.sid)).find((c) => c.platform === "gmail");
+      console.log("callback: connections", gmail ? "gmail found" : "no gmail");
+      if (!gmail) return redirect(returnPath(s.popup, "playground=no-gmail"), [...out, clearSession()]);
+      // The address only names the visitor to the agent; without it, every recipient is flagged before a send.
+      const me = await gmailFor((input) => connect.runAction(s.sid, input), gmail.key)
+        .address()
+        .catch((error) => {
+          console.warn("Gmail profile refused, using the connection's name:", error.grant ? "outside the grant" : error.status);
+          return addressOf(gmail);
+        });
+      return redirect(result.redirectUrl, [...out, await sessionCookie(env, { sid: s.sid, ref: state.ref, gmailKey: gmail.key, me, runs: s.runs || 0 })]);
+    } catch (error) {
+      console.error("after One Connect:", error);
+      return redirect(returnPath(s.popup, "one_connect=error&one_connect_error=failed"), [...out, await sessionCookie(env, { sid: s.sid, runs: s.runs || 0, popup: s.popup })]);
+    }
   }
 
   if (request.method !== "POST") return json({ error: "Not found" }, 404);
@@ -149,8 +174,10 @@ async function api(request, env, url, ctx) {
     const send = (event) => writer.write(enc.encode(`data: ${JSON.stringify(event)}\n\n`));
     const run = (async () => {
       try {
-        const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-        for await (const event of runAgent({ task, me: s.me, client, gmail: gmailOf(env, s), model: env.MODEL || "claude-opus-5-5", effort: env.EFFORT || "low" })) {
+        const chat = openrouter(env.OPENROUTER_API_KEY, { site: url.origin });
+        const history = historyOf(body.history);
+        for await (const event of runAgent({ task, me: s.me || "unknown", chat, gmail: gmailOf(env, s), model: env.MODEL || DEFAULT_MODEL, history })) {
+          if (event.type === "denied" || event.type === "error") console.log("run:", event.type, event.grant ? "outside the grant" : "");
           if (event.type === "gate") {
             const { draftId, ...shown } = event;
             await send({ ...shown, token: await seal(env.SESSION_SECRET, "approve", { sid: s.sid, draftId, to: event.to }, APPROVE_TTL) });
@@ -174,6 +201,18 @@ async function api(request, env, url, ctx) {
         "Set-Cookie": await sessionCookie(env, { ...s, runs: s.runs + 1 }),
       },
     });
+  }
+
+  // Proof the connection works, right after connecting: the newest few messages, headers only. Not a task.
+  if (path === "/api/peek") {
+    if (!(await allowed(env, request))) return json({ error: "Too many tries from here. Give it a minute." }, 429);
+    try {
+      const found = await gmailOf(env, s).search("in:inbox", PEEK);
+      return json({ emails: found.map(({ from, subject, date, unread }) => ({ from, subject, date, unread })) });
+    } catch (error) {
+      console.log("peek failed:", error.grant ? "outside the grant" : error.status || error.message);
+      return json({ error: friendly(error), grant: Boolean(error.grant) }, error.grant ? 403 : 502);
+    }
   }
 
   if (path === "/api/approve") {

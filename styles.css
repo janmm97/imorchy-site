@@ -546,31 +546,6 @@ h3 {
 #taskForm > button:hover {
   background: #dbffe9;
 }
-.task-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 10px;
-}
-.task-chips button {
-  border: 1px solid #ffffff17;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #a5adac;
-  transition:
-    background 0.2s,
-    border 0.2s;
-}
-.task-chips button span {
-  margin-left: 5px;
-}
-.task-chips button:hover {
-  border-color: #b8f9d455;
-  background: #b8f9d40a;
-  color: var(--mint);
-}
 .demo-output {
   min-height: 231px;
   margin-top: 20px;
@@ -599,18 +574,6 @@ h3 {
 .demo-placeholder p span {
   color: #8a9a96;
   font-size: 12px;
-}
-.console-footer {
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 20px;
-  color: #768780;
-  font-size: 12px;
-}
-.console-footer > span:last-child {
-  letter-spacing: 0.7px;
 }
 .run-route {
   display: flex;
@@ -1732,16 +1695,6 @@ h3 {
     height: 31px;
     font-size: 18px;
   }
-  .task-chips {
-    gap: 5px;
-  }
-  .task-chips button {
-    font-size: 12px;
-    padding: 6px;
-  }
-  .task-chips button span {
-    margin-left: 2px;
-  }
   .demo-output {
     min-height: 220px;
     margin-top: 18px;
@@ -1755,15 +1708,6 @@ h3 {
   }
   .demo-placeholder p span {
     font-size: 12px;
-  }
-  .console-footer {
-    font-size: 12px;
-    padding: 12px 14px;
-    gap: 6px;
-  }
-  .console-footer > span:last-child {
-    font-size: 12px;
-    letter-spacing: 0.3px;
   }
   .run-route {
     font-size: 12px;
@@ -1990,9 +1934,6 @@ h3 {
   .feature {
     padding: 22px;
   }
-  .task-chips button {
-    font-size: 12px;
-  }
 }
 html.motion-paused *,
 html.motion-paused *::before,
@@ -2050,9 +1991,6 @@ html.motion-paused [data-tilt] {
 }
 #task {
   font-size: 13px;
-}
-.task-chips button {
-  font-size: 12px;
 }
 .demo-placeholder p {
   font-size: 13px;
@@ -2125,9 +2063,6 @@ html.motion-paused [data-tilt] {
   }
   .workflow-step p {
     font-size: 13px;
-  }
-  .task-chips button {
-    font-size: 12px;
   }
   .feature > p {
     font-size: 13px;
@@ -2217,10 +2152,6 @@ html.motion-paused [data-tilt] {
   #task {
     font-size: 12px;
   }
-  .task-chips button {
-    font-size: 12px;
-    padding: 6px 8px;
-  }
   .demo-placeholder p {
     font-size: 12px;
   }
@@ -2292,12 +2223,6 @@ html.motion-paused [data-tilt] {
   }
   .footer-links {
     font-size: 13px;
-  }
-  .console-footer {
-    font-size: 12px;
-  }
-  .console-footer > span:last-child {
-    display: none;
   }
 }
 @media (max-width: 360px) {
@@ -2887,7 +2812,6 @@ body::before {
 .chat-message img {
   border-radius: 10px;
 }
-.task-chips button,
 .demo-badge,
 .terminal-header button {
   border-radius: 999px;
@@ -2981,5 +2905,447 @@ body::before {
   .connections,
   .setup-panel {
     background-color: #0f1317;
+  }
+}
+
+/* ---- Connect: signing up from the playground, and the popup's own pages ---- */
+/* The chat walks the visitor through it in tinted-glass cards (inner surfaces: no blur of their own). */
+.connect-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--r-md);
+  background:
+    radial-gradient(ellipse at 0 0, #b8f9d414, transparent 65%),
+    linear-gradient(140deg, #ffffff12, #ffffff04);
+  box-shadow: var(--glass-shine);
+  color: #b9c6c0;
+  animation: connect-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.run-replay + .connect-card {
+  margin-top: 16px;
+}
+.connect-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.connect-head img {
+  border: 1px solid #ffffff10;
+  border-radius: 8px;
+  background: #ffffff04;
+  padding: 2px;
+}
+.connect-card .live-actions {
+  margin-top: 0;
+}
+.connect-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.connect-steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px 3px 3px;
+  border: 1px solid var(--glass-edge-soft);
+  border-radius: 999px;
+  background: #ffffff06;
+  color: #7f8c88;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.connect-steps li > span {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff0d;
+  color: #9faba5;
+  font-size: 11px;
+  font-weight: 700;
+}
+.connect-steps .is-done {
+  color: #c5d7ce;
+}
+.connect-steps .is-done > span {
+  background: var(--mint);
+  color: #12291e;
+}
+.connect-steps .is-active {
+  border-color: #b8f9d455;
+  background: #b8f9d40d;
+  color: var(--mint);
+}
+.connect-steps .is-active > span {
+  background: #b8f9d422;
+  color: var(--mint);
+  animation: connect-pulse 1.6s ease-out infinite;
+}
+.connect-more summary {
+  width: fit-content;
+  cursor: pointer;
+  color: #9faba5;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.connect-more summary:hover {
+  color: var(--mint);
+}
+.connect-more ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 7px;
+  color: #9faba5;
+}
+/* The empty output, with the live playground on: try it, one button, clean up after. */
+.live-cta {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  animation: connect-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.live-cta-title {
+  color: var(--text);
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.live-cta .button {
+  min-width: 200px;
+  box-shadow: 0 0 0 6px #b8f9d414, 0 10px 34px -10px #b8f9d466;
+}
+.live-cta-note {
+  color: #c5d7ce;
+  font-size: 12px;
+}
+.live-cta-fine {
+  max-width: 340px;
+  margin-top: -8px;
+  color: #768780;
+  font-size: 12px;
+}
+/* While the visitor connects, the playground steps back: the task bar waits. */
+.demo-console.is-connecting .live-bar {
+  display: none;
+}
+.demo-console.is-waiting #taskForm {
+  opacity: 0.4;
+  pointer-events: none;
+}
+#taskForm {
+  transition:
+    border 0.2s,
+    opacity 0.3s;
+}
+.live-next {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  color: #9eaaa5;
+}
+@keyframes connect-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes connect-pulse {
+  0% {
+    box-shadow: 0 0 0 0 #b8f9d466;
+  }
+  100% {
+    box-shadow: 0 0 0 7px #b8f9d400;
+  }
+}
+
+/* The popup's first and last screens (connect.html, connected.html): one glass card on the page's colour field. */
+.popup-page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.popup-card {
+  width: min(420px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 34px 28px 26px;
+  text-align: center;
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(ellipse at 50% 0, #b8f9d41c, transparent 60%),
+    var(--glass-sheen),
+    #0d111594;
+  box-shadow: var(--glass-shine), var(--glass-shadow), 0 0 80px -30px #b8f9d440;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  animation: video-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.popup-card h1 {
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
+}
+.popup-card p {
+  color: #b9c6c0;
+  font-size: 13px;
+}
+.popup-card .connect-steps {
+  justify-content: center;
+}
+.popup-card > .button {
+  margin-top: 4px;
+}
+.popup-kicker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  letter-spacing: 1.2px;
+}
+.popup-card .popup-kicker {
+  color: #b2c8bd;
+  font-size: 12px;
+}
+.popup-orchy {
+  transform-origin: 50% 100%;
+  animation: logo-hop 3.6s cubic-bezier(0.3, 0, 0.3, 1) 0.4s infinite;
+}
+.popup-mark {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: var(--mint);
+  color: #12291e;
+  font-size: 26px;
+  font-weight: 700;
+  box-shadow: 0 0 0 8px #b8f9d424, 0 0 40px -6px #b8f9d466;
+}
+.is-error .popup-mark {
+  background: var(--violet);
+  color: #1d1533;
+  box-shadow: 0 0 0 8px #b7a2fa24, 0 0 40px -6px #b7a2fa66;
+}
+.popup-card .popup-foot {
+  color: #768780;
+  font-size: 12px;
+}
+.popup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 4px;
+}
+.popup-actions[hidden] {
+  display: none;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .popup-card {
+    background-color: #0f1317;
+  }
+}
+/* The popup pages don't run the page script, so they follow the system setting themselves. */
+@media (prefers-reduced-motion: reduce) {
+  .popup-card,
+  .popup-orchy,
+  .connect-card,
+  .connect-steps .is-active > span {
+    animation: none;
+  }
+  body.popup-page::before {
+    animation: none;
+  }
+}
+
+/* ---- The chat: the playground once Gmail is connected ---- */
+/* A short thread with Orchy above the task bar, which moves to the bottom like any chat. Inner surfaces: no blur. */
+.demo-console.is-chat .console-body > .chat-message {
+  display: none;
+}
+.demo-console.is-chat .live-bar {
+  margin-top: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-edge-soft);
+}
+.demo-console.is-chat .demo-output {
+  min-height: 0;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.demo-console.is-chat #taskForm {
+  margin-top: 14px;
+}
+#taskForm > button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 260px;
+  max-height: min(480px, 62vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 6px 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff1f transparent;
+}
+.chat-turn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  animation: connect-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chat-turn.from-orchy > img {
+  flex-shrink: 0;
+  border: 1px solid #ffffff10;
+  border-radius: 8px;
+  background: #ffffff04;
+  padding: 2px;
+}
+.chat-body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+  color: #b9c6c0;
+  line-height: 1.65;
+}
+.chat-body > .run-status,
+.chat-body > .run-draft,
+.chat-body > .run-gate,
+.chat-body > .run-summary {
+  margin-top: 0;
+}
+.chat-body .live-link {
+  width: fit-content;
+}
+.chat-turn.from-you {
+  justify-content: flex-end;
+}
+.chat-turn.from-you p {
+  max-width: 82%;
+  padding: 9px 13px;
+  border: 1px solid #b8f9d433;
+  border-radius: var(--r-md) var(--r-md) 4px var(--r-md);
+  background: linear-gradient(140deg, #b8f9d41f, #b8f9d408);
+  box-shadow: var(--glass-shine);
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.run-summary {
+  white-space: pre-wrap;
+}
+.run-status.is-error {
+  color: #ffd59e;
+}
+.chat-fine {
+  color: #768780;
+}
+/* The peek: the newest few messages, proof that Orchy really sees this inbox. */
+.chat-peek {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.chat-peek li {
+  display: grid;
+  grid-template-columns: minmax(0, 10em) minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 11px;
+  border: 1px solid var(--glass-edge-soft);
+  border-radius: var(--r-sm);
+  background: #ffffff06;
+}
+.chat-peek b,
+.chat-peek span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-peek b {
+  color: #c5d7ce;
+}
+.chat-peek span {
+  color: #9faba5;
+}
+.chat-peek time {
+  color: #768780;
+  font-size: 11px;
+}
+.chat-peek .is-unread b::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 6px #b8f9d499;
+  vertical-align: middle;
+}
+/* Turned down: outside what the playground does, or what the visitor granted. Violet, like the approval gate. */
+.chat-denied {
+  padding: 12px 13px;
+  border: 1px solid #b7a2fa45;
+  border-radius: var(--r-md);
+  background:
+    radial-gradient(ellipse at 0 0, #b7a2fa1f, transparent 70%),
+    #b7a2fa08;
+  box-shadow: var(--glass-shine);
+  color: #d9cffd;
+}
+.chat-denied-title {
+  margin-bottom: 4px;
+  color: var(--violet);
+  font-weight: 700;
+}
+.chat-denied-title::before {
+  content: "⊘ ";
+}
+@media (max-width: 650px) {
+  .chat-thread {
+    max-height: 68vh;
+  }
+  .chat-turn.from-you p {
+    max-width: 90%;
+  }
+  .chat-peek li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .chat-peek span {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-turn {
+    animation: none;
   }
 }

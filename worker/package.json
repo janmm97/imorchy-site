@@ -7,7 +7,6 @@
     "test": "node test.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.133.0",
     "@withone/connect": "0.18.0"
   },
   "devDependencies": {

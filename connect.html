@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Connect Gmail · Orchy</title>
+    <meta name="theme-color" content="#080a0d" />
+    <link rel="icon" href="assets/orchy-main.svg" type="image/svg+xml" />
+    <link rel="preload" href="fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/JetBrainsMono-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="js/connect.mjs"></script>
+  </head>
+  <body class="popup-page">
+    <main class="popup-card" aria-labelledby="popupTitle">
+      <img class="popup-orchy" src="assets/orchy-main.svg" width="76" height="76" alt="" />
+      <p class="popup-kicker"><span class="status-dot"></span> ORCHY <span aria-hidden="true">→</span> ONE</p>
+      <h1 id="popupTitle">Taking you to One</h1>
+      <p>Sign in or make a free account, then pick Gmail. This window closes on its own when you’re done.</p>
+      <ol class="connect-steps" aria-label="Progress">
+        <li class="is-done"><span aria-hidden="true">✓</span>Tried it</li>
+        <li class="is-active" aria-current="step"><span aria-hidden="true">2</span>Connect Gmail</li>
+        <li><span aria-hidden="true">3</span>Your first task</li>
+      </ol>
+      <a id="go" class="button button-mint button-small" href="/api/one/authorize?popup=1#one_connector=gmail&amp;one_theme=dark"
+        >Continue to One <span aria-hidden="true">↗</span></a
+      >
+      <p class="popup-foot"><span aria-hidden="true">◇</span> Orchy can read and draft. It sends only when you press Send.</p>
+    </main>
+  </body>
+</html>

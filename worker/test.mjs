@@ -1,10 +1,14 @@
 // Offline checks for the live playground's Worker: sealed cookies and approval tokens (seal.mjs), the Gmail layer's
-// four actions (gmail.mjs), and the agent loop (agent.mjs) run against a scripted model and a fake Gmail. It never
-// sends: request_send only ends the run with a draft for the visitor. No network, no keys, no installed packages.
+// four actions (gmail.mjs), the popup's return paths and sign-in hint (flow.mjs), the OpenRouter call (openrouter.mjs,
+// with a fake fetch), and the agent loop (agent.mjs)
+// run against a scripted model and a fake Gmail. It never sends: request_send only ends the run with a draft for the
+// visitor. No network, no keys, no installed packages.
 import assert from "node:assert/strict";
 import { seal, open } from "./seal.mjs";
 import { ACTIONS, gmailFor } from "./gmail.mjs";
-import { address, outsiders, runAgent, TOOLS, MAX_TURNS } from "./agent.mjs";
+import { address, historyOf, HISTORY, outsiders, runAgent, TOOLS, MAX_TURNS } from "./agent.mjs";
+import { DEFAULT_MODEL, ENDPOINT, openrouter } from "./openrouter.mjs";
+import { addressOf, loginHint, returnPath } from "./flow.mjs";
 
 const ok = (name) => console.log(`ok - ${name}`);
 const SECRET = "x".repeat(40);
@@ -21,6 +25,18 @@ assert.equal(await open(SECRET, "session", undefined), null);
 assert.equal(await open(SECRET, "session", "not a token"), null);
 await assert.rejects(() => seal("short", "session", {}, 60));
 ok("seal/open: round trip; wrong purpose, wrong key, tampered, expired and junk all read as nothing");
+
+// ── flow.mjs ──
+assert.equal(returnPath(true, "one_connect=success"), "/connected?one_connect=success");
+assert.equal(returnPath(false, "playground=busy"), "/?playground=busy#how");
+assert.equal(loginHint("  Me@Example.com "), "Me@Example.com");
+for (const bad of ["", null, "me", "me@example", "a b@example.com", "<x@example.com>", "x@example.com\nBcc: y", `a@${"b".repeat(260)}.com`])
+  assert.equal(loginHint(bad), undefined, JSON.stringify(bad));
+assert.equal(addressOf({ name: "Gmail", title: "Me@Example.com" }), "me@example.com");
+assert.equal(addressOf({ name: "Work (alex@example.co.uk)" }), "alex@example.co.uk");
+assert.equal(addressOf({ name: "Gmail" }), "");
+assert.equal(addressOf(undefined), "");
+ok("flow: popup flows come back to /connected, others to the page; only a plain address becomes One's sign-in hint; the address falls back to the connection's name");
 
 // ── gmail.mjs ──
 const calls = [];
@@ -67,23 +83,49 @@ assert.equal(address("alex@example.com"), "alex@example.com");
 assert.equal(address("not an address"), null);
 assert.equal(address("a@example.org, c@example.net"), null);
 assert.deepEqual(outsiders(["me@example.com", "a@example.com"], "Me@Example.com"), ["a@example.com"]);
-assert.ok(TOOLS.every((t) => t.strict && t.input_schema.additionalProperties === false));
+assert.ok(TOOLS.every((t) => t.type === "function" && t.function.parameters.additionalProperties === false));
+assert.deepEqual(TOOLS.find((t) => t.function.name === "create_draft").function.parameters.required, ["to", "subject", "body", "thread_id"]);
 ok("agent: addresses parsed strictly; recipients other than the visitor are named");
 
-const use = (id, name, input) => ({ type: "tool_use", id, name, input });
+// ── openrouter.mjs ──
+const sent = [];
+const fakeFetch = (replies) => async (url, init) => {
+  sent.push({ url, init, body: JSON.parse(init.body) });
+  const [status, data] = replies.shift();
+  return { ok: status < 400, status, json: async () => data };
+};
+let chat = openrouter("or-key", {
+  site: "https://example.com",
+  fetch: fakeFetch([
+    [200, { choices: [{ message: { content: "hi" }, finish_reason: "stop" }] }],
+    [402, { error: { code: 402, message: "Insufficient credits" } }],
+    [200, { error: { code: 502, message: "Provider down" } }],
+    [200, {}],
+  ]),
+});
+assert.equal((await chat({ model: "m", messages: [] })).choices[0].message.content, "hi");
+assert.equal(sent[0].url, ENDPOINT);
+assert.equal(sent[0].init.headers.Authorization, "Bearer or-key");
+assert.equal(sent[0].init.headers["HTTP-Referer"], "https://example.com");
+assert.deepEqual(sent[0].body.provider, { data_collection: "deny" });
+await assert.rejects(() => chat({}), (e) => e.status === 402);
+await assert.rejects(() => chat({}), (e) => e.status === 502);
+await assert.rejects(() => chat({}), (e) => e.status === 200);
+assert.equal(DEFAULT_MODEL, "anthropic/claude-haiku-5.5");
+ok("openrouter: key and site sent, providers that keep prompts refused, errors (in the status or the body) thrown with a status");
+
+// ── agent.mjs, against a scripted model ──
+const use = (id, name, input) => ({ id, type: "function", function: { name, arguments: typeof input === "string" ? input : JSON.stringify(input) } });
+const turn = (calls, content = null, extra = {}) => ({
+  choices: [{ finish_reason: calls.length ? "tool_calls" : "stop", message: { role: "assistant", content, ...(calls.length ? { tool_calls: calls } : {}) }, ...extra }],
+});
 function scripted(responses) {
   const requests = [];
-  return {
-    requests,
-    beta: {
-      messages: {
-        create: async (params) => {
-          requests.push(structuredClone(params));
-          return responses.shift();
-        },
-      },
-    },
+  const chat = async (body) => {
+    requests.push(structuredClone(body));
+    return responses.shift();
   };
+  return Object.assign(chat, { requests });
 }
 const fakeGmail = () => {
   const log = [];
@@ -100,62 +142,99 @@ const collect = async (gen) => {
   return out;
 };
 
-let client = scripted([
-  { stop_reason: "tool_use", content: [{ type: "thinking", thinking: "" }, use("u1", "search_emails", { query: "in:inbox newer_than:1d", max_results: 5 })] },
-  { stop_reason: "tool_use", content: [use("u2", "create_draft", { to: ["Me <me@example.com>"], subject: "Your inbox today", body: "One invoice.", thread_id: null })] },
-  { stop_reason: "tool_use", content: [{ type: "text", text: "I drafted a digest to you." }, use("u3", "request_send", { draft_id: "r-2" })] },
+const reasoning = [{ type: "reasoning.text", text: "" }];
+chat = scripted([
+  { choices: [{ finish_reason: "tool_calls", message: { role: "assistant", content: null, tool_calls: [use("u1", "search_emails", { query: "in:inbox newer_than:1d", max_results: 5 })], reasoning_details: reasoning } }] },
+  turn([use("u2", "create_draft", { to: ["Me <me@example.com>"], subject: "Your inbox today", body: "One invoice.", thread_id: null })]),
+  turn([use("u3", "request_send", { draft_id: "r-2" })], "I drafted a digest to you."),
 ]);
 let g = fakeGmail();
-let events = await collect(runAgent({ task: "Email me a digest", me: "me@example.com", client, gmail: g, model: "claude-opus-5-5" }));
+let events = await collect(runAgent({ task: "Email me a digest", me: "me@example.com", chat, gmail: g, model: DEFAULT_MODEL }));
 assert.deepEqual(events.map((e) => e.type), ["step", "step", "draft", "gate"]);
 const gate = events.at(-1);
 assert.deepEqual(gate.to, ["me@example.com"]);
 assert.deepEqual(gate.outsiders, []);
 assert.equal(gate.draftId, "r-2");
 assert.equal(gate.summary, "I drafted a digest to you.");
-assert.equal(client.requests.length, 3);
-const first = client.requests[0];
-assert.equal(first.model, "claude-opus-5-5");
-assert.equal(first.fallbacks, "default");
-assert.deepEqual(first.betas, ["server-side-fallback-2026-07-01"]);
-assert.deepEqual(first.output_config, { effort: "low" });
+assert.equal(g.log[1][1].threadId, undefined);
+assert.equal(chat.requests.length, 3);
+const first = chat.requests[0];
+assert.equal(first.model, DEFAULT_MODEL);
 assert.equal(first.tool_choice, undefined);
-assert.match(first.messages[0].content, /Visitor's address: me@example.com/);
-assert.equal(client.requests[1].messages[1].content[0].type, "thinking");
-ok("agent: search → draft → request_send ends at the gate, to the visitor themself; never sends; thinking blocks passed back");
+assert.equal(first.messages[0].role, "system");
+assert.match(first.messages[1].content, /Visitor's address: me@example.com/);
+const second = chat.requests[1].messages;
+assert.deepEqual(second[2].reasoning_details, reasoning);
+assert.equal(second[3].role, "tool");
+assert.equal(second[3].tool_call_id, "u1");
+ok("agent: search → draft → request_send ends at the gate, to the visitor themself; never sends; reasoning passed back");
 
-client = scripted([
-  { stop_reason: "tool_use", content: [use("u1", "create_draft", { to: ["bob@evil.test"], subject: "Hi", body: "x", thread_id: "t1" })] },
-  { stop_reason: "tool_use", content: [use("u2", "request_send", { draft_id: "r-1" })] },
-]);
-events = await collect(runAgent({ task: "Reply to the invoice", me: "me@example.com", client, gmail: fakeGmail(), model: "m" }));
+chat = scripted([turn([use("u1", "create_draft", { to: ["bob@evil.test"], subject: "Hi", body: "x", thread_id: "t1" })]), turn([use("u2", "request_send", { draft_id: "r-1" })])]);
+events = await collect(runAgent({ task: "Reply to the invoice", me: "me@example.com", chat, gmail: fakeGmail(), model: "m" }));
 assert.deepEqual(events.at(-1).outsiders, ["bob@evil.test"]);
 ok("agent: a draft to someone else reaches the gate with that recipient named");
 
-client = scripted([
-  { stop_reason: "tool_use", content: [use("u1", "request_send", { draft_id: "r-made-up" }), use("u2", "create_draft", { to: ["a@example.org, c@example.net"], subject: "s", body: "b", thread_id: null })] },
-  { stop_reason: "end_turn", content: [{ type: "text", text: "I couldn't finish." }] },
+chat = scripted([
+  turn([
+    use("u1", "request_send", { draft_id: "r-made-up" }),
+    use("u2", "create_draft", { to: ["a@example.org, c@example.net"], subject: "s", body: "b", thread_id: null }),
+    use("u3", "create_draft", { to: "me@example.com", subject: "s", body: "b", thread_id: null }),
+    use("u4", "create_draft", { to: ["me@example.com"], subject: "s", body: "", thread_id: null }),
+    use("u5", "search_emails", { max_results: 3 }),
+    use("u6", "search_emails", "{not json"),
+    use("u7", "send_email", {}),
+  ]),
+  turn([], "I couldn't finish."),
 ]);
 g = fakeGmail();
-events = await collect(runAgent({ task: "t", me: "me@example.com", client, gmail: g, model: "m" }));
-const results = client.requests[1].messages.at(-1).content;
-assert.equal(results.length, 2);
-assert.ok(results.every((r) => r.is_error));
+events = await collect(runAgent({ task: "t", me: "me@example.com", chat, gmail: g, model: "m" }));
+const results = chat.requests[1].messages.filter((m) => m.role === "tool");
+assert.deepEqual(results.map((r) => r.tool_call_id), ["u1", "u2", "u3", "u4", "u5", "u6", "u7"]);
+assert.ok(results.every((r) => r.content.startsWith("Error: ")));
 assert.deepEqual(g.log, []);
 assert.deepEqual(events, [{ type: "done", summary: "I couldn't finish." }]);
-ok("agent: a send for a draft it didn't make, and a bad recipient list, are refused back to the model; nothing saved");
+ok("agent: made-up drafts, bad recipients, missing fields, broken JSON and unknown tools are refused back to the model; nothing saved");
 
-client = scripted([{ stop_reason: "refusal", content: [] }]);
-events = await collect(runAgent({ task: "t", me: "me@example.com", client, gmail: fakeGmail(), model: "m" }));
-assert.equal(events[0].type, "error");
-client = scripted(Array.from({ length: MAX_TURNS }, (_, i) => ({ stop_reason: "tool_use", content: [use(`u${i}`, "search_emails", { query: "x", max_results: 1 })] })));
-events = await collect(runAgent({ task: "t", me: "me@example.com", client, gmail: fakeGmail(), model: "m" }));
-assert.equal(client.requests.length, MAX_TURNS);
+for (const refusal of [{ finish_reason: "content_filter" }, { native_finish_reason: "refusal" }]) {
+  chat = scripted([turn([], "No.", refusal)]);
+  events = await collect(runAgent({ task: "t", me: "me@example.com", chat, gmail: fakeGmail(), model: "m" }));
+  assert.deepEqual(events.map((e) => e.type), ["error"]);
+}
+chat = scripted(Array.from({ length: MAX_TURNS }, (_, i) => turn([use(`u${i}`, "search_emails", { query: "x", max_results: 1 })])));
+events = await collect(runAgent({ task: "t", me: "me@example.com", chat, gmail: fakeGmail(), model: "m" }));
+assert.equal(chat.requests.length, MAX_TURNS);
 assert.equal(events.at(-1).type, "done");
 const blocked = { ...fakeGmail(), search: async () => Promise.reject(Object.assign(new Error("no"), { grant: true })) };
-client = scripted([{ stop_reason: "tool_use", content: [use("u1", "search_emails", { query: "x", max_results: 1 })] }]);
-events = await collect(runAgent({ task: "t", me: "me@example.com", client, gmail: blocked, model: "m" }));
-assert.equal(events.at(-1).type, "error");
-ok("agent: refusals end the run, the turn cap holds, and a call outside the grant stops it");
+chat = scripted([turn([use("u1", "search_emails", { query: "x", max_results: 1 })])]);
+events = await collect(runAgent({ task: "t", me: "me@example.com", chat, gmail: blocked, model: "m" }));
+assert.deepEqual(events.map((e) => e.type), ["denied"]);
+assert.equal(events[0].grant, true);
+ok("agent: refusals end the run, the turn cap holds, and a call outside the grant stops it as denied");
+
+chat = scripted([turn([use("u1", "decline", { reason: "I can't delete mail here. I can find it and draft a reply." }), use("u2", "search_emails", { query: "x", max_results: 1 })])]);
+g = fakeGmail();
+events = await collect(runAgent({ task: "Delete my newsletters", me: "me@example.com", chat, gmail: g, model: "m" }));
+assert.deepEqual(events, [{ type: "denied", text: "I can't delete mail here. I can find it and draft a reply." }]);
+assert.deepEqual(g.log, []);
+chat = scripted([turn([use("u1", "decline", {})])]);
+events = await collect(runAgent({ task: "t", me: "me@example.com", chat, gmail: fakeGmail(), model: "m" }));
+assert.equal(events[0].type, "denied");
+assert.ok(events[0].text);
+assert.ok(TOOLS.some((t) => t.function.name === "decline"));
+ok("agent: decline ends the run as denied before anything else in that turn runs");
+
+assert.deepEqual(historyOf("nope"), []);
+assert.deepEqual(historyOf([{ task: "a", reply: "b" }, { task: "", reply: "x" }, { task: 1, reply: "x" }, null]), [{ task: "a", reply: "b" }]);
+const long = historyOf(Array.from({ length: 9 }, (_, i) => ({ task: `t${i} ` + "x".repeat(500), reply: "y".repeat(5000) })));
+assert.equal(long.length, HISTORY.turns);
+assert.match(long[0].task, /^t5 /);
+assert.ok(long.every((t) => t.task.length <= HISTORY.task && t.reply.length <= HISTORY.reply));
+chat = scripted([turn([], "Done.")]);
+await collect(runAgent({ task: "Reply to the second one", me: "me@example.com", chat, gmail: fakeGmail(), model: "m", history: [{ task: "Summarize my inbox", reply: "Two emails: an invoice and a lunch invite." }] }));
+const asked = chat.requests[0].messages;
+assert.deepEqual(asked.map((m) => m.role), ["system", "user", "assistant", "user"]);
+assert.equal(asked[1].content, "Task: Summarize my inbox");
+assert.match(asked[3].content, /Task: Reply to the second one$/);
+ok("agent: the chat so far goes in first, capped and cut to size; junk turns dropped");
 
 console.log("test-playground: all passed");
