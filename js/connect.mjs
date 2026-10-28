@@ -1,9 +1,13 @@
 // The popup's first screen (connect.html): an Orchy card for a moment, then on to One Connect through the Worker.
-// The address the visitor typed in the chat rides along as One's sign-in hint; the Worker checks it again.
-// The fragment survives the redirects: One's page opens on Gmail first, dark like this one.
+// The address the visitor typed in the chat comes in the fragment (never sent to a server) and goes on as One's
+// sign-in hint in a cookie (outcomes.mjs); the Worker checks it again. The target's fragment survives the
+// redirects: One's page opens on Gmail first, dark like this one.
+import { passHint } from "./outcomes.mjs";
+
 const params = new URLSearchParams(location.search);
-const hint = params.get("hint");
-const target = `/api/one/authorize?popup=1${hint ? `&hint=${encodeURIComponent(hint)}` : ""}#one_connector=gmail&one_theme=dark`;
+passHint(new URLSearchParams(location.hash.slice(1)).get("hint"));
+history.replaceState(null, "", location.pathname + location.search);
+const target = "/api/one/authorize?popup=1#one_connector=gmail&one_theme=dark";
 document.getElementById("go").href = target;
 // The first step is ticked only when the visitor did run a sample.
 if (params.get("tried") !== "1") {

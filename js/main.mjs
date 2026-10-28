@@ -1,5 +1,5 @@
 ﻿import { SQUAD, byId, renderSprite } from "./robots.mjs";
-import { CHANNEL, OUTCOMES, outcomeOf } from "./outcomes.mjs";
+import { CHANNEL, OUTCOMES, outcomeOf, passHint } from "./outcomes.mjs";
 const $ = (selector, root = document) => root.querySelector(selector);
 // The 3D squad listens for these page events.
 const tell = (name, detail = {}) => document.dispatchEvent(new CustomEvent(name, { detail }));
@@ -466,13 +466,13 @@ function startConnect(hint) {
     return;
   }
   connect.hint = hint;
-  const query = hint ? `?hint=${encodeURIComponent(hint)}` : "";
   const w = 480,
     h = 720;
   const left = Math.round(screenX + Math.max(outerWidth - w, 0) / 2),
     top = Math.round(screenY + Math.max(outerHeight - h, 0) / 3);
-  const card = new URLSearchParams({ ...(hint ? { hint } : {}), ...(lastTask ? { tried: "1" } : {}) });
-  connect.popup = window.open(`/connect?${card}`, "orchy-connect", `popup=yes,width=${w},height=${h},left=${left},top=${top}`);
+  // The address goes in the fragment, which no server sees.
+  const card = `/connect${lastTask ? "?tried=1" : ""}${hint ? `#hint=${encodeURIComponent(hint)}` : ""}`;
+  connect.popup = window.open(card, "orchy-connect", `popup=yes,width=${w},height=${h},left=${left},top=${top}`);
   if (!connect.popup) {
     // No popup allowed: the same flow in this tab, and the task picks up when the visitor comes back.
     try {
@@ -480,7 +480,8 @@ function startConnect(hint) {
     } catch {
       /* private mode: they'll pick a task again */
     }
-    location.assign(`/api/one/authorize${query}#one_connector=gmail&one_theme=dark`);
+    passHint(hint);
+    location.assign("/api/one/authorize#one_connector=gmail&one_theme=dark");
     return;
   }
   setStage("waiting");

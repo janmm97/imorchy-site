@@ -14,6 +14,25 @@ export function addressOf(connection) {
   return "";
 }
 
+/**
+ * What a connection's grant reaches, against the actions the playground calls (`{ name: { actionId, method } }`):
+ * `{ policy, missing }`, `missing` naming the ones it leaves out. For the logs: action IDs and names only.
+ */
+export function grantGaps(connection, actions) {
+  const access = connection?.access || {};
+  const names = Object.keys(actions);
+  if (access.policy === "full") return { policy: "full", missing: [] };
+  if (access.policy === "methods") {
+    const methods = (access.methods || []).map((m) => String(m).toUpperCase());
+    return { policy: `methods ${methods.join(",")}`, missing: names.filter((n) => !methods.includes(actions[n].method)) };
+  }
+  if (access.policy === "actions") {
+    const ids = new Set((access.actions || []).map((a) => a.actionId));
+    return { policy: `actions ${[...ids].join(",")}`, missing: names.filter((n) => !ids.has(actions[n].actionId)) };
+  }
+  return { policy: String(access.policy || "unknown"), missing: names };
+}
+
 /** An address the visitor typed in the chat, to pre-fill One's sign-in. Anything that isn't plainly one is dropped. */
 export function loginHint(value) {
   const hint = String(value || "").trim();

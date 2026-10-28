@@ -19,3 +19,9 @@ export function outcomeOf(search) {
 }
 // The popup reports back on this channel: same origin only, and it carries nothing but the code.
 export const CHANNEL = "orchy-connect";
+/** Hands the address typed in the chat to /api/one/authorize as One's sign-in hint. A short-lived cookie, not the
+ *  URL, so the address never lands in a request log; the Worker reads it once and clears it. */
+export function passHint(hint) {
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `orchy_hint=${encodeURIComponent(hint || "")}; Path=/api/one; Max-Age=${hint ? 300 : 0}; SameSite=Lax${secure}`;
+}

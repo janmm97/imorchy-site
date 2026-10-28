@@ -3,7 +3,8 @@
 // The live playground: a visitor signs in to One (or signs up) through One Connect and grants this app four Gmail
 // actions (agent.mjs / gmail.mjs). The playground then turns into a short chat with Orchy in their own inbox: a peek
 // at the newest mail first (POST /api/peek, which isn't a task), then a few requests. The page opens the flow in a
-// popup (?popup=1), with the address typed in the chat as One's sign-in hint (flow.mjs). Sends only happen through
+// popup (?popup=1), with the address typed in the chat as One's sign-in hint (an orchy_hint cookie, so it's never in
+// a logged URL; flow.mjs checks it). Sends only happen through
 // POST /api/approve, with a sealed token that names the draft and is bound to the visitor's session.
 //
 // Nothing is stored server-side: the session (One grant reference, Gmail connection key, the visitor's address,
@@ -11,12 +12,13 @@
 // ONE_CONNECT_KEY, ONE_PERMISSION_SET, OPENROUTER_API_KEY, SESSION_SECRET. Vars: ONE_REDIRECT_URI, MODEL (an OpenRouter model ID).
 import { createOneConnect } from "@withone/connect/server";
 import { historyOf, runAgent } from "./agent.mjs";
-import { addressOf, loginHint, returnPath } from "./flow.mjs";
-import { gmailFor } from "./gmail.mjs";
+import { addressOf, grantGaps, loginHint, returnPath } from "./flow.mjs";
+import { ACTIONS, gmailFor } from "./gmail.mjs";
 import { DEFAULT_MODEL, openrouter } from "./openrouter.mjs";
 import { open, seal } from "./seal.mjs";
 
 const SESSION = "orchy_session";
+const HINT = "orchy_hint";
 const SESSION_TTL = 30 * 60;
 const APPROVE_TTL = 15 * 60;
 export const RUNS_PER_SESSION = 3;
@@ -66,6 +68,11 @@ function connectFor(env, state) {
     },
   });
 }
+// What the visitor's grant reaches, against the four actions the playground calls: IDs and names only.
+const logGrant = (where, gmail) => {
+  const { policy, missing } = grantGaps(gmail, ACTIONS);
+  console.log(`${where}: grant ${policy}; missing ${missing.join(",") || "nothing"}`);
+};
 const gmailOf = (env, session) => {
   const connect = connectFor(env, { sid: session.sid, ref: session.ref });
   return gmailFor((input) => connect.runAction(session.sid, input), session.gmailKey);
@@ -111,9 +118,10 @@ async function api(request, env, url, ctx) {
     const sid = known?.sid || crypto.randomUUID();
     const { redirectUrl, cookie: flow } = connectFor(env, { sid }).startAuthorization({
       returnTo: popup ? "/connected" : "/",
-      loginHint: loginHint(url.searchParams.get("hint")),
+      loginHint: loginHint(cookies(request).orchy_hint),
     });
     return redirect(redirectUrl, [
+      `${HINT}=; Path=/api/one; Max-Age=0; HttpOnly; Secure; SameSite=Lax`,
       `${flow.name}=${encodeURIComponent(flow.value)}; Path=${flow.options.path}; Max-Age=${flow.options.maxAge}; HttpOnly; Secure; SameSite=Lax`,
       await sessionCookie(env, { sid, runs: known?.runs || 0, popup }),
     ]);
@@ -137,6 +145,7 @@ async function api(request, env, url, ctx) {
     try {
       const gmail = (await connect.listConnections(s.sid)).find((c) => c.platform === "gmail");
       console.log("callback: connections", gmail ? "gmail found" : "no gmail");
+      if (gmail) logGrant("callback", gmail);
       if (!gmail) return redirect(returnPath(s.popup, "playground=no-gmail"), [...out, clearSession()]);
       // The address only names the visitor to the agent; without it, every recipient is flagged before a send.
       const me = await gmailFor((input) => connect.runAction(s.sid, input), gmail.key)
@@ -211,6 +220,10 @@ async function api(request, env, url, ctx) {
       return json({ emails: found.map(({ from, subject, date, unread }) => ({ from, subject, date, unread })) });
     } catch (error) {
       console.log("peek failed:", error.grant ? "outside the grant" : error.status || error.message);
+      if (error.grant) {
+        const gmail = (await connectFor(env, { sid: s.sid, ref: s.ref }).listConnections(s.sid).catch(() => [])).find((c) => c.key === s.gmailKey);
+        if (gmail) logGrant("peek", gmail);
+      }
       return json({ error: friendly(error), grant: Boolean(error.grant) }, error.grant ? 403 : 502);
     }
   }

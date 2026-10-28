@@ -8,7 +8,7 @@ import { seal, open } from "./seal.mjs";
 import { ACTIONS, gmailFor } from "./gmail.mjs";
 import { address, historyOf, HISTORY, outsiders, runAgent, TOOLS, MAX_TURNS } from "./agent.mjs";
 import { DEFAULT_MODEL, ENDPOINT, openrouter } from "./openrouter.mjs";
-import { addressOf, loginHint, returnPath } from "./flow.mjs";
+import { addressOf, grantGaps, loginHint, returnPath } from "./flow.mjs";
 
 const ok = (name) => console.log(`ok - ${name}`);
 const SECRET = "x".repeat(40);
@@ -36,6 +36,12 @@ assert.equal(addressOf({ name: "Gmail", title: "Me@Example.com" }), "me@example.
 assert.equal(addressOf({ name: "Work (alex@example.co.uk)" }), "alex@example.co.uk");
 assert.equal(addressOf({ name: "Gmail" }), "");
 assert.equal(addressOf(undefined), "");
+const wants = { profile: { actionId: "p", method: "GET" }, list: { actionId: "l", method: "POST" } };
+assert.deepEqual(grantGaps({ access: { policy: "full" } }, wants), { policy: "full", missing: [] });
+assert.deepEqual(grantGaps({ access: { policy: "methods", methods: ["get"] } }, wants).missing, ["list"]);
+assert.deepEqual(grantGaps({ access: { policy: "actions", actions: [{ actionId: "l", title: "List", method: "POST" }, { actionId: "x" }] } }, wants), { policy: "actions l,x", missing: ["profile"] });
+assert.deepEqual(grantGaps({}, wants), { policy: "unknown", missing: ["profile", "list"] });
+ok("flow: a grant's gaps against the playground's actions, by method or by action ID");
 ok("flow: popup flows come back to /connected, others to the page; only a plain address becomes One's sign-in hint; the address falls back to the connection's name");
 
 // ── gmail.mjs ──
