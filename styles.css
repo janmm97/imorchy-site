@@ -3200,12 +3200,12 @@ body::before {
   opacity: 0.45;
   cursor: not-allowed;
 }
+/* A fixed height from the first message: the console never grows, the thread scrolls inside it. */
 .chat-thread {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-height: 260px;
-  max-height: min(480px, 62vh);
+  height: clamp(320px, 58vh, 460px);
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 16px 6px 4px 0;
@@ -3213,6 +3213,7 @@ body::before {
   scrollbar-color: #ffffff1f transparent;
 }
 .chat-turn {
+  flex-shrink: 0;
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -3331,7 +3332,7 @@ body::before {
 }
 @media (max-width: 650px) {
   .chat-thread {
-    max-height: 68vh;
+    height: clamp(300px, 60vh, 460px);
   }
   .chat-turn.from-you p {
     max-width: 90%;
