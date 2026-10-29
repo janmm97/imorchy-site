@@ -208,7 +208,7 @@ for (const [i, bucket] of (session.buckets || []).entries()) {
   console.log("done");
 }
 
-// 2. The Worker. Static files are served straight from assets; only the API and videos run the Worker first.
+// 2. The Worker. Static files are served straight from assets; only the API, videos and Google's verification file run the Worker first.
 const vars = { ONE_REDIRECT_URI: `https://${domain}/api/one/callback`, ...(opt("--model") ? { MODEL: opt("--model") } : {}) };
 const worker = new FormData();
 worker.append(
@@ -229,7 +229,7 @@ worker.append(
         keep_bindings: ["secret_text"],
         // Workers Logs: the Worker's console lines (codes only, never mail), kept by Cloudflare for a few days.
         observability: { enabled: true, head_sampling_rate: 1 },
-        assets: { jwt: completion, config: { run_worker_first: ["/api/*", "/**/*.mp4"] } },
+        assets: { jwt: completion, config: { run_worker_first: ["/api/*", "/**/*.mp4", "/google*.html"] } },
       }),
     ],
     { type: "application/json" },

@@ -271,6 +271,8 @@ export default {
       }
     }
     if (url.pathname.endsWith(".mp4") && request.method === "GET") return video(request, env, url);
+    // Google Search Console's verification file must answer 200 at its .html path; static assets would redirect it to the bare name.
+    if (/^\/google[0-9a-f]+\.html$/.test(url.pathname)) return env.ASSETS.fetch(url.origin + url.pathname.slice(0, -5));
     return env.ASSETS.fetch(request);
   },
 };
