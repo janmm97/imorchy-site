@@ -64,8 +64,8 @@
           >
         </nav>
         <div class="nav-actions">
-          <a class="button button-small button-light" href="#install"
-            >Get Orchy
+          <a class="button button-small button-light" href="#access"
+            >Get Access
             <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
               <path d="M2 10 9.5 2.5M3.5 2.5h6v6" /></svg></a
           ><button
@@ -99,9 +99,20 @@
           </div>
         </div>
         <h1 id="heroTitle" class="hero-title"><span id="heroFloor" data-perch>Orchy <span class="hero-ai">AI</span></span></h1>
-        <button class="hero-tagline hero-video" type="button" aria-haspopup="dialog" aria-controls="launchVideo">
-          <span class="play-mark" aria-hidden="true"></span>Watch Launch Video
-        </button>
+        <p class="hero-lede">
+          Bring your AI agents, apps, and workspaces together on your own
+          computer. Free and open source.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-mint" href="#access"
+            >Get Access
+            <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M6 1.25v8M2.5 6 6 9.5 9.5 6" /></svg></a
+          ><button class="hero-tagline hero-video" type="button" aria-haspopup="dialog" aria-controls="launchVideo" disabled>
+            <span class="play-mark" aria-hidden="true"></span>Watch Launch Video
+            <span class="soon-ribbon">Coming Soon</span>
+          </button>
+        </div>
       </section>
 
       <section class="section wrap" id="how" aria-labelledby="howTitle">
@@ -156,47 +167,208 @@
           </div>
           <div class="demo-console" data-perch>
             <div class="console-header">
-              <span><span class="status-dot"></span> ORCHY / PLAYGROUND</span
-              ><span class="demo-badge" id="demoBadge">INTERACTIVE DEMO</span>
+              <span><span class="status-dot"></span> ORCHY / IN ACTION</span
+              ><span class="demo-badge">SAMPLE</span>
             </div>
             <div class="console-body">
-              <div class="chat-message">
-                <img
-                  src="assets/orchy-main.svg"
-                  width="44"
-                  height="44"
-                  alt=""
-                />
-                <div>
-                  <span class="message-name">ORCHY</span>
-                  <p>Hey, human. What’s on your list?</p>
-                </div>
-              </div>
-              <form id="taskForm" autocomplete="off">
-                <label for="task" class="sr-only"
-                  >Give Orchy a sample task</label
-                ><input
-                  id="task"
-                  name="task"
-                  maxlength="180"
-                  placeholder="Draft this week’s project update…"
-                  required
-                /><button type="submit" aria-label="Run sample task">↗</button>
-              </form>
-              <div id="liveBar" class="live-bar" hidden></div>
+              <!-- A 34s loop driven by js/inaction.mjs: each [data-at] element turns on at that second
+                   (and off at data-until), [data-type] text types itself in, and the scene follows the
+                   start times in data-scenes. Without script, or with reduced motion, the last scene
+                   stands still, finished. -->
               <div
-                id="demoOutput"
-                class="demo-output"
-                aria-live="polite"
-                aria-atomic="true"
+                class="agent-loop"
+                data-cycle="34"
+                data-scenes="0,7.5,14.5,22"
+                role="img"
+                aria-label="How Orchy works: you connect Gmail, Slack, Notion, Google Calendar, Stripe and GitHub through One; you ask Orchy for an agent in Workspace A that triages your inbox, drafts replies to urgent mail and asks you to approve; the Agent Builder builds it; then the agent sorts five new emails, drafts the two urgent replies, and sends you a notification to approve them."
               >
-                <div class="demo-placeholder">
-                  <span aria-hidden="true">⌘</span>
-                  <p>
-                    A small ask can start something big.<br /><span
-                      >Type a task to watch the squad work.</span
-                    >
-                  </p>
+                <ol class="al-tabs" aria-hidden="true">
+                  <li>Connect</li>
+                  <li>Ask</li>
+                  <li>Build</li>
+                  <li>Run</li>
+                </ol>
+                <div class="al-stage" aria-hidden="true">
+                  <div class="al-scene al-connect">
+                    <svg class="al-wires" viewBox="0 0 100 100" preserveAspectRatio="none">
+                      <path pathLength="1" data-at="1.4" d="M14 18C32 18 34 50 50 50" />
+                      <path pathLength="1" data-at="1.9" d="M86 18C68 18 66 50 50 50" />
+                      <path pathLength="1" data-at="2.4" d="M14 50C30 50 34 50 50 50" />
+                      <path pathLength="1" data-at="2.9" d="M86 50C70 50 66 50 50 50" />
+                      <path pathLength="1" data-at="3.4" d="M14 82C32 82 34 50 50 50" />
+                      <path pathLength="1" data-at="3.9" d="M86 82C68 82 66 50 50 50" />
+                    </svg>
+                    <span class="al-hub" data-at="0.3"
+                      ><img src="assets/logos/one.svg" width="70" height="22" alt="" /><span
+                        class="al-count"
+                        data-at="0"
+                        data-steps="1.85,2.35,2.85,3.35,3.85,4.35"
+                        data-n="6"
+                      ></span
+                    ></span>
+                    <span class="al-hub-ring" data-at="4.6"></span>
+                    <svg class="al-wires al-pulses" viewBox="0 0 100 100" preserveAspectRatio="none" data-at="4.6">
+                      <path pathLength="1" d="M14 18C32 18 34 50 50 50" />
+                      <path pathLength="1" d="M86 18C68 18 66 50 50 50" />
+                      <path pathLength="1" d="M14 50C30 50 34 50 50 50" />
+                      <path pathLength="1" d="M86 50C70 50 66 50 50 50" />
+                      <path pathLength="1" d="M14 82C32 82 34 50 50 50" />
+                      <path pathLength="1" d="M86 82C68 82 66 50 50 50" />
+                    </svg>
+                    <span class="al-tool" style="--x: 14%; --y: 18%" data-at="0.6"
+                      ><img src="assets/logos/tools/gmail.svg" width="40" height="40" alt="" /><b>Gmail</b
+                      ><i data-at="1.85"></i
+                    ></span>
+                    <span class="al-tool" style="--x: 86%; --y: 18%" data-at="0.8"
+                      ><img src="assets/logos/tools/slack.svg" width="40" height="40" alt="" /><b>Slack</b
+                      ><i data-at="2.35"></i
+                    ></span>
+                    <span class="al-tool" style="--x: 14%; --y: 50%" data-at="1"
+                      ><img src="assets/logos/tools/notion.svg" width="40" height="40" alt="" /><b>Notion</b
+                      ><i data-at="2.85"></i
+                    ></span>
+                    <span class="al-tool" style="--x: 86%; --y: 50%" data-at="1.2"
+                      ><img src="assets/logos/tools/google-calendar.svg" width="40" height="40" alt="" /><b>Calendar</b
+                      ><i data-at="3.35"></i
+                    ></span>
+                    <span class="al-tool" style="--x: 14%; --y: 82%" data-at="1.4"
+                      ><img src="assets/logos/tools/stripe.svg" width="40" height="40" alt="" /><b>Stripe</b
+                      ><i data-at="3.85"></i
+                    ></span>
+                    <span class="al-tool" style="--x: 86%; --y: 82%" data-at="1.6"
+                      ><img src="assets/logos/tools/github.svg" width="40" height="40" alt="" /><b>GitHub</b
+                      ><i data-at="4.35"></i
+                    ></span>
+                  </div>
+
+                  <div class="al-scene al-ask">
+                    <div class="al-thread">
+                      <p class="al-msg al-from-orchy" data-at="8">
+                        <img src="assets/orchy-main.svg" width="26" height="26" alt="" />
+                        <span>Six tools connected. What should we build?</span>
+                      </p>
+                      <p class="al-msg al-from-you" data-at="11.8">
+                        Build an agent for Workspace A that triages my inbox, drafts replies to the urgent ones and
+                        asks me to approve.
+                      </p>
+                      <p class="al-msg al-from-orchy" data-at="12.2">
+                        <img src="assets/orchy-main.svg" width="26" height="26" alt="" />
+                        <span class="al-dots" data-at="12.2" data-until="13.1"><i></i><i></i><i></i></span>
+                        <span class="al-reply" data-at="13.1"
+                          >On it. Handing this to the <span data-bot="green" class="al-mini-bot"></span> Agent
+                          Builder.</span
+                        >
+                      </p>
+                    </div>
+                    <div class="al-input" data-at="7.8">
+                      <span class="al-typed" data-at="8.6" data-until="11.8" data-type data-cps="40"
+                        >Build an agent for Workspace A that triages my inbox, drafts replies to the urgent ones and
+                        asks me to approve.</span
+                      ><span class="al-send" data-at="11.5" data-until="11.9">↗</span>
+                    </div>
+                  </div>
+
+                  <div class="al-scene al-build">
+                    <div class="al-card" data-at="14.7">
+                      <div class="al-card-head">
+                        <span data-bot="green" class="al-bot"></span>
+                        <span><b>Agent Builder</b><small>Workspace A</small></span>
+                        <span class="al-status">
+                          <span class="al-building" data-at="0" data-until="20.6">Building…</span
+                          ><span class="al-ready" data-at="20.6">Ready</span>
+                        </span>
+                      </div>
+                      <span class="al-progress" data-at="15"><i></i></span>
+                      <dl class="al-fields">
+                        <div data-at="15.2">
+                          <dt>Name</dt>
+                          <dd><span data-at="15.3" data-type data-cps="22">Inbox Triage</span></dd>
+                        </div>
+                        <div data-at="16.1">
+                          <dt>Role</dt>
+                          <dd>
+                            <span data-at="16.2" data-type data-cps="36"
+                              >Sort new mail, draft urgent replies</span
+                            >
+                          </dd>
+                        </div>
+                        <div data-at="17.6">
+                          <dt>Tools</dt>
+                          <dd class="al-chips">
+                            <span data-at="17.8"
+                              ><img src="assets/logos/tools/gmail.svg" width="18" height="18" alt="" />Gmail</span
+                            ><span data-at="18.1"
+                              ><img src="assets/logos/tools/slack.svg" width="18" height="18" alt="" />Slack</span
+                            >
+                          </dd>
+                        </div>
+                        <div data-at="18.7">
+                          <dt>Rules</dt>
+                          <dd class="al-rules">
+                            <span data-at="18.8">Never sends without your OK</span
+                            ><span data-at="19.4">Asks you on Slack</span>
+                          </dd>
+                        </div>
+                      </dl>
+                      <span class="al-agent" data-at="20.8"
+                        ><span data-bot="blue" class="al-bot"></span><span><b>Inbox Triage</b> is live in Workspace A</span></span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="al-scene al-run">
+                    <div class="al-run-head" data-at="22.2">
+                      <span data-bot="blue" class="al-bot"></span>
+                      <b>Inbox Triage</b>
+                      <span class="al-run-status">
+                        <span data-at="0" data-until="25.8">Sorting 5 new emails</span
+                        ><span data-at="25.8" data-until="30.3">Drafting 2 urgent replies</span
+                        ><span data-at="30.3">2 replies sent</span>
+                      </span>
+                    </div>
+                    <div class="al-inbox">
+                      <span class="al-scan" data-at="23.4" data-until="25.8"></span>
+                      <ul>
+                      <li data-at="22.4">
+                        <b>Northwind</b><span>Can we move the launch to Friday?</span
+                        ><em class="al-tag al-urgent" data-at="23.9">Urgent</em
+                        ><em class="al-tag al-draft" data-at="26.4" data-until="30.6">Draft ready</em
+                        ><em class="al-tag al-sent" data-at="30.6">Sent</em>
+                      </li>
+                      <li data-at="22.55">
+                        <b>Weekly digest</b><span>Ten links worth your time</span
+                        ><em class="al-tag" data-at="24.3">FYI</em>
+                      </li>
+                      <li data-at="22.7">
+                        <b>Billing</b><span>Payment failed on invoice 1042</span
+                        ><em class="al-tag al-urgent" data-at="24.7">Urgent</em
+                        ><em class="al-tag al-draft" data-at="27" data-until="30.75">Draft ready</em
+                        ><em class="al-tag al-sent" data-at="30.75">Sent</em>
+                      </li>
+                      <li data-at="22.85">
+                        <b>Team</b><span>Lunch on Thursday?</span><em class="al-tag" data-at="25.1">Later</em>
+                      </li>
+                      <li data-at="23">
+                        <b>Calendar</b><span>Review moved to 3 pm</span><em class="al-tag" data-at="25.5">FYI</em>
+                      </li>
+                      </ul>
+                    </div>
+                    <div class="al-toast" data-at="28" data-beat="notify">
+                      <img src="assets/logos/tools/slack.svg" width="26" height="26" alt="" />
+                      <div class="al-toast-ask" data-at="0" data-until="30.3">
+                        <b>Inbox Triage needs your OK</b>
+                        <span>2 urgent replies drafted in Workspace A.</span>
+                        <span class="al-toast-actions"
+                          ><span class="al-approve" data-at="29.7" data-until="30.3">Approve</span
+                          ><span>Review</span></span
+                        >
+                      </div>
+                      <div class="al-toast-done" data-at="30.3" data-beat="approved">
+                        <b>Approved</b>
+                        <span>2 replies sent. Nothing else went out.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -313,7 +485,7 @@
           <div>
             <h3>Your tools. Now a team.</h3>
             <p>
-              7 harnesses. 1000+ apps through One.<br />Choose what works for
+              7 harnesses. 1000+ apps through One. <br />Choose what works for
               each workspace.
             </p>
           </div>
@@ -341,73 +513,28 @@
         </div>
       </section>
 
-      <section
-        class="install-section"
-        id="install"
-        aria-labelledby="installTitle"
-      >
-        <div class="wrap install-layout">
-          <div class="install-copy reveal">
-            <h2 id="installTitle">
-              Your next chapter.<br /><span class="gradient-text"
-                >A little less solo.</span
+      <section class="access-section" id="access" aria-labelledby="accessTitle">
+        <div class="wrap">
+          <div class="access-card reveal" data-perch>
+            <h2 id="accessTitle">
+              What would you hand off?<br /><span class="gradient-text"
+                >Let's build that agent.</span
               >
             </h2>
             <p>
-              Three lines. One new teammate.<br />A whole lot of room for what’s
-              next.
-            </p>
-            <div class="install-links">
-              <a
-                class="button button-mint"
-                href="https://github.com/janmm97/orchy-ai/archive/refs/heads/main.zip"
-                >Download Orchy
-                <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
-                  <path d="M6 1.25v8M2.5 6 6 9.5 9.5 6" /></svg></a
-              ><a
-                class="text-button"
-                href="https://github.com/janmm97/orchy-ai"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Star on GitHub <span aria-hidden="true">↗</span></a
-              >
-            </div>
-            <p class="install-platforms">
-              WINDOWS / MACOS / LINUX <span>·</span> MIT
-            </p>
-          </div>
-          <div class="setup-panel reveal" data-perch>
-            <div class="terminal-header">
-              <span><i></i><i></i><i></i></span
-              ><span>YOUR NEXT THREE LINES</span
-              ><button type="button" id="copySetup">
-                <span aria-hidden="true">⧉</span>
-                <span id="copyLabel">Copy</span>
-              </button>
-            </div>
-            <pre
-              id="setupLines"
-            ><code><span class="terminal-prompt">$</span> git clone https://github.com/janmm97/orchy-ai
-<span class="terminal-prompt">$</span> cd orchy-ai
-<span class="terminal-prompt">$</span> npm run setup</code></pre>
-            <div class="setup-bottom">
-              <span class="status-dot"></span> YOUR SQUAD IS ONE SETUP AWAY<span
-                class="terminal-cursor"
-                aria-hidden="true"
-                >_</span
-              >
-            </div>
-            <p>
-              No terminal today? Download Orchy, open <code>launchers</code>,
-              and double-click the launcher for your computer.
+              Book 30 minutes with the team. We'll get you access, connect your
+              tools through One, and map out the first agent worth building
+              for your workspace.
             </p>
             <a
-              class="inline-link"
-              href="https://github.com/janmm97/orchy-ai#quick-start"
+              class="button button-mint access-button"
+              href="https://calendly.com/janmm-va/30min"
               target="_blank"
               rel="noopener noreferrer"
-              >Full setup guide & requirements ↗</a
-            >
+              >Get Access and Book a Call Now
+              <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
+                <path d="M2 10 9.5 2.5M3.5 2.5h6v6" /></svg
+            ></a>
           </div>
         </div>
       </section>
@@ -491,6 +618,5 @@
         </button>
       </form>
     </dialog>
-    <div class="toast" role="status" aria-live="polite"></div>
   </body>
 </html>

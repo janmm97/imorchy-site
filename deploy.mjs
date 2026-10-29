@@ -3,12 +3,11 @@
 // login's Cloudflare connection. The CLI can't carry file bodies (they go on the command line), so the calls go
 // to One's passthrough API directly, with the same key, connection and action IDs the CLI would send.
 //
-// The Worker (site/worker/main.mjs: the video, and the live playground's API) is bundled with esbuild from
-// site/worker's own packages (`npm install` there first). Its secrets go up only with --secrets <file> (see
-// site/worker/.env.example); later deploys keep them.
+// The Worker (site/worker/main.mjs: the video and Google's verification file) is bundled with esbuild from
+// site/worker's own packages (`npm install` there first). It has no secrets; a deploy clears any left from the
+// old live playground.
 //
 //   node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www]
-//                                 [--secrets site/worker/.env] [--model <openrouter model id>]
 import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
@@ -47,7 +46,7 @@ const opt = (name) => {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : undefined;
 };
-const domain = args.find((a, i) => !a.startsWith("--") && !["--name", "--file", "--secrets", "--model"].includes(args[i - 1]));
+const domain = args.find((a, i) => !a.startsWith("--") && !["--name", "--file"].includes(args[i - 1]));
 const name = opt("--name") || "orchy-site";
 const dryRun = flag("--dry-run");
 const hosts = flag("--no-www") ? [domain] : [domain, `www.${domain}`];
@@ -55,20 +54,8 @@ const overrides = Object.fromEntries(
   args.flatMap((a, i) => (a === "--file" ? [args[i + 1].split("=")] : [])),
 );
 if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
-  console.error("Usage: node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www] [--secrets <file>] [--model <openrouter model id>]");
+  console.error("Usage: node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www]");
   process.exit(1);
-}
-const SECRET_NAMES = ["ONE_CLIENT_ID", "ONE_CLIENT_SECRET", "ONE_CONNECT_KEY", "ONE_PERMISSION_SET", "OPENROUTER_API_KEY", "SESSION_SECRET"];
-const secrets = {};
-if (opt("--secrets")) {
-  for (const line of fs.readFileSync(path.resolve(opt("--secrets")), "utf8").split(/\r?\n/)) {
-    const m = /^\s*([A-Z_]+)\s*=\s*(.*?)\s*$/.exec(line);
-    if (m && m[2] && SECRET_NAMES.includes(m[1])) secrets[m[1]] = m[2];
-  }
-  if ((secrets.SESSION_SECRET || "").length < 32) {
-    console.error("SESSION_SECRET in the secrets file must be at least 32 characters.");
-    process.exit(1);
-  }
 }
 
 // This folder's One login, never another folder's.
@@ -181,7 +168,6 @@ const built = await esbuild.build({
 });
 const bundle = built.outputFiles[0].text;
 console.log(`Worker bundle: ${(bundle.length / 1024).toFixed(0)} KB`);
-console.log(`Secrets: ${opt("--secrets") ? Object.keys(secrets).join(", ") || "none in the file" : "kept as they are"}`);
 if (dryRun) {
   console.log("\nDry run: nothing was uploaded or changed.");
   process.exit(0);
@@ -208,8 +194,7 @@ for (const [i, bucket] of (session.buckets || []).entries()) {
   console.log("done");
 }
 
-// 2. The Worker. Static files are served straight from assets; only the API, videos and Google's verification file run the Worker first.
-const vars = { ONE_REDIRECT_URI: `https://${domain}/api/one/callback`, ...(opt("--model") ? { MODEL: opt("--model") } : {}) };
+// 2. The Worker. Static files are served straight from assets; only videos and Google's verification file run the Worker first.
 const worker = new FormData();
 worker.append(
   "metadata",
@@ -219,17 +204,11 @@ worker.append(
         main_module: "main.js",
         compatibility_date: "2026-10-01",
         compatibility_flags: ["nodejs_compat"],
-        bindings: [
-          { type: "assets", name: "ASSETS" },
-          // Per visitor IP: sign-ins and runs, 20 a minute.
-          { type: "ratelimit", name: "LIMIT", namespace_id: "1001", simple: { limit: 20, period: 60 } },
-          ...Object.entries(vars).map(([k, text]) => ({ type: "plain_text", name: k, text })),
-          ...Object.entries(secrets).map(([k, text]) => ({ type: "secret_text", name: k, text })),
-        ],
-        keep_bindings: ["secret_text"],
-        // Workers Logs: the Worker's console lines (codes only, never mail), kept by Cloudflare for a few days.
+        // Only the assets binding: the old playground's secrets, vars and rate limit go with this upload.
+        bindings: [{ type: "assets", name: "ASSETS" }],
+        // Workers Logs: the Worker's console lines, kept by Cloudflare for a few days.
         observability: { enabled: true, head_sampling_rate: 1 },
-        assets: { jwt: completion, config: { run_worker_first: ["/api/*", "/**/*.mp4", "/google*.html"] } },
+        assets: { jwt: completion, config: { run_worker_first: ["/**/*.mp4", "/google*.html"] } },
       }),
     ],
     { type: "application/json" },

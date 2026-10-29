@@ -28,7 +28,7 @@ const server = http.createServer(async (req, res) => {
     const pathname = decodeURIComponent(
       new URL(req.url, "http://127.0.0.1").pathname,
     );
-    // Like Cloudflare's assets, /connect serves connect.html.
+    // Like Cloudflare's assets, /name serves name.html.
     const file = path.resolve(
       root,
       "." +

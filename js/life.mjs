@@ -275,14 +275,13 @@ export function startLife(stage, { squad, isReduced }) {
   // Spots on a card are spaced wider than the characters, so nobody overlaps at rest.
 
   let section = "hero";
-  let runAgent = null;
 
   // How it works: Orchy stands in the free space beside the lit step and hops
-  // down as the demo moves through them, below the sticky nav rather than on the
-  // console's top edge. The teammate on the task stands in the run output beside
-  // its checklist, then on the approval card while it waits for your OK.
+  // down as the loop in the console moves through them, below the sticky nav
+  // rather than on the console's top edge.
   let howStep = 0;
-  let runSpot = "work";
+  // The squad member the console's loop is about: Builder while the agent is built, Inbox while it runs.
+  let loopAgent = null;
   // The free space runs from the end of a step's text to the console.
   const stepRoom = () => {
     const text = $(".workflow-step p"), con = $(".demo-console");
@@ -295,9 +294,6 @@ export function startLife(stage, { squad, isReduced }) {
     const size = Math.min(84, ((c.left - t.right) * 0.7) / A.orchy.model.aspect);
     return { sx: (t.right + c.left) / 2, sy: r.bottom - 8, z: 0, size };
   } });
-  const runAnchor = () => (runSpot === "gate"
-    ? on(".run-gate", 0.86, 60)
-    : on(".run-steps", 0.8, 60, { fy: 1 }));
 
   // Parked characters wait just off the screen edges, one per slot, and peek in.
   const park = (id, i) => (narrow()
@@ -311,9 +307,9 @@ export function startLife(stage, { squad, isReduced }) {
     if (name === "hero") {
       for (const id of ["orchy", ...CREW]) L[id] = heroAnchor(id);
     } else if (name === "how") {
-      // Where the steps leave no room beside their text, Orchy keeps the console's edge.
-      L.orchy = !n && stepRoom() >= 70 ? stepAnchor() : on(".demo-console", n ? 0.84 : 0.1, 96);
-      if (runAgent) L[runAgent] = runAnchor();
+      // Where the steps leave no room beside their text, Orchy keeps the console's right edge, clear of the link.
+      L.orchy = !n && stepRoom() >= 70 ? stepAnchor() : on(".demo-console", 0.84, 96);
+      if (loopAgent) L[loopAgent] = on(".demo-console", n ? 0.5 : 0.56, 64);
     } else if (name === "rules") {
       L.blue = on(".approval-card", 0.86, 70);
       L.red = on(".workspace-stack > div:nth-child(1)", 0.92, 40);
@@ -325,9 +321,10 @@ export function startLife(stage, { squad, isReduced }) {
         L.green = on(".connections", 0.42, 62);
         L.gray = on(".connections", 0.52, 62);
       }
-    } else if (name === "install") {
+    } else if (name === "access") {
+      // The squad lines up on the booking card, Orchy in the middle.
       const line = n ? ["orange", "cyan", "orchy", "blue", "pink"] : ["red", "orange", "yellow", "orchy", "cyan", "blue", "pink"];
-      line.forEach((id, i) => (L[id] = on(".setup-panel", 0.1 + (0.8 * i) / (line.length - 1), id === "orchy" ? 72 : 56)));
+      line.forEach((id, i) => (L[id] = on(".access-card", 0.12 + (0.76 * i) / (line.length - 1), id === "orchy" ? 72 : 56)));
     } else if (name === "footer") {
       L.orchy = on(".footer-top", n ? 0.86 : 0.5, 72);
       L.green = on(".footer-top", n ? 0.66 : 0.58, 50);
@@ -355,12 +352,12 @@ export function startLife(stage, { squad, isReduced }) {
     for (const id of ["orchy", ...CREW]) { stage.setPulse(id, false); stage.setGlow(id, 0.25); }
     apply();
     if (name === "rules") setTimeout(() => { stage.setPulse("blue", true); stage.say("blue", "Waiting for your OK.", 2600); }, 900);
-    if (name === "install") setTimeout(() => stage.say("orchy", "Three lines and we're yours.", 2600), 900);
+    if (name === "access") setTimeout(() => stage.say("orchy", "Pick a time. We'll be there.", 2600), 900);
     if (name === "footer") setTimeout(() => stage.say("orchy", "See you on localhost!", 2400), 700);
     scheduleRules();
   }
 
-  const sections = [["#top", "hero"], ["#how", "how"], ["#your-rules", "rules"], ["#install", "install"], [".footer", "footer"]];
+  const sections = [["#top", "hero"], ["#how", "how"], ["#your-rules", "rules"], ["#access", "access"], [".footer", "footer"]];
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) if (e.isIntersecting) enter(e.target.dataset.life);
   }, { rootMargin: "-50% 0px -50% 0px" });
@@ -392,51 +389,39 @@ export function startLife(stage, { squad, isReduced }) {
 
   stage.on("pick", (id) => stage.say(id, info[id]?.tag || "Hi!", 2400));
 
-  document.addEventListener("orchy:run", ({ detail }) => {
-    const { phase, agent } = detail;
-    if (phase === "start") {
-      if (runAgent && runAgent !== agent) stage.setPulse(runAgent, false);
-      runAgent = agent;
-      runSpot = "work";
-      if (section === "how") apply();
-      stage.hop("orchy", { height: 0.3, dur: 0.36 });
-      stage.say("orchy", `This one's for ${info[agent]?.name || "the squad"}.`, 1800);
-      stage.setGlow(agent, 0.9);
-    } else if (phase === "gate") {
-      runSpot = "gate";
-      // The approval card is added right after this event.
-      requestAnimationFrame(() => section === "how" && runAgent === agent && stage.setHome(agent, runAnchor()));
-      stage.setPulse(agent, true);
-      stage.say(agent, "Ready. This part needs your OK.", 3200);
-    } else if (phase === "done") {
-      // Celebrate where the card was, then hop back beside the checklist.
-      if (runSpot === "gate") {
-        runSpot = "work";
-        setTimeout(() => section === "how" && runAgent === agent && stage.setHome(agent, runAnchor()), 700);
-      }
-      stage.setPulse(agent, false);
-      if (detail.ok === false) { stage.slump(agent); stage.say(agent, "Holding. Nothing sent.", 2000); }
-      else { stage.hop(agent, { height: 0.7, dur: 0.5, spin: 1 }); stage.say(agent, "Done!", 1600); stage.setGlow(agent, 0.5); }
-    }
-  });
-
   document.addEventListener("orchy:step", ({ detail }) => {
     if (detail.step === howStep) return;
     howStep = detail.step;
     if (section === "how" && A.orchy.home?.fn && !narrow()) stage.setHome("orchy", stepAnchor());
   });
 
+  document.addEventListener("orchy:loop", ({ detail }) => {
+    const agent = [null, null, "green", "blue"][detail.scene];
+    if (agent === loopAgent) return;
+    if (loopAgent) stage.setPulse(loopAgent, false);
+    loopAgent = agent;
+    if (section !== "how") return;
+    apply();
+    if (agent === "green") setTimeout(() => loopAgent === "green" && stage.say("green", "Building Inbox Triage…", 2400), 900);
+    if (agent === "blue") setTimeout(() => loopAgent === "blue" && stage.say("blue", "Sorting the inbox.", 2000), 900);
+  });
+
+  document.addEventListener("orchy:beat", ({ detail }) => {
+    if (section !== "how" || loopAgent !== "blue") return;
+    if (detail.beat === "notify") {
+      stage.setPulse("blue", true);
+      stage.say("blue", "2 drafts need your OK.", 2400);
+    } else if (detail.beat === "approved") {
+      stage.setPulse("blue", false);
+      stage.hop("blue", { height: 0.8, dur: 0.52, spin: 1 });
+      stage.say("blue", "Sent. Thanks!", 1800);
+    }
+  });
+
   document.addEventListener("orchy:approve", ({ detail }) => {
     stage.setPulse("blue", false);
     if (detail.ok) { stage.hop("blue", { height: 0.8, dur: 0.52, spin: 1 }); stage.say("blue", "Thanks! (Sample: nothing sent.)", 2200); }
     else { stage.slump("blue"); stage.say("blue", "OK, holding it.", 1800); }
-  });
-
-  document.addEventListener("orchy:copied", () => {
-    if (section !== "install") return;
-    const line = Object.entries(layout("install")).filter(([, a]) => a.el).map(([id]) => id);
-    line.forEach((id, i) => setTimeout(() => stage.hop(id, { height: 0.75, dur: 0.46, spin: id === "orchy" ? 1 : 0 }), i * 60));
-    setTimeout(() => stage.say("orchy", "Copied! Paste them in a terminal.", 2400), 300);
   });
 
   // ---- Start ---------------------------------------------------------------------------

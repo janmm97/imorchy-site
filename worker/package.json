@@ -2,12 +2,9 @@
   "name": "orchy-site-worker",
   "private": true,
   "type": "module",
-  "description": "The landing page's Cloudflare Worker: static files, the launch video and the live playground API. Bundled and deployed by site/deploy.mjs.",
+  "description": "The landing page's Cloudflare Worker: static files, the launch video and Google's verification file. Bundled and deployed by site/deploy.mjs.",
   "scripts": {
     "test": "node test.mjs"
-  },
-  "dependencies": {
-    "@withone/connect": "0.18.0"
   },
   "devDependencies": {
     "esbuild": "0.28.2"
