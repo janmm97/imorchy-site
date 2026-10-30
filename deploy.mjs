@@ -14,6 +14,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { RUN_WORKER_FIRST } from "./worker/routes.mjs";
 
 const SITE = fileURLToPath(new URL(".", import.meta.url));
 const REPO = path.resolve(SITE, "..");
@@ -23,6 +24,8 @@ const TYPES = {
   ".css": "text/css; charset=utf-8",
   ".mjs": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".xml": "application/xml; charset=utf-8",
   ".woff2": "font/woff2",
   ".txt": "text/plain; charset=utf-8",
   ".mp4": "video/mp4",
@@ -168,6 +171,7 @@ const built = await esbuild.build({
 });
 const bundle = built.outputFiles[0].text;
 console.log(`Worker bundle: ${(bundle.length / 1024).toFixed(0)} KB`);
+console.log(`run_worker_first: ${JSON.stringify(RUN_WORKER_FIRST)}`);
 if (dryRun) {
   console.log("\nDry run: nothing was uploaded or changed.");
   process.exit(0);
@@ -194,7 +198,7 @@ for (const [i, bucket] of (session.buckets || []).entries()) {
   console.log("done");
 }
 
-// 2. The Worker. Static files are served straight from assets; only videos and Google's verification file run the Worker first.
+// 2. The Worker. Pages, videos and Google's verification file run the Worker first; static files are served straight from assets.
 const worker = new FormData();
 worker.append(
   "metadata",
@@ -208,7 +212,7 @@ worker.append(
         bindings: [{ type: "assets", name: "ASSETS" }],
         // Workers Logs: the Worker's console lines, kept by Cloudflare for a few days.
         observability: { enabled: true, head_sampling_rate: 1 },
-        assets: { jwt: completion, config: { run_worker_first: ["/**/*.mp4", "/google*.html"] } },
+        assets: { jwt: completion, config: { run_worker_first: RUN_WORKER_FIRST } },
       }),
     ],
     { type: "application/json" },

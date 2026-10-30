@@ -46,7 +46,8 @@ Orchy and his nine teammates are real 3D characters built from the supplied art 
 - `js/robots.mjs`: example character profiles and sprite coordinates for the small avatars.
 - `serve.mjs`: optional local preview server.
 - `deploy.mjs`: publishes the page and its Worker to Cloudflare through One (below).
-- `worker/`: the Cloudflare Worker: static files, the launch video (with byte ranges), and Google's verification file at its exact `.html` path. `worker/test.mjs` checks it offline (part of `npm test`).
+- `worker/`: the Cloudflare Worker: 301s from `http://` and `www.` to `https://imorchy.dev`, the launch video (with byte ranges), and Google's verification file at its exact `.html` path. `worker/routes.mjs` lists which paths run the Worker first (pages and videos; not CSS, JS, fonts or images). `worker/test.mjs` checks it offline (part of `npm test`), and `worker/test-pages.mjs` checks each page's FAQPage JSON-LD against its visible FAQ text.
+- `sitemap.xml`, `robots.txt` (only the Sitemap line) and `assets/og-image.png` (the 1200×630 share image) are for search engines and link previews. Structured data in `<head>` must say what the page says.
 
 ## Deploying
 

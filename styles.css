@@ -824,9 +824,6 @@ h3 {
 .social-youtube {
   --brand: #ff4d5e;
 }
-.social-github {
-  --brand: #f1f3ef;
-}
 
 .reveal {
   transition:
@@ -3266,4 +3263,36 @@ body::before {
   rotate: -14deg;
   box-shadow: 0 6px 16px -6px #000c;
   pointer-events: none;
+}
+
+/* ---- Early access, FAQ (plain HTML text, readable with JS off) ------------ */
+.hero-category {
+  display: block;
+  font-weight: 700;
+  color: var(--text);
+}
+.hero-badge {
+  position: relative;
+  z-index: 2;
+  margin-top: 14px;
+  font-size: 13px;
+  color: #acb5b0;
+}
+.access-call {
+  display: inline-block;
+  margin: 18px 0 0 18px;
+}
+.faq-list {
+  max-width: 720px;
+  margin-top: 32px;
+}
+.faq-list h3 {
+  margin-top: 28px;
+  font-size: 16px;
+}
+.faq-list p {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #c3c8c6;
 }
