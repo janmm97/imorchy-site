@@ -54,20 +54,32 @@ First paint never waits on the big art. `worker/test-speed.mjs` (part of `npm te
 - `js/life.mjs`: the director: the entrance, where everyone stands per section, and reactions.
 - `js/robots.mjs`: example character profiles and sprite coordinates for the small avatars.
 - `serve.mjs`: optional local preview server.
-- `deploy.mjs`: publishes the page and its Worker to Cloudflare through One (below).
-- `worker/`: the Cloudflare Worker: 301s from `http://` and `www.` to `https://imorchy.dev`, the launch video (with byte ranges), and Google's verification file at its exact `.html` path. `worker/routes.mjs` lists which paths run the Worker first (pages and videos; not CSS, JS, fonts or images), and `worker/files.mjs` lists which files `deploy.mjs` uploads and their Content-Types (a new file type needs an entry there, or it 404s live while `serve.mjs` still shows it). `worker/test.mjs` checks the Worker offline (part of `npm test`), `worker/test-deploy.mjs` checks that every site file is uploaded and every static file skips the Worker, and `worker/test-pages.mjs` checks each page's FAQPage JSON-LD against its visible FAQ text.
+- `deploy.mjs`: publishes the page and its Worker to Cloudflare (below).
+- `worker/`: the Cloudflare Worker: 301s from `http://` and `www.` to `https://imorchy.dev`, the launch video from R2 (with byte ranges, `worker/range.mjs`), and Google's verification file at its exact `.html` path. `worker/routes.mjs` lists which paths run the Worker first (pages and videos; not CSS, JS, fonts or images), and `worker/files.mjs` lists which files `deploy.mjs` uploads and their Content-Types (a new file type needs an entry there, or it 404s live while `serve.mjs` still shows it) and which are served from R2 instead. `worker/test.mjs` checks the Worker offline (part of `npm test`), `worker/test-deploy.mjs` checks that every site file is uploaded and every static file skips the Worker, `worker/test-deploy-api.mjs` runs `deploy.mjs` end to end against a fake Cloudflare API (`worker/fake-cloudflare.mjs`), and `worker/test-pages.mjs` checks each page's FAQPage JSON-LD against its visible FAQ text. `worker/check-live.mjs` checks the live site after a deploy.
 - `sitemap.xml`, `robots.txt` (only the Sitemap line) and `assets/og-image.png` (the 1200×630 share image) are for search engines and link previews. Structured data in `<head>` must say what the page says.
 
-## Deploying
+## Going live
 
-The site runs as a Cloudflare Worker with static assets on its domain. `deploy.mjs` works through this repo folder's own One login and its Cloudflare connection (`one init --auth browser --project` in the repo root, then connect Cloudflare in that One organization).
+**Merging a `site/` PR into main deploys it.** The merge starts the **Deploy site** workflow (`.github/workflows/deploy-site.yml`): it runs the Worker tests, deploys to imorchy.dev, then checks the live site. Watch that run and its live checks in the repo's Actions tab. A red run means the deploy or a check failed; the step log says which.
+
+- **Live checks** (`worker/check-live.mjs`): https://imorchy.dev and https://www.imorchy.dev answer 200, every page in `sitemap.xml` answers 200, and a Range request for `/assets/video.mp4` answers 206. A new page belongs in `sitemap.xml`, so it gets checked too.
+- **Roll back** by reverting the PR (GitHub's "Revert" button on the merged PR, or `git revert -m 1 <merge sha>` on a branch) and merging the revert. That merge touches `site/` too, so it redeploys the previous version.
+- **Redeploy** without a change: Actions → Deploy site → Run workflow, on `main`. Other branches never deploy.
+- **One deploy at a time.** Merges deploy in order; if several queue up, only the newest runs, and it deploys the latest main.
+
+The site runs as a Cloudflare Worker with static assets on its domain. In the workflow, `deploy.mjs` signs in with the `CLOUDFLARE_API_TOKEN` repository secret. The Worker itself has no secrets, and the script won't touch existing DNS records.
+
+**The launch video** (`assets/video.mp4`) is kept out of git and isn't uploaded with the site: the Worker serves it from the R2 bucket `orchy-site-media` (bound as `MEDIA`) under the same key, `assets/video.mp4`, with byte ranges. Replacing it is an upload to that bucket, not a deploy. `serve.mjs` plays your local copy, if you have one.
+
+### By hand (owner)
+
+`deploy.mjs` also runs on a computer, for checking a token or the plan before a merge:
 
 ```sh
 npm install --prefix site/worker                 # once: the Worker's packages
-node site/deploy.mjs <domain> --dry-run          # what would change, nothing uploaded
-node site/deploy.mjs <domain>                    # publish
+node site/deploy.mjs <domain> --dry-run          # what would change: reads only, nothing uploaded
 ```
 
-The Worker has no secrets. The launch video (`assets/video.mp4`) is kept out of git, and Cloudflare takes at most 25 MiB per file, so pass a web-sized copy with `--file assets/video.mp4=<path>`. The script won't touch existing DNS records.
+With `CLOUDFLARE_API_TOKEN` set it uses that token. Without it, it goes through this repo folder's own One login and its Cloudflare connection (`one init --auth browser --project` in the repo root, then connect Cloudflare in that One organization). Dropping `--dry-run` publishes.
 
 The core page, artwork and booking button work without JavaScript. External links point to the project repository, documentation, Calendly and the One website. Nothing here modifies the orchestrator, and the page sends nothing anywhere.

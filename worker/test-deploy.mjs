@@ -4,21 +4,23 @@
 // own types, so the local preview can't catch a gap here. Run by test.mjs (part of `npm test`). No network.
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { SKIP, TYPES, siteFiles } from "./files.mjs";
+import { IN_R2, SKIP, TYPES, siteFiles } from "./files.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
 
-// Every file on disk under site/, the way a person sees the folder: not the Worker, packages or the tooling.
+// Every file on disk under site/, the way a person sees the folder: not the Worker, packages, the tooling or a local
+// copy of the video (git-ignored; live it comes from R2).
 const onDisk = (dir = SITE) =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     const rel = path.relative(SITE, full).split(path.sep).join("/");
     if (entry.isDirectory()) return rel === "worker" || entry.name === "node_modules" ? [] : onDisk(full);
-    return SKIP.has(rel) ? [] : [rel];
+    return SKIP.has(rel) || IN_R2.has(path.extname(rel)) ? [] : [rel];
   });
 const files = onDisk();
 const deployed = new Set(siteFiles(SITE).map((f) => f.rel));
@@ -28,7 +30,20 @@ for (const rel of files) assert.ok(deployed.has(rel), `deploy.mjs would skip sit
 for (const dir of ["assets", "js", "fonts"]) assert.ok(files.some((f) => f.startsWith(dir + "/")), `site/${dir} has files`);
 ok(`deploy.mjs uploads all ${files.length} files of the site (assets, js, fonts, pages, sitemap, robots.txt)`);
 
-// Every local file a page, the stylesheet or a script names is uploaded too (the video is local-only: git-ignored).
+// A video on disk (the local preview's copy) is never uploaded: a deploy can't need it, so CI can deploy without it.
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchy-site-"));
+try {
+  fs.mkdirSync(path.join(tmp, "assets"));
+  fs.writeFileSync(path.join(tmp, "index.html"), "<!doctype html>");
+  fs.writeFileSync(path.join(tmp, "assets", "video.mp4"), Buffer.alloc(64));
+  assert.deepEqual(siteFiles(tmp).map((f) => f.rel), ["index.html"]);
+} finally {
+  fs.rmSync(tmp, { recursive: true, force: true });
+}
+assert.ok(IN_R2.has(".mp4") && !TYPES[".mp4"]);
+ok("videos (.mp4) are never uploaded as static assets, even with a local copy on disk: the Worker serves them from R2");
+
+// Every local file a page, the stylesheet or a script names is uploaded too (the video comes from R2).
 const LOCAL = /(?:https:\/\/imorchy\.dev)?\/?((?:assets|fonts|js)\/[\w./-]+\.\w+|styles\.css|favicon\.svg)/g;
 const sources = files.filter((f) => /\.(html|css|mjs)$/.test(f));
 let refs = 0;

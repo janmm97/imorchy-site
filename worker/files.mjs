@@ -14,20 +14,22 @@ export const TYPES = {
   ".xml": "application/xml; charset=utf-8",
   ".woff2": "font/woff2",
   ".txt": "text/plain; charset=utf-8",
-  ".mp4": "video/mp4",
 };
 // Only the page's own files go up: never the deploy script, the preview server or the README.
 export const SKIP = new Set(["deploy.mjs", "serve.mjs", "README.md"]);
+// Videos are git-ignored and too big for static assets (25 MiB per file), so they're never uploaded: the Worker
+// serves them from the R2 bucket bound as MEDIA, under the same path (assets/video.mp4). serve.mjs reads the file
+// on disk for the local preview.
+export const IN_R2 = new Set([".mp4"]);
+export const MEDIA_BUCKET = "orchy-site-media";
 
-// Every file to upload, as { rel, source, data, type }. `overrides` maps a rel path to another file to send instead.
-export function siteFiles(site, overrides = {}, dir = site) {
+// Every file to upload, as { rel, data, type }.
+export function siteFiles(site, dir = site) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     const rel = path.relative(site, full).split(path.sep).join("/");
-    if (entry.isDirectory()) return rel === "worker" || entry.name === "node_modules" ? [] : siteFiles(site, overrides, full);
-    if (SKIP.has(rel) || !TYPES[path.extname(rel)]) return [];
-    const source = overrides[rel] ? path.resolve(overrides[rel]) : full;
-    const data = fs.readFileSync(source);
-    return [{ rel, source, data, type: TYPES[path.extname(rel)] }];
+    if (entry.isDirectory()) return rel === "worker" || entry.name === "node_modules" ? [] : siteFiles(site, full);
+    if (SKIP.has(rel) || IN_R2.has(path.extname(rel)) || !TYPES[path.extname(rel)]) return [];
+    return [{ rel, data: fs.readFileSync(full), type: TYPES[path.extname(rel)] }];
   });
 }

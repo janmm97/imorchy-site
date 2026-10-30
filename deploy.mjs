@@ -1,20 +1,22 @@
-// Deploy the landing page to Cloudflare (Workers static assets on a custom domain) through One.
-// It uses this repo folder's own One login (`one init --auth browser --project`, run in the repo root) and that
-// login's Cloudflare connection. The CLI can't carry file bodies (they go on the command line), so the calls go
-// to One's passthrough API directly, with the same key, connection and action IDs the CLI would send.
+// Deploy the landing page to Cloudflare (Workers static assets on a custom domain). Two ways in:
+// - CLOUDFLARE_API_TOKEN set (the Deploy site workflow, on every merge into main that touches site/): straight to
+//   Cloudflare's API with that token. Nothing from One is read.
+// - Unset: through One, with this repo folder's own One login (`one init --auth browser --project`, run in the repo
+//   root) and that login's Cloudflare connection. The CLI can't carry file bodies (they go on the command line), so
+//   the calls go to One's passthrough API directly, with the same key, connection and action IDs the CLI would send.
 //
 // The Worker (site/worker/main.mjs: the video and Google's verification file) is bundled with esbuild from
 // site/worker's own packages (`npm install` there first). It has no secrets; a deploy clears any left from the
-// old live playground.
+// old live playground. Videos aren't uploaded: the Worker serves them from the R2 bucket bound as MEDIA.
 //
-//   node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www]
+//   node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]
 import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { siteFiles } from "./worker/files.mjs";
+import { MEDIA_BUCKET, siteFiles } from "./worker/files.mjs";
 import { RUN_WORKER_FIRST } from "./worker/routes.mjs";
 
 const SITE = fileURLToPath(new URL(".", import.meta.url));
@@ -37,43 +39,53 @@ const opt = (name) => {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : undefined;
 };
-const domain = args.find((a, i) => !a.startsWith("--") && !["--name", "--file"].includes(args[i - 1]));
+const domain = args.find((a, i) => !a.startsWith("--") && args[i - 1] !== "--name");
 const name = opt("--name") || "orchy-site";
 const dryRun = flag("--dry-run");
 const hosts = flag("--no-www") ? [domain] : [domain, `www.${domain}`];
-const overrides = Object.fromEntries(
-  args.flatMap((a, i) => (a === "--file" ? [args[i + 1].split("=")] : [])),
-);
+if (flag("--file")) {
+  console.error("--file is gone: videos are served from the R2 bucket, never uploaded. See site/README.md.");
+  process.exit(1);
+}
 if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
-  console.error("Usage: node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--file assets/video.mp4=<path>] [--no-www]");
+  console.error("Usage: node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]");
   process.exit(1);
 }
 
-// This folder's One login, never another folder's.
-const slug = REPO.replace(/[:\\/]/g, "-");
-const configFile = path.join(os.homedir(), ".one", "projects", slug, "config.json");
-if (!fs.existsSync(configFile)) {
-  console.error(`This folder isn't signed in to One. Run in ${REPO}:\n  one init --auth browser --project`);
-  process.exit(1);
-}
-const config = JSON.parse(fs.readFileSync(configFile, "utf8"));
-const base = (config.whoamiApiBase || "https://api.withone.ai/v1").replace(/\/$/, "");
-const list = JSON.parse(execSync("one --agent list", { cwd: REPO, encoding: "utf8" }));
-const connection = list.connections?.find((c) => c.platform === "cloudflare" && c.state === "operational");
-if (!connection) {
-  console.error("No working Cloudflare connection on this folder's One login. Add one with: one add cloudflare");
-  process.exit(1);
+// Who signs the calls: the Cloudflare token, or this folder's One login (never another folder's).
+const token = process.env.CLOUDFLARE_API_TOKEN?.trim();
+let base, auth;
+if (token) {
+  base = "https://api.cloudflare.com/client/v4";
+  auth = () => ({ Authorization: `Bearer ${token}` });
+  console.log("Signed in with: CLOUDFLARE_API_TOKEN");
+} else {
+  const slug = REPO.replace(/[:\\/]/g, "-");
+  const configFile = path.join(os.homedir(), ".one", "projects", slug, "config.json");
+  if (!fs.existsSync(configFile)) {
+    console.error(`This folder isn't signed in to One. Run in ${REPO}:\n  one init --auth browser --project\nor set CLOUDFLARE_API_TOKEN.`);
+    process.exit(1);
+  }
+  const config = JSON.parse(fs.readFileSync(configFile, "utf8"));
+  const list = JSON.parse(execSync("one --agent list", { cwd: REPO, encoding: "utf8" }));
+  const connection = list.connections?.find((c) => c.platform === "cloudflare" && c.state === "operational");
+  if (!connection) {
+    console.error("No working Cloudflare connection on this folder's One login. Add one with: one add cloudflare");
+    process.exit(1);
+  }
+  base = `${(config.whoamiApiBase || "https://api.withone.ai/v1").replace(/\/$/, "")}/passthrough/client/v4`;
+  auth = (action) => ({ "x-one-secret": config.apiKey, "x-one-connection-key": connection.key, "x-one-action-id": ACTION[action] });
+  console.log("Signed in with: this folder's One login");
 }
 
+// `headers` comes last: the assets upload signs with its upload-session JWT, not the token.
 async function cf(action, method, apiPath, { query, json, form, headers = {} } = {}) {
-  const url = new URL(`${base}/passthrough/client/v4${apiPath}`);
+  const url = new URL(`${base}${apiPath}`);
   for (const [k, v] of Object.entries(query || {})) url.searchParams.set(k, v);
   const res = await fetch(url, {
     method,
     headers: {
-      "x-one-secret": config.apiKey,
-      "x-one-connection-key": connection.key,
-      "x-one-action-id": ACTION[action],
+      ...auth(action),
       Accept: "application/json",
       ...(json ? { "Content-Type": "application/json" } : {}),
       ...headers,
@@ -94,10 +106,10 @@ async function cf(action, method, apiPath, { query, json, form, headers = {} } =
   return body.result;
 }
 
-const files = siteFiles(SITE, overrides);
+const files = siteFiles(SITE);
 const tooBig = files.filter((f) => f.data.length > MAX_FILE);
 if (tooBig.length) {
-  for (const f of tooBig) console.error(`${f.rel} is ${(f.data.length / 1048576).toFixed(1)} MB; Cloudflare takes 25 MiB per file. Pass a smaller copy with --file ${f.rel}=<path>.`);
+  for (const f of tooBig) console.error(`${f.rel} is ${(f.data.length / 1048576).toFixed(1)} MB; Cloudflare takes 25 MiB per file. Make it smaller, or serve it from R2 like the video (IN_R2 in worker/files.mjs).`);
   process.exit(1);
 }
 const manifest = {};
@@ -122,7 +134,8 @@ for (const host of hosts) {
   console.log(`  ${host}: ${mine ? `already on Worker ${mine.service}` : clash.length ? `existing record(s) ${clash.map((r) => `${r.type} ${r.content}`).join(", ")}` : "free"}`);
 }
 console.log(`Files (${files.length}, ${(files.reduce((n, f) => n + f.data.length, 0) / 1048576).toFixed(1)} MB):`);
-for (const f of files) console.log(`  /${f.rel}  ${(f.data.length / 1024).toFixed(0)} KB${f.source.startsWith(SITE) ? "" : `  (from ${f.source})`}`);
+for (const f of files) console.log(`  /${f.rel}  ${(f.data.length / 1024).toFixed(0)} KB`);
+console.log(`Videos: from R2 bucket ${MEDIA_BUCKET} (binding MEDIA), not uploaded`);
 // The Worker, bundled into one module. node:* stays external: nodejs_compat provides it.
 const WORKER = path.join(SITE, "worker");
 let esbuild;
@@ -184,8 +197,11 @@ worker.append(
         main_module: "main.js",
         compatibility_date: "2026-10-01",
         compatibility_flags: ["nodejs_compat"],
-        // Only the assets binding: the old playground's secrets, vars and rate limit go with this upload.
-        bindings: [{ type: "assets", name: "ASSETS" }],
+        // Only the assets and the video bucket: the old playground's secrets, vars and rate limit go with this upload.
+        bindings: [
+          { type: "assets", name: "ASSETS" },
+          { type: "r2_bucket", name: "MEDIA", bucket_name: MEDIA_BUCKET },
+        ],
         // Workers Logs: the Worker's console lines, kept by Cloudflare for a few days.
         observability: { enabled: true, head_sampling_rate: 1 },
         assets: { jwt: completion, config: { run_worker_first: RUN_WORKER_FIRST } },
