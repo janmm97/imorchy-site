@@ -53,6 +53,46 @@ assert.ok(jsonLd(fs.readFileSync(SITE + "index.html", "utf8")).some((n) => n["@t
 ok(`FAQPage JSON-LD matches the visible FAQ (${checked} Q&As on ${pages.length} page(s))`);
 ok("no offers in structured data, no GitHub links and no open-licence claim on any page");
 
+// ── the answer pages: plain HTML with no scripts but JSON-LD, one H1, a unique title, a self-canonical at the
+// extensionless path Cloudflare serves, the shared og image, links home and to the form, in the sitemap, linked from home ──
+const ANSWER = ["approvals", "client-workspaces", "claude-code-orchestrator", "local"];
+const home = fs.readFileSync(SITE + "index.html", "utf8");
+const sitemap = fs.readFileSync(SITE + "sitemap.xml", "utf8");
+const head = (html, re) => html.match(re)?.[1];
+const titles = new Set([head(home, /<title>([^<]+)<\/title>/)]);
+const descriptions = new Set([head(home, /name="description"\s+content="([^"]+)"/)]);
+for (const slug of ANSWER) {
+  assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
+  const html = fs.readFileSync(SITE + `${slug}.html`, "utf8");
+  const url = `https://imorchy.dev/${slug}`;
+  assert.equal(html.match(/<h1\b/gi)?.length, 1, `${slug}: exactly one H1`);
+  assert.ok(html.includes(`<link rel="canonical" href="${url}" />`), `${slug}: self-canonical`);
+  assert.ok(html.includes(`<meta property="og:url" content="${url}" />`), `${slug}: og:url`);
+  assert.ok(html.includes('<meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />'), `${slug}: og:image`);
+  assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), `${slug}: FAQPage JSON-LD`);
+  const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map((m) => m[0]);
+  assert.ok(scripts.every((s) => s === '<script type="application/ld+json">'), `${slug}: no scripts but JSON-LD`);
+  assert.ok(!/<canvas|importmap|three\.module/i.test(html), `${slug}: no canvas or Three.js`);
+  const title = head(html, /<title>([^<]+)<\/title>/);
+  const description = head(html, /name="description" content="([^"]+)"/);
+  assert.ok(title && !titles.has(title), `${slug}: unique title`);
+  assert.ok(description && !descriptions.has(description), `${slug}: unique meta description`);
+  titles.add(title);
+  descriptions.add(description);
+  assert.ok(html.includes('href="/"'), `${slug}: links home`);
+  assert.ok(html.includes('href="https://flaxen-crayon-74f.notion.site/'), `${slug}: links to the early-access form`);
+  assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${slug}: in sitemap.xml`);
+  assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 2, `${slug}: linked from the home nav and footer`);
+}
+const approvals = visibleText(fs.readFileSync(SITE + "approvals.html", "utf8"));
+assert.equal(approvals.match(/human-in-the-loop/g)?.length, 1, "/approvals says human-in-the-loop once");
+assert.equal(
+  head(fs.readFileSync(SITE + "claude-code-orchestrator.html", "utf8"), /<title>([^<]+)<\/title>/),
+  "Claude Code orchestrator for Codex and Cursor | Orchy AI",
+);
+assert.ok(pages.length >= 5, "home plus the four answer pages are checked");
+ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts, in the sitemap, linked from home");
+
 // The checker itself catches drift: an answer that isn't on the page fails.
 assert.ok(!visibleText("<p>Orchy asks first.</p>").includes("Orchy never asks."));
 assert.equal(visibleText("<h3>It&#39;s <b>local</b></h3><script>x</script>"), "It's local");

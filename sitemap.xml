@@ -4,4 +4,20 @@
     <loc>https://imorchy.dev/</loc>
     <lastmod>2026-10-30</lastmod>
   </url>
+  <url>
+    <loc>https://imorchy.dev/approvals</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://imorchy.dev/client-workspaces</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://imorchy.dev/claude-code-orchestrator</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://imorchy.dev/local</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
 </urlset>

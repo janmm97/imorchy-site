@@ -3296,3 +3296,124 @@ body::before {
   line-height: 1.75;
   color: #c3c8c6;
 }
+
+/* "Learn" group in the home nav: a native <details>, so it opens without JS. */
+.nav-learn {
+  position: relative;
+}
+.nav-learn > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+.nav-learn > summary::-webkit-details-marker {
+  display: none;
+}
+.nav-learn > summary::after {
+  content: " ▾";
+}
+.nav-learn > summary:hover,
+.nav-learn[open] > summary {
+  color: var(--mint);
+  background: #ffffff12;
+}
+.nav-learn-list {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  display: grid;
+  gap: 2px;
+  min-width: 240px;
+  padding: 8px;
+  background: #101518;
+  border: 1px solid var(--glass-edge);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+}
+.footer-links {
+  flex-wrap: wrap;
+}
+@media (max-width: 650px) {
+  .nav-learn-list {
+    position: static;
+    min-width: 0;
+    padding: 6px 0 0 12px;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+/* Answer pages (/approvals, /client-workspaces, ...): plain text, no canvas, no JS. */
+.answer {
+  max-width: 860px;
+  padding-top: clamp(48px, 8vw, 96px);
+  padding-bottom: 72px;
+}
+.answer h1 {
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.15;
+  letter-spacing: -2.4px;
+}
+.answer h2 {
+  margin-top: 56px;
+  font-size: clamp(22px, 2.6vw, 30px);
+  letter-spacing: -1px;
+}
+.answer p,
+.answer li,
+.answer td,
+.answer th {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #c3c8c6;
+}
+.answer .answer-lede {
+  margin-top: 24px;
+  font-size: 17px;
+  color: var(--text);
+}
+.answer p + p,
+.answer h2 + p {
+  margin-top: 14px;
+}
+.answer-links {
+  margin-top: 28px;
+}
+.answer strong {
+  color: var(--text);
+}
+.answer ol {
+  margin: 20px 0 0;
+  padding-left: 1.4em;
+}
+.answer li + li {
+  margin-top: 10px;
+}
+.answer table {
+  margin-top: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+.answer th,
+.answer td {
+  padding: 10px 14px 10px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.answer th {
+  color: var(--text);
+}
+.answer-cta {
+  margin-top: 48px;
+}
+.answer-links a,
+.answer p a:not(.button) {
+  color: var(--mint);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

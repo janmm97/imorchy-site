@@ -41,6 +41,15 @@ res = await get("/");
 assert.equal(res.status, 200);
 assert.equal(seen.at(-1), "https://imorchy.dev/");
 ok("https://imorchy.dev/ passes through to the static assets");
+const ANSWER_PAGES = ["/approvals", "/client-workspaces", "/claude-code-orchestrator", "/local"];
+for (const p of ANSWER_PAGES) {
+  res = await get(p);
+  assert.equal(res.status, 200);
+  assert.equal(seen.at(-1), "https://imorchy.dev" + p);
+  res = await get(p, "GET", "https://www.imorchy.dev");
+  assert.equal(res.headers.get("Location"), "https://imorchy.dev" + p);
+}
+ok("the four answer pages pass through to the static assets at their extensionless paths, and www. 301s to them");
 res = await get("/googlec22430d134477d04.html");
 assert.equal(res.status, 200);
 assert.equal(seen.at(-1), "https://imorchy.dev/googlec22430d134477d04");
@@ -51,7 +60,7 @@ const glob = (p) => new RegExp("^" + p.split(/\*+/).map((s) => s.replace(/[.+?^$
 const workerFirst = (path) =>
   RUN_WORKER_FIRST.some((p) => !p.startsWith("!") && glob(p).test(path)) &&
   !RUN_WORKER_FIRST.some((p) => p.startsWith("!") && glob(p.slice(1)).test(path));
-for (const p of ["/", "/approvals", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html"])
+for (const p of ["/", ...ANSWER_PAGES, "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
 for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/favicon.svg"])
   assert.ok(!workerFirst(p), `${p} should skip the Worker`);
