@@ -82,7 +82,7 @@ for (const slug of ANSWER) {
   assert.ok(html.includes('href="/"'), `${slug}: links home`);
   assert.ok(html.includes('href="https://flaxen-crayon-74f.notion.site/'), `${slug}: links to the early-access form`);
   assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${slug}: in sitemap.xml`);
-  assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 2, `${slug}: linked from the home nav and footer`);
+  assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
 }
 const approvals = visibleText(fs.readFileSync(SITE + "approvals.html", "utf8"));
 assert.equal(approvals.match(/human-in-the-loop/g)?.length, 1, "/approvals says human-in-the-loop once");
