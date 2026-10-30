@@ -62,14 +62,14 @@ First paint never waits on the big art. `worker/test-speed.mjs` (part of `npm te
 
 **Merging a `site/` PR into main deploys it.** The merge starts the **Deploy site** workflow (`.github/workflows/deploy-site.yml`): it runs the Worker tests, deploys to imorchy.dev, then checks the live site. Watch that run and its live checks in the repo's Actions tab. A red run means the deploy or a check failed; the step log says which.
 
-- **Live checks** (`worker/check-live.mjs`): https://imorchy.dev and https://www.imorchy.dev answer 200, every page in `sitemap.xml` answers 200, and a Range request for `/assets/video.mp4` answers 206. A new page belongs in `sitemap.xml`, so it gets checked too.
+- **Live checks** (`worker/check-live.mjs`): https://imorchy.dev and https://www.imorchy.dev answer 200, every page in `sitemap.xml` answers 200, and a Range request for `/assets/video.mp4` answers 206. While the "Watch Launch Video" button is still disabled (Coming soon), a video missing from R2 is only a notice; once the button is enabled, it fails the run. A new page belongs in `sitemap.xml`, so it gets checked too.
 - **Roll back** by reverting the PR (GitHub's "Revert" button on the merged PR, or `git revert -m 1 <merge sha>` on a branch) and merging the revert. That merge touches `site/` too, so it redeploys the previous version.
 - **Redeploy** without a change: Actions → Deploy site → Run workflow, on `main`. Other branches never deploy.
 - **One deploy at a time.** Merges deploy in order; if several queue up, only the newest runs, and it deploys the latest main.
 
 The site runs as a Cloudflare Worker with static assets on its domain. In the workflow, `deploy.mjs` signs in with the `CLOUDFLARE_API_TOKEN` repository secret. The Worker itself has no secrets, and the script won't touch existing DNS records.
 
-**The launch video** (`assets/video.mp4`) is kept out of git and isn't uploaded with the site: the Worker serves it from the R2 bucket `orchy-site-media` (bound as `MEDIA`) under the same key, `assets/video.mp4`, with byte ranges. Replacing it is an upload to that bucket, not a deploy. `serve.mjs` plays your local copy, if you have one.
+**The launch video** (`assets/video.mp4`) is kept out of git and isn't uploaded with the site: the Worker serves it from the R2 bucket `orchy-site-media` (bound as `MEDIA`) under the same key, `assets/video.mp4`, with byte ranges. There's no launch video yet: when there is, the owner uploads it to that bucket (Content-Type `video/mp4`), then a PR enables the button. Replacing it later is an upload, not a deploy. `serve.mjs` plays your local copy, if you have one.
 
 ### By hand (owner)
 
