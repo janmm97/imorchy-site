@@ -11,5 +11,4 @@ export const RUN_WORKER_FIRST = [
   "!/js/*",
   "!/fonts/*",
   "!/styles.css",
-  "!/favicon.svg",
 ];

@@ -51,7 +51,7 @@ const workerFirst = (p) =>
 const ANSWER_PAGES = ["/approvals", "/client-workspaces", "/claude-code-orchestrator", "/local"];
 for (const p of ["/", ...ANSWER_PAGES, "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
-for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/favicon.svg"])
+for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png"])
   assert.ok(!workerFirst(p), `${p} should skip the Worker`);
 // Every file on disk: root pages (.html, .xml, .txt) and videos reach the Worker, every other file skips it.
 const page = (rel) => (!rel.includes("/") && /\.(html|xml|txt)$/.test(rel)) || rel.endsWith(".mp4");

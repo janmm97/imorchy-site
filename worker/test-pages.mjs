@@ -93,6 +93,21 @@ assert.equal(
 assert.ok(pages.length >= 5, "home plus the four answer pages are checked");
 ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts, in the sitemap, linked from home");
 
+// ── one logo (Jan, 2026-10-31): every page's tab icon is orchy-icon-64.png, cut from orchy-main.svg; the old robot
+// favicon.svg is gone and no page names it ──
+const ICON = /^\/?assets\/orchy-icon-64\.png$/;
+for (const page of pages) {
+  const html = fs.readFileSync(SITE + page, "utf8");
+  const icons = [...html.matchAll(/<link\b[^>]*\brel="(?:shortcut )?icon"[^>]*>/gi)].map((m) => m[0]);
+  assert.equal(icons.length, 1, `${page}: exactly one icon link`);
+  assert.match(icons[0].match(/\bhref="([^"]+)"/)?.[1] ?? "", ICON, `${page}: icon is orchy-icon-64.png`);
+  assert.ok(icons[0].includes('type="image/png"'), `${page}: icon type is image/png`);
+  assert.ok(!/favicon\.svg|lilorchy/i.test(html), `${page}: no old robot icon (favicon.svg, lilorchy)`);
+}
+assert.ok(!fs.existsSync(SITE + "favicon.svg"), "site/favicon.svg (the old robot) is removed");
+assert.ok(fs.existsSync(SITE + "assets/orchy-icon-64.png"), "site/assets/orchy-icon-64.png exists");
+ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab icon, none names favicon.svg`);
+
 // The checker itself catches drift: an answer that isn't on the page fails.
 assert.ok(!visibleText("<p>Orchy asks first.</p>").includes("Orchy never asks."));
 assert.equal(visibleText("<h3>It&#39;s <b>local</b></h3><script>x</script>"), "It's local");
