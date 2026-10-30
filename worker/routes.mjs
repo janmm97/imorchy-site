@@ -7,6 +7,7 @@ export const RUN_WORKER_FIRST = [
   "/*",
   "!/assets/*.svg",
   "!/assets/*.png",
+  "!/assets/*.webp",
   "!/js/*",
   "!/fonts/*",
   "!/styles.css",

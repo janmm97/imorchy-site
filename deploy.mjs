@@ -14,24 +14,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { siteFiles } from "./worker/files.mjs";
 import { RUN_WORKER_FIRST } from "./worker/routes.mjs";
 
 const SITE = fileURLToPath(new URL(".", import.meta.url));
 const REPO = path.resolve(SITE, "..");
 const MAX_FILE = 25 * 1024 * 1024; // Workers static assets: 25 MiB per file
-const TYPES = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".mjs": "text/javascript; charset=utf-8",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".xml": "application/xml; charset=utf-8",
-  ".woff2": "font/woff2",
-  ".txt": "text/plain; charset=utf-8",
-  ".mp4": "video/mp4",
-};
-// Only the page's own files go up: never this script, the preview server or the README.
-const SKIP = new Set(["deploy.mjs", "serve.mjs", "README.md"]);
 // One action IDs (One's catalogue, not secrets): sent as x-one-action-id, as the CLI does.
 const ACTION = {
   zones: "conn_mod_def::GLv3XSu_aec::2hjTeSOLQCC8IlaRTpOJSQ",
@@ -106,19 +94,7 @@ async function cf(action, method, apiPath, { query, json, form, headers = {} } =
   return body.result;
 }
 
-function siteFiles(dir = SITE) {
-  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const full = path.join(dir, entry.name);
-    const rel = path.relative(SITE, full).split(path.sep).join("/");
-    if (entry.isDirectory()) return rel === "worker" || entry.name === "node_modules" ? [] : siteFiles(full);
-    if (SKIP.has(rel) || !TYPES[path.extname(rel)]) return [];
-    const source = overrides[rel] ? path.resolve(overrides[rel]) : full;
-    const data = fs.readFileSync(source);
-    return [{ rel, source, data, type: TYPES[path.extname(rel)] }];
-  });
-}
-
-const files = siteFiles();
+const files = siteFiles(SITE, overrides);
 const tooBig = files.filter((f) => f.data.length > MAX_FILE);
 if (tooBig.length) {
   for (const f of tooBig) console.error(`${f.rel} is ${(f.data.length / 1048576).toFixed(1)} MB; Cloudflare takes 25 MiB per file. Pass a smaller copy with --file ${f.rel}=<path>.`);

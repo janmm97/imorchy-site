@@ -37,7 +37,23 @@ async function bootSquad() {
     console.warn("The 3D squad could not start:", error);
   }
 }
-bootSquad();
+// The squad is a desktop extra: it pulls Three.js and traces the art on the main thread, so it waits until the
+// page has loaded and the browser is idle. Small screens, Save-Data and reduced motion keep the static art.
+function squadAllowed({ narrow, saveData, reduced }) {
+  return !narrow && !saveData && !reduced;
+}
+function whenIdle(task) {
+  const idle = () =>
+    "requestIdleCallback" in window ? requestIdleCallback(task, { timeout: 4000 }) : setTimeout(task, 1);
+  if (document.readyState === "complete") idle();
+  else addEventListener("load", idle, { once: true });
+}
+if (squadAllowed({
+  narrow: matchMedia("(max-width: 768px)").matches,
+  saveData: Boolean(navigator.connection?.saveData),
+  reduced: reducedMotion(),
+})) whenIdle(bootSquad);
+else root.classList.add("no-stage");
 
 // Progressive enhancement: page content remains visible if JavaScript is unavailable.
 const revealObserver = new IntersectionObserver(

@@ -118,7 +118,10 @@ export function renderSprite(element, id) {
   element.style.setProperty("--sprite-x", bot.x);
   element.style.setProperty("--sprite-y", bot.y);
   const img = document.createElement("img");
-  img.src = "assets/orchy_and_sugagents.svg";
+  // A small raster of the same sheet: the 1 MB SVG is only for the 3D squad (js/art.mjs).
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.src = "assets/orchy-squad-sheet.webp";
   img.alt = "";
   img.draggable = false;
   element.replaceChildren(img);

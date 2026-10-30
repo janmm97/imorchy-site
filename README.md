@@ -14,7 +14,7 @@ Open http://127.0.0.1:4173. Stop with Ctrl+C. The preview serves only this folde
 
 ## The page
 
-Four sections: the hero (the "Orchy AI" wordmark centred on screen with the squad standing on it, and a one-line tagline beneath), How it works (the in-action loop), Your rules (approvals, separate workspaces, local-first, harnesses and apps), and Get access (book a 30-minute call on Calendly).
+Four sections: the hero (the "Orchy AI" wordmark centred on screen with the squad standing on it, a two-line tagline, a "Join the early-access list" button, the launch-video button marked "Coming soon", and the line "Orchy AI is in early access."), How it works (the in-action loop), Your rules (approvals, separate workspaces, local-first, harnesses and apps), and Get access (the early-access list, plus "Book 30 minutes" on Calendly).
 
 ## The living squad
 
@@ -26,13 +26,22 @@ Orchy and his nine teammates are real 3D characters built from the supplied art 
 - **They react to the page.** In How it works, Orchy stands beside the lit step and hops down as the demo moves through them; the routed teammate stands in the console beside its checklist, then hops onto the approval card and waits there, glowing. Inbox waits on the sample approval card. Workspace teammates get turned back from each other's rooms. Orchy stands inside his localhost window. In Get access, the squad lines up on the booking card.
 - **Solid bodies.** Characters never pass through each other. Each travels in its own depth lane, a hop arcs over anyone standing in its way and changes depth only near the top, a moving character slips in front of or behind a body before touching it, and held or thrown characters move in front of everyone. Add `?squad-debug` to the URL to count overlapping frames (`squadStage.debug` in the console).
 - **Motion craft.** Every jump crouches first, travels on an arc and lands with a squash that overshoots and settles. No more than about a third of the squad moves at once.
-- **Fallbacks.** With reduced motion turned on in the system settings, everyone appears already in place and nothing moves on its own. Without WebGL the page shows the static art instead.
+- **Fallbacks.** With reduced motion turned on in the system settings, everyone appears already in place and nothing moves on its own. Phones and narrow windows (768px or less), Save-Data and reduced motion skip the 3D squad and keep the static art; so does a browser without WebGL.
 
 ## Design and interactions
 
 - Self-hosted JetBrains Mono regular and bold, with its OFL license in `fonts/`.
 - The "in action" console: a 34s story in four scenes. Connect: Gmail, Slack, Notion, Google Calendar, Stripe and GitHub wire into One. Ask: you type a request for an inbox agent in Workspace A, and Orchy hands it to the Agent Builder. Build: the builder fills in the agent (name, role, tools, rules) until Inbox Triage is live. Run: it sorts five new emails, drafts the two urgent replies, and asks for your OK in a Slack notification. The workflow steps beside it light up with the story, and the 3D Builder and Inbox characters act out their parts. It only plays while on screen; under reduced motion or without script it holds still on the notification. Logos are the real ones, from One's connector catalogue, in `assets/logos/`.
-- Sample approval controls, a mobile menu, and a booking button ("Get Access and Book a Call Now") that opens Calendly in a new tab.
+- Sample approval controls and a mobile menu. "Get Access" in the nav and "Join the early-access list" in the hero and Get access section open the early-access signup form in a new tab; "Book 30 minutes" opens Calendly in a new tab.
+
+## Loading
+
+First paint never waits on the big art. `worker/test-speed.mjs` (part of `npm test`) holds these rules:
+
+- The hero art is `assets/orchy-main-500.webp` / `-1000.webp`, preloaded ahead of the CSS (it is the LCP element). The logos use `orchy-main-128.webp`, the favicon is `orchy-icon-64.png`, and the demo avatars crop `orchy-squad-sheet.webp`. Every `<img>` has width and height and stays under 64 KB.
+- The fonts are subset to the characters the site uses (Latin-1, punctuation, arrows) and use `font-display: swap`. If new copy needs another character, re-subset from the full JetBrains Mono release.
+- The 3D squad (Three.js and the two big SVGs) loads only after the page's `load` event, when the browser is idle, and only on desktop.
+- The character SVGs keep their embedded PNGs as `js/art.mjs` reads them: the greyscale mask first, then the colour render. Recompress them losslessly in place; never run SVGO over them.
 
 ## Files
 
@@ -46,7 +55,7 @@ Orchy and his nine teammates are real 3D characters built from the supplied art 
 - `js/robots.mjs`: example character profiles and sprite coordinates for the small avatars.
 - `serve.mjs`: optional local preview server.
 - `deploy.mjs`: publishes the page and its Worker to Cloudflare through One (below).
-- `worker/`: the Cloudflare Worker: 301s from `http://` and `www.` to `https://imorchy.dev`, the launch video (with byte ranges), and Google's verification file at its exact `.html` path. `worker/routes.mjs` lists which paths run the Worker first (pages and videos; not CSS, JS, fonts or images). `worker/test.mjs` checks it offline (part of `npm test`), and `worker/test-pages.mjs` checks each page's FAQPage JSON-LD against its visible FAQ text.
+- `worker/`: the Cloudflare Worker: 301s from `http://` and `www.` to `https://imorchy.dev`, the launch video (with byte ranges), and Google's verification file at its exact `.html` path. `worker/routes.mjs` lists which paths run the Worker first (pages and videos; not CSS, JS, fonts or images), and `worker/files.mjs` lists which files `deploy.mjs` uploads and their Content-Types (a new file type needs an entry there, or it 404s live while `serve.mjs` still shows it). `worker/test.mjs` checks the Worker offline (part of `npm test`), `worker/test-deploy.mjs` checks that every site file is uploaded and every static file skips the Worker, and `worker/test-pages.mjs` checks each page's FAQPage JSON-LD against its visible FAQ text.
 - `sitemap.xml`, `robots.txt` (only the Sitemap line) and `assets/og-image.png` (the 1200×630 share image) are for search engines and link previews. Structured data in `<head>` must say what the page says.
 
 ## Deploying

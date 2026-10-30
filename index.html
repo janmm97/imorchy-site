@@ -87,7 +87,9 @@
         ]
       }
     </script>
-    <link rel="icon" href="assets/orchy-main.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
+    <!-- The hero art is the desktop LCP element; fetch it with the CSS, not after it. -->
+    <link rel="preload" as="image" href="assets/orchy-main-500.webp" imagesrcset="assets/orchy-main-500.webp 500w, assets/orchy-main-1000.webp 1000w" imagesizes="(max-width: 768px) 92vw, 500px" fetchpriority="high" />
     <link
       rel="preload"
       href="fonts/JetBrainsMono-Regular.woff2"
@@ -118,7 +120,7 @@
         <a class="brand" href="#top" aria-label="Orchy home"
           ><img
             class="brand-logo"
-            src="assets/orchy-main.svg"
+            src="assets/orchy-main-128.webp"
             width="42"
             height="42"
             alt=""
@@ -164,7 +166,9 @@
           <div class="scene hero-fallback" aria-hidden="true">
             <div class="hero-character">
               <img
-                src="assets/orchy-main.svg"
+                src="assets/orchy-main-500.webp"
+                srcset="assets/orchy-main-500.webp 500w, assets/orchy-main-1000.webp 1000w"
+                sizes="(max-width: 768px) 92vw, 500px"
                 alt=""
                 width="500"
                 height="500"
@@ -274,7 +278,7 @@
                       <path pathLength="1" data-at="3.9" d="M86 82C68 82 66 50 50 50" />
                     </svg>
                     <span class="al-hub" data-at="0.3"
-                      ><img src="assets/logos/one.svg" width="70" height="22" alt="" /><span
+                      ><img src="assets/logos/one.svg" width="70" height="22" alt="" loading="lazy" /><span
                         class="al-count"
                         data-at="0"
                         data-steps="1.85,2.35,2.85,3.35,3.85,4.35"
@@ -291,27 +295,27 @@
                       <path pathLength="1" d="M86 82C68 82 66 50 50 50" />
                     </svg>
                     <span class="al-tool" style="--x: 14%; --y: 18%" data-at="0.6"
-                      ><img src="assets/logos/tools/gmail.svg" width="40" height="40" alt="" /><b>Gmail</b
+                      ><img src="assets/logos/tools/gmail.svg" width="40" height="40" alt="" loading="lazy" /><b>Gmail</b
                       ><i data-at="1.85"></i
                     ></span>
                     <span class="al-tool" style="--x: 86%; --y: 18%" data-at="0.8"
-                      ><img src="assets/logos/tools/slack.svg" width="40" height="40" alt="" /><b>Slack</b
+                      ><img src="assets/logos/tools/slack.svg" width="40" height="40" alt="" loading="lazy" /><b>Slack</b
                       ><i data-at="2.35"></i
                     ></span>
                     <span class="al-tool" style="--x: 14%; --y: 50%" data-at="1"
-                      ><img src="assets/logos/tools/notion.svg" width="40" height="40" alt="" /><b>Notion</b
+                      ><img src="assets/logos/tools/notion.svg" width="40" height="40" alt="" loading="lazy" /><b>Notion</b
                       ><i data-at="2.85"></i
                     ></span>
                     <span class="al-tool" style="--x: 86%; --y: 50%" data-at="1.2"
-                      ><img src="assets/logos/tools/google-calendar.svg" width="40" height="40" alt="" /><b>Calendar</b
+                      ><img src="assets/logos/tools/google-calendar.svg" width="40" height="40" alt="" loading="lazy" /><b>Calendar</b
                       ><i data-at="3.35"></i
                     ></span>
                     <span class="al-tool" style="--x: 14%; --y: 82%" data-at="1.4"
-                      ><img src="assets/logos/tools/stripe.svg" width="40" height="40" alt="" /><b>Stripe</b
+                      ><img src="assets/logos/tools/stripe.svg" width="40" height="40" alt="" loading="lazy" /><b>Stripe</b
                       ><i data-at="3.85"></i
                     ></span>
                     <span class="al-tool" style="--x: 86%; --y: 82%" data-at="1.6"
-                      ><img src="assets/logos/tools/github.svg" width="40" height="40" alt="" /><b>GitHub</b
+                      ><img src="assets/logos/tools/github.svg" width="40" height="40" alt="" loading="lazy" /><b>GitHub</b
                       ><i data-at="4.35"></i
                     ></span>
                   </div>
@@ -319,7 +323,7 @@
                   <div class="al-scene al-ask">
                     <div class="al-thread">
                       <p class="al-msg al-from-orchy" data-at="8">
-                        <img src="assets/orchy-main.svg" width="26" height="26" alt="" />
+                        <img src="assets/orchy-main-128.webp" width="26" height="26" alt="" loading="lazy" />
                         <span>Six tools connected. What should we build?</span>
                       </p>
                       <p class="al-msg al-from-you" data-at="11.8">
@@ -327,7 +331,7 @@
                         asks me to approve.
                       </p>
                       <p class="al-msg al-from-orchy" data-at="12.2">
-                        <img src="assets/orchy-main.svg" width="26" height="26" alt="" />
+                        <img src="assets/orchy-main-128.webp" width="26" height="26" alt="" loading="lazy" />
                         <span class="al-dots" data-at="12.2" data-until="13.1"><i></i><i></i><i></i></span>
                         <span class="al-reply" data-at="13.1"
                           >On it. Handing this to the <span data-bot="green" class="al-mini-bot"></span> Agent
@@ -371,9 +375,9 @@
                           <dt>Tools</dt>
                           <dd class="al-chips">
                             <span data-at="17.8"
-                              ><img src="assets/logos/tools/gmail.svg" width="18" height="18" alt="" />Gmail</span
+                              ><img src="assets/logos/tools/gmail.svg" width="18" height="18" alt="" loading="lazy" />Gmail</span
                             ><span data-at="18.1"
-                              ><img src="assets/logos/tools/slack.svg" width="18" height="18" alt="" />Slack</span
+                              ><img src="assets/logos/tools/slack.svg" width="18" height="18" alt="" loading="lazy" />Slack</span
                             >
                           </dd>
                         </div>
@@ -429,7 +433,7 @@
                       </ul>
                     </div>
                     <div class="al-toast" data-at="28" data-beat="notify">
-                      <img src="assets/logos/tools/slack.svg" width="26" height="26" alt="" />
+                      <img src="assets/logos/tools/slack.svg" width="26" height="26" alt="" loading="lazy" />
                       <div class="al-toast-ask" data-at="0" data-until="30.3">
                         <b>Inbox Triage needs your OK</b>
                         <span>2 urgent replies drafted in Workspace A.</span>
@@ -540,7 +544,7 @@
               <div class="local-window">
                 <span>127.0.0.1:8008 <i></i></span
                 ><img
-                  src="assets/orchy-main.svg"
+                  src="assets/orchy-main-500.webp"
                   width="112"
                   height="112"
                   alt=""
@@ -642,7 +646,7 @@
         <a class="brand" href="#top" aria-label="Back to top"
           ><img
             class="brand-logo"
-            src="assets/orchy-main.svg"
+            src="assets/orchy-main-128.webp"
             width="42"
             height="42"
             alt=""

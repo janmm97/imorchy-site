@@ -1,10 +1,9 @@
 // Offline checks for the landing page's Worker (main.mjs): http:// and www. get a 301 to https://imorchy.dev,
 // Google's verification file answers at its .html path, videos go through the cache, and everything else is
-// handed to the static assets untouched; routes.mjs sends pages and videos to the Worker, not static files. A fake ASSETS
-// binding and cache stand in for Cloudflare. No network, no keys, no installed packages.
+// handed to the static assets untouched. A fake ASSETS binding and cache stand in for Cloudflare. No network, no keys,
+// no installed packages. Routing (run_worker_first) and the deploy file list are checked in test-deploy.mjs.
 import assert from "node:assert/strict";
 import worker from "./main.mjs";
-import { RUN_WORKER_FIRST } from "./routes.mjs";
 
 const ok = (name) => console.log(`ok - ${name}`);
 const seen = [];
@@ -55,17 +54,6 @@ assert.equal(res.status, 200);
 assert.equal(seen.at(-1), "https://imorchy.dev/googlec22430d134477d04");
 ok("the live Google verification file still answers 200 from assets");
 
-// ── run_worker_first, read the way Cloudflare does: `*` matches across "/", a "!" rule beats any positive one ──
-const glob = (p) => new RegExp("^" + p.split(/\*+/).map((s) => s.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + "$");
-const workerFirst = (path) =>
-  RUN_WORKER_FIRST.some((p) => !p.startsWith("!") && glob(p).test(path)) &&
-  !RUN_WORKER_FIRST.some((p) => p.startsWith("!") && glob(p.slice(1)).test(path));
-for (const p of ["/", ...ANSWER_PAGES, "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html"])
-  assert.ok(workerFirst(p), `${p} should reach the Worker`);
-for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/favicon.svg"])
-  assert.ok(!workerFirst(p), `${p} should skip the Worker`);
-ok("run_worker_first: pages, videos and google*.html reach the Worker; CSS, JS, fonts and images don't");
-
 // ── Google's verification file ──
 res = await get("/google0123abcd.html");
 assert.equal(res.status, 200);
@@ -89,4 +77,6 @@ assert.equal(await res.text(), "asset /api/session");
 ok("other paths (the old /api included) go straight to the static assets");
 
 await import("./test-pages.mjs");
+await import("./test-speed.mjs");
+await import("./test-deploy.mjs");
 console.log("test-worker: all passed");

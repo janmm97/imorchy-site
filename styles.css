@@ -1794,10 +1794,12 @@ body.is-grabbing * {
 }
 .hero .hero-fallback .hero-character {
   width: min(44%, 400px);
-  left: 50%;
+  /* Centred with margins, not translate: the float animation owns translate. Phones see this art, not the squad. */
+  left: 0;
+  right: 0;
+  margin-inline: auto;
   top: auto;
   bottom: 2%;
-  translate: -50% 0;
 }
 /* With the 3D squad live, the empty headroom above the squad (nearly half the
    stage) tucks up under the nav, so the squad, name and button are what get
