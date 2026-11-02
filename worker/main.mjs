@@ -1,5 +1,7 @@
-// The landing page's Worker: one address (https://imorchy.dev), the launch video, and Google's verification file.
+// The landing page's Worker: one address (https://imorchy.dev), the launch video, Google's verification file, and
+// the security headers on every answer (headers.mjs).
 // Pages, videos and /google*.html run the Worker first; static files skip it (site/worker/routes.mjs).
+import { withSecurityHeaders } from "./headers.mjs";
 import { byteRange } from "./range.mjs";
 
 /** Videos live in R2 (MEDIA), under their site path: too big for static assets and kept out of git. Safari won't play an mp4 without byte ranges, so Range gets a 206. */
@@ -30,15 +32,21 @@ async function video(request, env, url) {
   return new Response(body.body, { status, headers });
 }
 
+/** Where a request goes: the 301, a video from R2, Google's file or the static assets. */
+async function route(request, env, url) {
+  // One address for search engines: http:// and www. move permanently to https://imorchy.dev, path and query kept.
+  if (url.protocol === "http:" || url.hostname === "www.imorchy.dev")
+    return Response.redirect("https://imorchy.dev" + url.pathname + url.search, 301);
+  if (url.pathname.endsWith(".mp4") && ["GET", "HEAD"].includes(request.method)) return video(request, env, url);
+  // Google Search Console's verification file must answer 200 at its .html path; static assets would redirect it to the bare name.
+  if (/^\/google[0-9a-f]+\.html$/.test(url.pathname)) return env.ASSETS.fetch(url.origin + url.pathname.slice(0, -5));
+  return env.ASSETS.fetch(request);
+}
+
 export default {
+  // Every answer gets the security headers (headers.mjs); its status, body and other headers are kept as they are.
   async fetch(request, env) {
     const url = new URL(request.url);
-    // One address for search engines: http:// and www. move permanently to https://imorchy.dev, path and query kept.
-    if (url.protocol === "http:" || url.hostname === "www.imorchy.dev")
-      return Response.redirect("https://imorchy.dev" + url.pathname + url.search, 301);
-    if (url.pathname.endsWith(".mp4") && ["GET", "HEAD"].includes(request.method)) return video(request, env, url);
-    // Google Search Console's verification file must answer 200 at its .html path; static assets would redirect it to the bare name.
-    if (/^\/google[0-9a-f]+\.html$/.test(url.pathname)) return env.ASSETS.fetch(url.origin + url.pathname.slice(0, -5));
-    return env.ASSETS.fetch(request);
+    return withSecurityHeaders(await route(request, env, url), url);
   },
 };

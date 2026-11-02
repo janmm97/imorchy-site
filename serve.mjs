@@ -3,6 +3,7 @@ import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { securityHeaders } from "./worker/headers.mjs";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.argv[2] || 4173);
@@ -22,6 +23,12 @@ const types = {
   ".mp4": "video/mp4",
 };
 const server = http.createServer(async (req, res) => {
+  // The live Worker's security headers (worker/headers.mjs), so the preview runs under the same CSP. Plain http, so no HSTS.
+  const secure = (pathname, contentType) => {
+    for (const [name, value] of Object.entries(securityHeaders({ https: false, pathname, contentType })))
+      res.setHeader(name, value);
+  };
+  secure();
   if (!["GET", "HEAD"].includes(req.method)) {
     res.writeHead(405, { Allow: "GET, HEAD" }).end();
     return;
@@ -51,10 +58,10 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     const { size } = await stat(file);
+    secure(pathname, contentType);
     const headers = {
       "Content-Type": contentType,
       "Cache-Control": "no-store",
-      "X-Content-Type-Options": "nosniff",
       "Accept-Ranges": "bytes",
     };
     // Streamed, with byte ranges, so the launch video can start and seek

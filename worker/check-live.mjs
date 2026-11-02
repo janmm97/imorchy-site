@@ -1,6 +1,9 @@
 // After a deploy: is the live site whole? The Deploy site workflow runs this last, so a bad deploy fails the run.
-// - https://<domain> answers 200, and https://www.<domain> ends at 200 on https://<domain> (its 301 followed)
-// - every page in site/sitemap.xml answers 200, with no redirect
+// - every page in the URL regression list (urls.mjs) that has shipped answers 200 with no redirect, its type, its
+//   raw-HTML markers and the security headers of its profile (headers.mjs). test-urls.mjs makes sure every page in
+//   site/sitemap.xml is on that list, so this covers the sitemap too.
+// - the 301s end at 200 on https://<domain>, and https://www.<domain> takes exactly one hop. (http:// may get an extra hop from Cloudflare's own https
+//   redirect before the Worker, so only its end is checked live; test-urls.mjs checks the Worker's one hop offline.)
 // - a Range request for the launch video answers 206 with Content-Range and video/mp4 (R2 and the Worker are wired).
 //   Until index.html enables the "Watch Launch Video" button, the video may not be in R2 yet: then a 404 is only a notice.
 // Each check is retried for about a minute, while the new version reaches every edge.
@@ -8,6 +11,8 @@
 //   node site/worker/check-live.mjs <domain>
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+import { CSP } from "./headers.mjs";
+import { PAGES, REDIRECTS, headerProblems } from "./urls.mjs";
 
 const domain = process.argv[2];
 if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
@@ -18,33 +23,33 @@ const TRIES = 7;
 const WAIT = 10_000;
 const UA = { "User-Agent": "orchy-site-deploy-check" };
 
-const sitemap = fs.readFileSync(fileURLToPath(new URL("../sitemap.xml", import.meta.url)), "utf8");
-const pages = [...sitemap.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
-if (!pages.length) {
-  console.error("site/sitemap.xml lists no pages.");
-  process.exit(1);
-}
-
 // The launch video is "Coming soon" while its button is disabled; the page can't open it, so it needn't exist yet.
 const button = fs.readFileSync(fileURLToPath(new URL("../index.html", import.meta.url)), "utf8").match(/<button\b[^>]*\bhero-video\b[^>]*>/)?.[0] || "";
 const videoOffered = button && !/\sdisabled[\s>=]/.test(button);
 
 const checks = [
-  {
-    name: `https://${domain} answers 200`,
-    run: () => fetch(`https://${domain}/`, { headers: UA, redirect: "manual" }),
-    pass: (res) => res.status === 200,
-  },
-  {
-    name: `https://www.${domain} ends at 200 on https://${domain}/`,
-    run: () => fetch(`https://www.${domain}/`, { headers: UA }),
-    pass: (res) => res.status === 200 && new URL(res.url).hostname === domain,
-  },
-  ...pages.map((url) => ({
-    name: `sitemap page ${url} answers 200`,
-    run: () => fetch(url, { headers: UA, redirect: "manual" }),
-    pass: (res) => res.status === 200,
-  })),
+  ...PAGES.filter((page) => !page.ships).map((page) => {
+    let problems = [];
+    return {
+      name: `https://${domain}${page.path} answers 200 with its type, markers and security headers`,
+      run: () => fetch(`https://${domain}${page.path}`, { headers: UA, redirect: "manual" }),
+      pass: async (res) => {
+        const body = await res.text();
+        problems = [...headerProblems(res.headers, page, CSP), ...page.markers.filter((m) => !body.includes(m)).map((m) => `missing ${JSON.stringify(m)}`)];
+        return res.status === 200 && !problems.length;
+      },
+      why: () => problems.join("; "),
+    };
+  }),
+  ...REDIRECTS.map(({ from, to }) => {
+    [from, to] = [from, to].map((u) => u.replace("imorchy.dev", domain));
+    const oneHop = from.startsWith("https:");
+    return {
+      name: oneHop ? `${from} answers 301 to ${to}` : `${from} ends at 200 on ${to}`,
+      run: () => fetch(from, { headers: UA, redirect: oneHop ? "manual" : "follow" }),
+      pass: (res) => (oneHop ? res.status === 301 && res.headers.get("location") === to : res.status === 200 && res.url === to),
+    };
+  }),
   {
     name: `https://${domain}/assets/video.mp4 answers a Range request with 206`,
     run: () => fetch(`https://${domain}/assets/video.mp4`, { headers: { ...UA, Range: "bytes=0-1023" }, redirect: "manual" }),
@@ -60,9 +65,10 @@ for (const check of checks) {
   for (let i = 1; i <= TRIES; i++) {
     try {
       const res = await check.run();
-      await res.arrayBuffer();
+      const passed = await check.pass(res);
+      if (!res.bodyUsed) await res.arrayBuffer();
       const notice = check.notice?.(res);
-      if (check.pass(res) || notice) {
+      if (passed || notice) {
         last = "";
         if (notice) {
           console.log(`notice - ${check.name}: ${notice}`);
@@ -71,7 +77,7 @@ for (const check of checks) {
         }
         break;
       }
-      last = `HTTP ${res.status}${res.headers.get("location") ? ` → ${res.headers.get("location")}` : ""}${res.headers.get("content-range") ? `, Content-Range ${res.headers.get("content-range")}` : ""}, Content-Type ${res.headers.get("content-type")}`;
+      last = `HTTP ${res.status}${res.headers.get("location") ? ` → ${res.headers.get("location")}` : ""}${res.headers.get("content-range") ? `, Content-Range ${res.headers.get("content-range")}` : ""}, Content-Type ${res.headers.get("content-type")}${check.why?.(res) ? `, ${check.why(res)}` : ""}`;
     } catch (e) {
       last = e.message;
     }

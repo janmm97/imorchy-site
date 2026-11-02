@@ -132,4 +132,5 @@ await import("./test-pages.mjs");
 await import("./test-speed.mjs");
 await import("./test-deploy.mjs");
 await import("./test-deploy-api.mjs");
+await import("./test-urls.mjs");
 console.log("test-worker: all passed");
