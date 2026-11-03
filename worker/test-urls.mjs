@@ -11,8 +11,8 @@ import { TYPES, siteFiles } from "./files.mjs";
 import { CSP, IMPORTMAP_SHA256, SCRIPT_HOST, securityHeaders, withSecurityHeaders } from "./headers.mjs";
 import worker from "./main.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
-import { EXPECT_HEADERS, LINKS, LOAD_HOSTS, ORIGIN, PAGES as LISTED, REDIRECTS, headerProblems, robotsProblems } from "./urls.mjs";
-import { build, fileFor, generatedProblems, markdown, parseSource, seoProblems, staleFiles } from "../build.mjs";
+import { EXPECT_HEADERS, LINKS, LOAD_HOSTS, ORIGIN, PAGES as LISTED, REDIRECTS, headerProblems, liveUrl, locProblem, robotsProblems } from "./urls.mjs";
+import { build, cli, fileFor, generatedProblems, markdown, parseSource, seoProblems, staleFiles } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 // The regression list: the hand-written rows in urls.mjs plus a row for every page build.mjs generates.
@@ -124,6 +124,8 @@ for (const [bad, why] of [
   [good + "<h1>2</h1>", /2 <h1>/],
   [good.replace("<title>T</title>", ""), /title/],
   [good.replace('name="description" content="D"', ""), /description/],
+  [good.replace('content="D"', 'content=""'), /no meta description/],
+  [good.replace('content="D"', 'content="  "'), /no meta description/],
   [good.replace('property="og:image"', ""), /og:image/],
   [good.replace("{}", "{"), /JSON-LD block 1 doesn't parse/],
   [good.replace(/<script[\s\S]*<\/script>/, ""), /no JSON-LD/],
@@ -158,9 +160,27 @@ for (const [txt, want] of [
   ["user-agent: perplexitybot # AI search\ndisallow: / # oops", 1],
   ["User-agent: ClaudeBot\nDisallow: /", 0],
   ["User-agent: *\nDisallow: /private\nDisallow:\nSitemap: https://imorchy.dev/sitemap.xml", 0],
+  // RFC 9309: Sitemap (and Crawl-delay, not in the RFC) aren't group members, so they don't split a group.
+  ["User-agent: Googlebot\nSitemap: https://imorchy.dev/sitemap.xml\nUser-agent: Bingbot\nDisallow: /", 2],
+  ["User-agent: Googlebot\nCrawl-delay: 5\nUser-agent: Bingbot\nDisallow: /", 2],
 ])
   assert.equal(robotsProblems(txt).length, want, JSON.stringify(txt));
-ok("robots.txt: no Disallow: / or /* for *, Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User or PerplexityBot (groups with several User-agent lines parsed; ClaudeBot left to the owner)");
+ok("robots.txt: no Disallow: / or /* for *, Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User or PerplexityBot (groups with several User-agent lines parsed, and a Sitemap: or Crawl-delay: line doesn't split one; ClaudeBot left to the owner)");
+
+// ── check-live's sitemap check: each <loc> is fetched on the domain under test; its canonical is the imorchy.dev loc ──
+assert.equal(liveUrl("https://imorchy.dev/approvals", "imorchy.dev"), "https://imorchy.dev/approvals");
+assert.equal(liveUrl("https://imorchy.dev/approvals", "staging.example.com"), "https://staging.example.com/approvals");
+assert.equal(liveUrl("https://elsewhere.example/a", "staging.example.com"), "https://elsewhere.example/a", "a loc off imorchy.dev isn't rewritten, so check-live fails it");
+const fetched = { status: 200, location: null, canon: ["https://imorchy.dev/approvals"] };
+assert.equal(locProblem("https://imorchy.dev/approvals", fetched), null, "a staging copy names the imorchy.dev URL as canonical: that passes");
+for (const [res, why] of [
+  [{ ...fetched, canon: ["https://staging.example.com/approvals"] }, /canonical/],
+  [{ ...fetched, canon: [] }, /canonical/],
+  [{ ...fetched, canon: [fetched.canon[0], fetched.canon[0]] }, /canonical/],
+  [{ ...fetched, status: 301, location: "/x" }, /HTTP 301 → \/x/],
+])
+  assert.match(locProblem("https://imorchy.dev/approvals", res) || "", why);
+ok("check-live sitemap check: each <loc> is fetched on the domain under test, answers 200 itself, and has one canonical, the imorchy.dev loc (a staging run passes; production is as strict)");
 
 // ── an unknown path is a plain 404 with the headers, not a redirect (spec item 5) ──
 for (const p of [`/no-such-page-${Date.now().toString(36)}`, "/no-such-dir/page"]) {
@@ -198,6 +218,15 @@ try {
   put("blog/first-post.html", post.replace("Why", "Who"));
   put("blog/old.html", post);
   assert.deepEqual(staleFiles(fx, out.files), ["blog/first-post.html", "blog/old.html (its source is gone: delete it)"]);
+  // The command line: write mode rewrites the stale page but still exits 1 on the orphan, as --check does.
+  const said = [];
+  const say = { log: (m) => said.push(m), error: (m) => said.push(m) };
+  assert.equal(cli(fx, [], say), 1, "write mode exits 1 on an orphaned output");
+  assert.match(said.join("\n"), /site\/blog\/old\.html \(its source is gone: delete it\)/);
+  assert.equal(fs.readFileSync(path.join(fx, "blog/first-post.html"), "utf8"), post, "write mode rewrote the stale page");
+  assert.equal(cli(fx, ["--check"], say), 1, "--check exits 1 on the orphan too");
+  fs.rmSync(path.join(fx, "blog/old.html"));
+  assert.deepEqual([cli(fx, [], say), cli(fx, ["--check"], say)], [0, 0], "no orphan: both modes pass");
   for (const [file, text, why] of [
     ["content/blog/2026-12-01-later.md", "---\ntitle: L\ndescription: D\ndate: 2026-12-01\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/later\n---\n", /after today/],
     ["content/blog/2026-10-30-x.md", "---\ntitle: X\ndescription: D\ndate: 2026-10-30\nog_image: /assets/nope.png\ncanonical: https://imorchy.dev/blog/y\n---\n", /canonical must be[\s\S]*og_image/],
@@ -206,6 +235,8 @@ try {
     ["content/changelog/2026-10-30-fix.md", "---\ntitle: Fix\ndescription: D\ndate: 2026-10-30\nsecurity: true\n---\nRun `curl evil`.\n", /a security entry can't have code/],
     ["content/changelog/Fix.md", "x", /name it/],
     ["content/pages.json", '[{ "path": "/gone", "lastmod": "2026-10-30" }]', /\/gone has no page file/],
+    ["content/pages.json", '{ "path": "/" }', /content\/pages\.json: must be a list/],
+    ["content/blog/2026-10-29-first-post.md", "---\ntitle: F\ndescription: D\ndate: 2026-10-29\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n---\n", /duplicate slug: blog\/first-post/],
     ["content/pages.json", '[{ "path": "/", "lastmod": "2026-10-30" }, { "path": "/blog", "lastmod": "2026-10-30" }]', /\/blog is a generated page/],
   ]) {
     const before = fs.existsSync(path.join(fx, file)) ? fs.readFileSync(path.join(fx, file)) : null;
@@ -219,6 +250,8 @@ try {
   assert.deepEqual(build(fx, { today: "2026-11-02" }).problems, [], "pages.json with a BOM");
   // A pasted U+2028 in a list item used to stop the item from matching, and markdown() never advanced.
   assert.match(markdown("- a\u2028b\n- c"), /<li>a\u2028b<\/li>\s*<li>c<\/li>/);
+  // A link needs https://, a site path or #: a browser reads //host, /\host and \\host as off-site, so they stay text.
+  assert.equal(markdown("[a](//evil.example) [b](/\\evil.example) [c](\\\\evil.example) [d](/ok)"), '<p>a b c <a href="/ok">d</a></p>');
   // Emphasis stays out of link targets and code; a lone * between spaces is just a star.
   assert.match(markdown("[x](/p/*b*/) and *em* and `*c*` and 2 * 3 * 4"), /<a href="\/p\/\*b\*\/">x<\/a> and <em>em<\/em> and <code>\*c\*<\/code> and 2 \* 3 \* 4/);
   fs.rmSync(path.join(fx, "content", "blog"), { recursive: true });
@@ -227,7 +260,7 @@ try {
 } finally {
   fs.rmSync(fx, { recursive: true, force: true });
 }
-ok("build.mjs: blog + changelog fixture → pages, feed and sitemap that pass seoProblems and load no script; escaped HTML, safe links; same bytes twice; stale and orphaned outputs found; bad sources fail");
+ok("build.mjs: blog + changelog fixture → pages, feed and sitemap that pass seoProblems and load no script; escaped HTML, safe links; same bytes twice; stale and orphaned outputs found, and write mode exits 1 on an orphan as --check does; bad sources (blank description, non-list pages.json, duplicate slug) fail");
 
 // ── one address: 301 straight to the https://imorchy.dev URL, which answers 200 (one hop, no loop) ──
 for (const { from, to } of REDIRECTS) {

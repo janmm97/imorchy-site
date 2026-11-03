@@ -6,7 +6,8 @@
 //   redirect before the Worker, so only its end is checked live; test-urls.mjs checks the Worker's one hop offline.)
 // - a Range request for the launch video answers 206 with Content-Range and video/mp4 (R2 and the Worker are wired).
 //   Until index.html enables the "Watch Launch Video" button, the video may not be in R2 yet: then a 404 is only a notice.
-// - the live sitemap: every <loc> answers 200 itself, no Location, with its own URL as the canonical.
+// - the live sitemap: every <loc> answers 200 itself, no Location, with its own URL as the canonical. On another
+//   domain (a staging copy) each <loc> is fetched there and must still name its https://imorchy.dev URL as canonical.
 // - /approvals/, /approvals.html and /index.html take one hop (301/307/308) to the clean URL, which answers 200.
 // - an unknown path answers 404 (not a redirect) with HSTS, nosniff and Referrer-Policy.
 // - robots.txt shuts out no search or AI-search crawler, and OAI-SearchBot and PerplexityBot get / with its h1.
@@ -17,7 +18,7 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { build, canonicals } from "../build.mjs";
 import { CSP } from "./headers.mjs";
-import { BOT_UAS, EXPECT_HEADERS, HOP_STATUS, ONE_HOP, PAGES as LISTED, REDIRECTS, headerProblems, robotsProblems } from "./urls.mjs";
+import { BOT_UAS, EXPECT_HEADERS, HOP_STATUS, ONE_HOP, PAGES as LISTED, REDIRECTS, headerProblems, liveUrl, locProblem, robotsProblems } from "./urls.mjs";
 
 // The hand-written rows plus a row for every page build.mjs generates from site/content.
 const PAGES = [...LISTED, ...build(fileURLToPath(new URL("..", import.meta.url))).pages];
@@ -128,21 +129,22 @@ const checks = [
   (() => {
     let problems = [];
     return {
-      name: `every <loc> in the live https://${domain}/sitemap.xml answers 200 itself, with its own URL as the canonical`,
+      name: `every <loc> in the live https://${domain}/sitemap.xml answers 200 itself, with its imorchy.dev URL as the canonical`,
       run: () => fetch(`https://${domain}/sitemap.xml`, { headers: UA, redirect: "manual" }),
       pass: async (res) => {
-        // The sitemap names https://imorchy.dev; on another domain (a staging zone) read each <loc> on that domain instead.
-        const locs = [...(await res.text()).matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1].replace(/^https:\/\/imorchy\.dev\//, `https://${domain}/`));
+        // The sitemap names https://imorchy.dev; on another domain (a staging zone) each <loc> is read on that domain,
+        // and its canonical must still be the imorchy.dev loc.
+        const locs = [...(await res.text()).matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
         problems = locs.length ? [] : ["no <loc>"];
         for (const loc of locs) {
-          if (!loc.startsWith(`https://${domain}/`)) {
+          const url = liveUrl(loc, domain);
+          if (!url.startsWith(`https://${domain}/`)) {
             problems.push(`${loc} isn't on https://${domain}`);
             continue;
           }
-          const r = await fetch(loc, { headers: UA, redirect: "manual" });
-          const canon = canonicals(await r.text());
-          if (r.status !== 200 || r.headers.get("location")) problems.push(`${loc}: HTTP ${r.status}${r.headers.get("location") ? ` → ${r.headers.get("location")}` : ""}`);
-          else if (canon.length !== 1 || canon[0] !== loc) problems.push(`${loc}: canonical ${JSON.stringify(canon)}`);
+          const r = await fetch(url, { headers: UA, redirect: "manual" });
+          const problem = locProblem(loc, { status: r.status, location: r.headers.get("location"), canon: canonicals(await r.text()) });
+          if (problem) problems.push(problem);
         }
         return res.status === 200 && !problems.length;
       },

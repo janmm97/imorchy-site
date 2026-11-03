@@ -3,8 +3,8 @@
 // handed to the static assets untouched. Fake ASSETS and MEDIA (R2) bindings stand in for Cloudflare. No network, no
 // keys, no installed packages. Routing (run_worker_first) and the deploy file list are checked in test-deploy.mjs.
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { cli } from "../build.mjs";
 import worker from "./main.mjs";
 import { byteRange } from "./range.mjs";
 
@@ -137,10 +137,9 @@ await import("./test-deploy-api.mjs");
 await import("./test-urls.mjs");
 
 // The committed generated files (sitemap.xml, and any blog/changelog pages) match a fresh build of site/content.
-const check = spawnSync(process.execPath, [fileURLToPath(new URL("../build.mjs", import.meta.url)), "--check"], { encoding: "utf8" });
-process.stdout.write(check.stdout);
-process.stderr.write(check.stderr);
-assert.equal(check.status, 0, "node site/build.mjs --check failed: run node site/build.mjs and commit what it writes");
-assert.match(check.stdout, /^build --check: [1-9]\d* generated file\(s\) match their sources/m, "build.mjs --check ran its check (not just exited 0)");
+const said = [];
+const code = cli(fileURLToPath(new URL("..", import.meta.url)), ["--check"], { log: (m) => (said.push(m), console.log(m)), error: console.error });
+assert.equal(code, 0, "node site/build.mjs --check failed: run node site/build.mjs and commit what it writes");
+assert.match(said.join("\n"), /^build --check: [1-9]\d* generated file\(s\) match their sources/m, "build.mjs --check ran its check (not just returned 0)");
 console.log("ok - node site/build.mjs --check: the committed generated files match site/content");
 console.log("test-worker: all passed");

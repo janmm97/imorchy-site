@@ -104,7 +104,8 @@ export const MUST_CRAWL = ["*", "googlebot", "bingbot", "oai-searchbot", "chatgp
 
 /**
  * What in robots.txt blocks a crawler that must reach the site. Groups follow RFC 9309: consecutive User-agent lines
- * share the rules that follow them; a crawler obeys its own group, else the `*` group.
+ * share the rules that follow them, and only an Allow or Disallow line ends the run of User-agent lines; a crawler obeys
+ * its own group, else the `*` group.
  */
 export function robotsProblems(text) {
   const groups = [];
@@ -121,11 +122,21 @@ export function robotsProblems(text) {
     } else if (key === "allow" || key === "disallow") {
       if (groups.length && key === "disallow") groups.at(-1).disallow.push(value);
       open = false;
-    } else open = false;
+    } // Sitemap, Crawl-delay and other lines aren't group members (RFC 9309 2.2.4), so they leave the group open.
   }
   return MUST_CRAWL.flatMap((bot) => {
     const own = groups.filter((g) => g.agents.includes(bot));
     const rules = (own.length ? own : groups.filter((g) => g.agents.includes("*"))).flatMap((g) => g.disallow);
     return rules.filter((r) => r === "/" || r === "/*").map((r) => `robots.txt: "Disallow: ${r}" shuts ${bot} out of the whole site`);
   });
+}
+
+/** Where check-live fetches a sitemap <loc> when it checks `domain` (a staging copy serves the same paths). */
+export const liveUrl = (loc, domain) => loc.replace(/^https:\/\/imorchy\.dev\//, `https://${domain}/`);
+
+/** What's wrong with a fetched sitemap page: it must answer 200 itself and name its imorchy.dev loc as its one canonical. */
+export function locProblem(loc, { status, location, canon }) {
+  if (status !== 200 || location) return `${loc}: HTTP ${status}${location ? ` → ${location}` : ""}`;
+  if (canon.length !== 1 || canon[0] !== loc) return `${loc}: canonical ${JSON.stringify(canon)}`;
+  return null;
 }

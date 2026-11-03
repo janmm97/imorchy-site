@@ -1,7 +1,8 @@
 // The content build for imorchy.dev: turns site/content/ into committed pages, the Atom feed and the sitemap.
 // ADR "Static content build and phase-1 access for imorchy.dev", points 1-3. Node built-ins only, no packages.
 //
-//   node site/build.mjs           write the output files (run it before you commit a content change)
+//   node site/build.mjs           write the output files (run it before you commit a content change); like --check,
+//                                 it exits 1 if a generated file's source is gone (it lists the file; you delete it)
 //   node site/build.mjs --check   rebuild in memory; fail if a source breaks a rule or a committed output is stale
 //
 // Sources: content/pages.json (the hand-written pages and the date each last really changed),
@@ -48,7 +49,7 @@ export function parseSource(text) {
 }
 
 // Links may go to https://, a site path or a fragment. Anything else (javascript:, data:) renders as plain text.
-const safeHref = (href) => /^(https:\/\/|\/(?!\/)|#)/.test(href);
+const safeHref = (href) => /^(https:\/\/|\/(?![\/\\])|#)/.test(href);
 function inline(text) {
   // Code spans and link targets are set aside first, so emphasis never reaches inside them.
   const held = [];
@@ -110,7 +111,7 @@ export function seoProblems(html, pagePath) {
   const h1 = (html.match(/<h1\b/g) || []).length;
   if (h1 !== 1) problems.push(`${h1} <h1> (want 1)`);
   if ((html.match(/<title>[^<]*\S[^<]*<\/title>/g) || []).length !== 1) problems.push("needs one non-empty <title>");
-  if (!/<meta\b[^>]*\bname="description"[^>]*\bcontent="[^"]*\S/.test(html)) problems.push("no meta description");
+  if (!/<meta\b[^>]*\bname="description"[^>]*\bcontent="[^"]*[^"\s]/.test(html)) problems.push("no meta description");
   if (!/<meta\b[^>]*\bproperty="og:image"[^>]*\bcontent="https:\/\/imorchy\.dev\/[^"]+"/.test(html)) problems.push("no og:image on imorchy.dev");
   const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   if (!blocks.length) problems.push("no JSON-LD block");
@@ -240,7 +241,9 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
   const sitemap = [];
   let hand = [];
   try {
-    hand = JSON.parse(lf(fs.readFileSync(path.join(site, "content", "pages.json"), "utf8")));
+    const list = JSON.parse(lf(fs.readFileSync(path.join(site, "content", "pages.json"), "utf8")));
+    if (!Array.isArray(list)) throw new Error("must be a list of { path, lastmod }");
+    hand = list;
   } catch (e) {
     problems.push(`content/pages.json: ${e.message}`);
   }
@@ -273,8 +276,8 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
       sitemap.push({ path: e.path, lastmod: e.lastmod });
     }
   }
-  for (const [kind, key] of [["slug", (e) => e.kind + "/" + e.slug], ["canonical", (e) => e.canonical]])
-    all.map(key).filter((v, i, a) => v && a.indexOf(v) !== i).forEach((v) => problems.push(`duplicate ${kind}: ${v}`));
+  // Canonical must be ORIGIN + path (entries()), so a duplicate slug is the only way two entries can collide.
+  all.map((e) => e.kind + "/" + e.slug).filter((v, i, a) => a.indexOf(v) !== i).forEach((v) => problems.push(`duplicate slug: ${v}`));
   for (const { path: p } of pages) {
     if (hand.some((h) => h.path === p)) problems.push(`content/pages.json: ${p} is a generated page; a hand-written file there would be overwritten`);
     const html = files.get(fileFor(p));
@@ -308,22 +311,25 @@ export function staleFiles(site, files) {
   return [...stale, ...walk(site).filter((rel) => !files.has(rel)).map((rel) => `${rel} (its source is gone: delete it)`)];
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]).toLowerCase() === fileURLToPath(import.meta.url).toLowerCase()) {
-  const { files, problems } = build(SITE);
-  const check = process.argv.includes("--check");
-  for (const p of problems) console.error(`build: ${p}`);
-  if (problems.length) process.exit(1);
-  if (check) {
-    const stale = staleFiles(SITE, files);
-    for (const rel of stale) console.error(`build --check: site/${rel} is out of date: run node site/build.mjs and commit the result`);
-    if (stale.length) process.exit(1);
-    console.log(`build --check: ${files.size} generated file(s) match their sources`);
-  } else {
+/** The command line, as a function so the tests run it in-process. Returns the exit code. */
+export function cli(site, args, { log = console.log, error = console.error } = {}) {
+  const { files, problems } = build(site);
+  for (const p of problems) error(`build: ${p}`);
+  if (problems.length) return 1;
+  const check = args.includes("--check");
+  if (!check) {
     for (const [rel, text] of files) {
-      fs.mkdirSync(path.dirname(path.join(SITE, rel)), { recursive: true });
-      fs.writeFileSync(path.join(SITE, rel), text);
+      fs.mkdirSync(path.dirname(path.join(site, rel)), { recursive: true });
+      fs.writeFileSync(path.join(site, rel), text);
     }
-    for (const rel of staleFiles(SITE, files)) console.error(`build: site/${rel}`);
-    console.log(`build: wrote ${[...files.keys()].join(", ")}`);
+    log(`build: wrote ${[...files.keys()].join(", ")}`);
   }
+  const stale = staleFiles(site, files);
+  for (const rel of stale) error(check ? `build --check: site/${rel} is out of date: run node site/build.mjs and commit the result` : `build: site/${rel}`);
+  if (stale.length) return 1;
+  if (check) log(`build --check: ${files.size} generated file(s) match their sources`);
+  return 0;
 }
+
+if (process.argv[1] && path.resolve(process.argv[1]).toLowerCase() === fileURLToPath(import.meta.url).toLowerCase())
+  process.exitCode = cli(SITE, process.argv.slice(2));
