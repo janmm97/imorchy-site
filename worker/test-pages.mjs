@@ -108,6 +108,18 @@ assert.ok(!fs.existsSync(SITE + "favicon.svg"), "site/favicon.svg (the old robot
 assert.ok(fs.existsSync(SITE + "assets/orchy-icon-64.png"), "site/assets/orchy-icon-64.png exists");
 ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab icon, none names favicon.svg`);
 
+// ── the changelog is findable (Jan, 2026-11-03): every shipped page's footer links the extensionless /changelog ──
+const SHIPPED = ["index", "approvals", "local", "client-workspaces", "claude-code-orchestrator", "changelog"];
+for (const slug of SHIPPED) assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
+for (const page of pages) {
+  const html = fs.readFileSync(SITE + page, "utf8");
+  const footers = html.match(/<footer\b[\s\S]*?<\/footer>/gi) || [];
+  assert.equal(footers.length, 1, `${page}: exactly one footer`);
+  const links = footers[0].match(/<nav class="footer-links"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
+  assert.ok(links.includes('<a href="/changelog">Changelog</a>'), `${page}: footer links to /changelog`);
+}
+ok(`changelog link: all ${pages.length} pages' footers link /changelog`);
+
 // The checker itself catches drift: an answer that isn't on the page fails.
 assert.ok(!visibleText("<p>Orchy asks first.</p>").includes("Orchy never asks."));
 assert.equal(visibleText("<h3>It&#39;s <b>local</b></h3><script>x</script>"), "It's local");

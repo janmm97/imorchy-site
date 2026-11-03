@@ -176,7 +176,7 @@ ${body}
       </article>
     </main>
     <footer class="footer wrap">
-      <nav class="footer-links" aria-label="Footer"><a href="/">Back to Home</a></nav>
+      <nav class="footer-links" aria-label="Footer"><a href="/">Back to Home</a><a href="/changelog">Changelog</a></nav>
     </footer>
   </body>
 </html>
