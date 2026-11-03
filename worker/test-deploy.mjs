@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { IN_R2, SKIP, TYPES, siteFiles } from "./files.mjs";
+import { IN_R2, SKIP, TYPES, siteFiles, skipDir } from "./files.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
@@ -19,7 +19,7 @@ const onDisk = (dir = SITE) =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     const rel = path.relative(SITE, full).split(path.sep).join("/");
-    if (entry.isDirectory()) return rel === "worker" || entry.name === "node_modules" ? [] : onDisk(full);
+    if (entry.isDirectory()) return skipDir(rel, entry.name) ? [] : onDisk(full);
     return SKIP.has(rel) || IN_R2.has(path.extname(rel)) ? [] : [rel];
   });
 const files = onDisk();
@@ -36,12 +36,18 @@ try {
   fs.mkdirSync(path.join(tmp, "assets"));
   fs.writeFileSync(path.join(tmp, "index.html"), "<!doctype html>");
   fs.writeFileSync(path.join(tmp, "assets", "video.mp4"), Buffer.alloc(64));
+  // The content build and its sources are tooling, never site files (ADR point 1).
+  fs.mkdirSync(path.join(tmp, "content", "blog"), { recursive: true });
+  fs.writeFileSync(path.join(tmp, "content", "pages.json"), "[]");
+  fs.writeFileSync(path.join(tmp, "content", "blog", "x.html"), "<!doctype html>");
+  fs.writeFileSync(path.join(tmp, "build.mjs"), "");
   assert.deepEqual(siteFiles(tmp).map((f) => f.rel), ["index.html"]);
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
 }
 assert.ok(IN_R2.has(".mp4") && !TYPES[".mp4"]);
 ok("videos (.mp4) are never uploaded as static assets, even with a local copy on disk: the Worker serves them from R2");
+ok("build.mjs and content/ (the sources of the generated pages) are never uploaded");
 
 // Every local file a page, the stylesheet or a script names is uploaded too (the video comes from R2).
 const LOCAL = /(?:https:\/\/imorchy\.dev)?\/?((?:assets|fonts|js)\/[\w./-]+\.\w+|styles\.css|favicon\.svg)/g;

@@ -6,13 +6,21 @@
 //   redirect before the Worker, so only its end is checked live; test-urls.mjs checks the Worker's one hop offline.)
 // - a Range request for the launch video answers 206 with Content-Range and video/mp4 (R2 and the Worker are wired).
 //   Until index.html enables the "Watch Launch Video" button, the video may not be in R2 yet: then a 404 is only a notice.
+// - the live sitemap: every <loc> answers 200 itself, no Location, with its own URL as the canonical.
+// - /approvals/, /approvals.html and /index.html take one hop (301/307/308) to the clean URL, which answers 200.
+// - an unknown path answers 404 (not a redirect) with HSTS, nosniff and Referrer-Policy.
+// - robots.txt shuts out no search or AI-search crawler, and OAI-SearchBot and PerplexityBot get / with its h1.
 // Each check is retried for about a minute, while the new version reaches every edge.
 //
 //   node site/worker/check-live.mjs <domain>
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+import { build, canonicals } from "../build.mjs";
 import { CSP } from "./headers.mjs";
-import { PAGES, REDIRECTS, headerProblems } from "./urls.mjs";
+import { BOT_UAS, EXPECT_HEADERS, HOP_STATUS, ONE_HOP, PAGES as LISTED, REDIRECTS, headerProblems, robotsProblems } from "./urls.mjs";
+
+// The hand-written rows plus a row for every page build.mjs generates from site/content.
+const PAGES = [...LISTED, ...build(fileURLToPath(new URL("..", import.meta.url))).pages];
 
 const domain = process.argv[2];
 if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
@@ -57,6 +65,90 @@ const checks = [
     // Not in R2 yet, and the page doesn't offer it: say so, don't fail. Anything else (a 500 from a broken binding) still fails.
     notice: (res) => !videoOffered && res.status === 404 && "the launch video isn't in R2 yet (its button is still Coming soon)",
   },
+  ...ONE_HOP.map(({ from, to }) => {
+    const target = `https://${domain}${to}`;
+    let problem = "";
+    return {
+      name: `https://${domain}${from} takes one hop (${HOP_STATUS.join("/")}) to ${target}, which answers 200`,
+      run: () => fetch(`https://${domain}${from}`, { headers: UA, redirect: "manual" }),
+      pass: async (res) => {
+        const loc = res.headers.get("location") && new URL(res.headers.get("location"), `https://${domain}${from}`).href;
+        if (!HOP_STATUS.includes(res.status) || loc !== target) return !(problem = `want a hop to ${target}`);
+        const next = await fetch(target, { headers: UA, redirect: "manual" });
+        await next.arrayBuffer();
+        problem = next.status === 200 && !next.headers.get("location") ? "" : `${target} answers ${next.status} (a second hop)`;
+        return !problem;
+      },
+      why: () => problem,
+    };
+  }),
+  (() => {
+    let problems = [];
+    return {
+      name: `https://${domain}/no-such-page-… answers 404 with HSTS, nosniff and Referrer-Policy, not a redirect`,
+      run: () => fetch(`https://${domain}/no-such-page-${Math.random().toString(36).slice(2, 10)}`, { headers: UA, redirect: "manual" }),
+      pass: (res) => {
+        problems = Object.entries(EXPECT_HEADERS.all).filter(([name, value]) => res.headers.get(name) !== value).map(([name]) => `missing ${name}`);
+        return res.status === 404 && !res.headers.get("location") && !problems.length;
+      },
+      why: () => problems.join("; "),
+    };
+  })(),
+  (() => {
+    let problems = [];
+    return {
+      name: `https://${domain}/robots.txt shuts out no search or AI-search crawler`,
+      run: () => fetch(`https://${domain}/robots.txt`, { headers: UA, redirect: "manual" }),
+      pass: async (res) => res.status === 200 && !(problems = robotsProblems(await res.text())).length,
+      why: () => problems.join("; "),
+    };
+  })(),
+  ...Object.entries(BOT_UAS).map(([bot, ua]) => ({
+    name: `${bot} gets https://${domain}/ with 200 and its h1`,
+    run: () => fetch(`https://${domain}/`, { headers: { "User-Agent": ua }, redirect: "manual" }),
+    pass: async (res) => res.status === 200 && (await res.text()).includes('<h1 id="heroTitle"'),
+    why: () => "a challenge or a different page? bring it to the reviewer, don't turn the check off",
+  })),
+  (() => {
+    let problems = [];
+    return {
+      name: `HEAD on every shipped page answers 200 with no redirect`,
+      run: () => fetch(`https://${domain}/`, { method: "HEAD", headers: UA, redirect: "manual" }),
+      pass: async (res) => {
+        problems = [];
+        for (const page of PAGES.filter((p) => !p.ships && p.type === "text/html")) {
+          const r = page.path === "/" ? res : await fetch(`https://${domain}${page.path}`, { method: "HEAD", headers: UA, redirect: "manual" });
+          if (r.status !== 200 || r.headers.get("location")) problems.push(`${page.path}: HTTP ${r.status}`);
+        }
+        return !problems.length;
+      },
+      why: () => problems.join("; "),
+    };
+  })(),
+  (() => {
+    let problems = [];
+    return {
+      name: `every <loc> in the live https://${domain}/sitemap.xml answers 200 itself, with its own URL as the canonical`,
+      run: () => fetch(`https://${domain}/sitemap.xml`, { headers: UA, redirect: "manual" }),
+      pass: async (res) => {
+        // The sitemap names https://imorchy.dev; on another domain (a staging zone) read each <loc> on that domain instead.
+        const locs = [...(await res.text()).matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1].replace(/^https:\/\/imorchy\.dev\//, `https://${domain}/`));
+        problems = locs.length ? [] : ["no <loc>"];
+        for (const loc of locs) {
+          if (!loc.startsWith(`https://${domain}/`)) {
+            problems.push(`${loc} isn't on https://${domain}`);
+            continue;
+          }
+          const r = await fetch(loc, { headers: UA, redirect: "manual" });
+          const canon = canonicals(await r.text());
+          if (r.status !== 200 || r.headers.get("location")) problems.push(`${loc}: HTTP ${r.status}${r.headers.get("location") ? ` → ${r.headers.get("location")}` : ""}`);
+          else if (canon.length !== 1 || canon[0] !== loc) problems.push(`${loc}: canonical ${JSON.stringify(canon)}`);
+        }
+        return res.status === 200 && !problems.length;
+      },
+      why: () => problems.join("; "),
+    };
+  })(),
 ];
 
 let failed = 0;

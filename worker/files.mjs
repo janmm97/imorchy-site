@@ -15,8 +15,11 @@ export const TYPES = {
   ".woff2": "font/woff2",
   ".txt": "text/plain; charset=utf-8",
 };
-// Only the page's own files go up: never the deploy script, the preview server or the README.
-export const SKIP = new Set(["deploy.mjs", "serve.mjs", "README.md"]);
+// Only the page's own files go up: never the deploy script, the preview server, the content build or the README.
+export const SKIP = new Set(["deploy.mjs", "serve.mjs", "build.mjs", "README.md"]);
+// Folders that never go up: the Worker's own code, and the sources build.mjs turns into pages (content/).
+export const SKIP_DIRS = new Set(["worker", "content"]);
+export const skipDir = (rel, name) => SKIP_DIRS.has(rel) || name === "node_modules";
 // Videos are git-ignored and too big for static assets (25 MiB per file), so they're never uploaded: the Worker
 // serves them from the R2 bucket bound as MEDIA, under the same path (assets/video.mp4). serve.mjs reads the file
 // on disk for the local preview.
@@ -28,7 +31,7 @@ export function siteFiles(site, dir = site) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     const rel = path.relative(site, full).split(path.sep).join("/");
-    if (entry.isDirectory()) return rel === "worker" || entry.name === "node_modules" ? [] : siteFiles(site, full);
+    if (entry.isDirectory()) return skipDir(rel, entry.name) ? [] : siteFiles(site, full);
     if (SKIP.has(rel) || IN_R2.has(path.extname(rel)) || !TYPES[path.extname(rel)]) return [];
     return [{ rel, data: fs.readFileSync(full), type: TYPES[path.extname(rel)] }];
   });

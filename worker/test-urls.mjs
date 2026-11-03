@@ -11,14 +11,15 @@ import { TYPES, siteFiles } from "./files.mjs";
 import { CSP, IMPORTMAP_SHA256, SCRIPT_HOST, securityHeaders, withSecurityHeaders } from "./headers.mjs";
 import worker from "./main.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
-import { EXPECT_HEADERS, LINKS, LOAD_HOSTS, ORIGIN, PAGES, REDIRECTS, headerProblems } from "./urls.mjs";
+import { EXPECT_HEADERS, LINKS, LOAD_HOSTS, ORIGIN, PAGES as LISTED, REDIRECTS, headerProblems, robotsProblems } from "./urls.mjs";
+import { build, fileFor, generatedProblems, markdown, parseSource, seoProblems, staleFiles } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
+// The regression list: the hand-written rows in urls.mjs plus a row for every page build.mjs generates.
+const PAGES = [...LISTED, ...build(SITE).pages];
 const ok = (name) => console.log(`ok - ${name}`);
 const read = (rel) => fs.readFileSync(path.join(SITE, rel), "utf8").replace(/\r\n?/g, "\n");
 
-// The file a path is served from, like Cloudflare's html_handling "auto-trailing-slash": / → index.html, /x → x.html.
-const fileFor = (p) => (p === "/" ? "index.html" : path.extname(p) ? p.slice(1) : p.slice(1) + ".html");
 const exists = (p) => fs.existsSync(path.join(SITE, fileFor(p)));
 const assetsSeen = [];
 const VIDEO = Uint8Array.from({ length: 3000 }, (_, i) => i % 199);
@@ -111,21 +112,122 @@ if (exists(sec.path)) {
 }
 ok(`${live} live URLs answer 200 with no redirect, the right type, their raw-HTML markers and the headers per profile; ${PAGES.length - live} legal URLs (ships: "legal-pr") route through the Worker untouched and would upload`);
 
-// ── the sitemap: every <loc> is a listed page on https://imorchy.dev, no future lastmod ──
+// ── every shipped HTML page is fit for search (spec item 1): the same seoProblems build.mjs --check runs ──
+const shipped = PAGES.filter((p) => p.type === "text/html" && exists(p.path));
+for (const page of shipped) assert.deepEqual(seoProblems(read(fileFor(page.path)), page.path), [], `${page.path}: SEO`);
+for (const page of shipped.filter((p) => p.generated)) assert.deepEqual(generatedProblems(read(fileFor(page.path))), [], `${page.path}: generated pages load no script`);
+const good = '<title>T</title><meta name="description" content="D"><link rel="canonical" href="https://imorchy.dev/x"><meta property="og:image" content="https://imorchy.dev/a.png"><h1>H</h1><script type="application/ld+json">{}</script>';
+assert.deepEqual(seoProblems(good, "/x"), []);
+for (const [bad, why] of [
+  [good.replace("/x", "/y"), /canonical/],
+  [good + '<meta name="robots" content="noindex">', /noindex/],
+  [good + "<h1>2</h1>", /2 <h1>/],
+  [good.replace("<title>T</title>", ""), /title/],
+  [good.replace('name="description" content="D"', ""), /description/],
+  [good.replace('property="og:image"', ""), /og:image/],
+  [good.replace("{}", "{"), /JSON-LD block 1 doesn't parse/],
+  [good.replace(/<script[\s\S]*<\/script>/, ""), /no JSON-LD/],
+])
+  assert.match(seoProblems(bad, "/x").join(" | "), why);
+assert.deepEqual(seoProblems(good + '<script type="application/ld+json">[]</script>', "/x"), [], "two JSON-LD blocks are fine when both parse");
+assert.match(headerProblems(new Headers({ ...EXPECT_HEADERS.all, "content-type": "text/plain", "x-robots-tag": "noindex" }), { type: "text/plain" }).join(), /x-robots-tag/);
+ok(`seoProblems: ${shipped.length} shipped pages are self-canonical, indexable, with 1 h1, a title, a description, an og:image and JSON-LD that parses; headerProblems flags an X-Robots-Tag`);
+
+// ── the sitemap: its <loc>s are exactly the shipped HTML pages (spec item 8), on https://imorchy.dev, no future lastmod ──
 const sitemap = read("sitemap.xml");
 const locs = [...sitemap.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
 const today = new Date().toISOString().slice(0, 10);
 assert.ok(locs.length >= 5);
-for (const loc of locs) {
-  assert.ok(loc.startsWith(ORIGIN + "/"), loc);
-  const page = PAGES.find((p) => ORIGIN + p.path === loc);
-  assert.ok(page && exists(page.path), `${loc} is in urls.mjs and its file exists`);
-}
+assert.equal(new Set(locs).size, locs.length, "no loc twice");
+for (const loc of locs) assert.ok(shipped.some((p) => ORIGIN + p.path === loc), `${loc} is in the sitemap but not a shipped HTML page in urls.mjs PAGES (or generated)`);
+for (const p of shipped) assert.ok(locs.includes(ORIGIN + p.path), `${p.path} is a shipped HTML page but not in the sitemap: add it to content/pages.json and run node site/build.mjs`);
 for (const [, d] of sitemap.matchAll(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/g)) {
   assert.match(d, /^\d{4}-\d{2}-\d{2}$/);
   assert.ok(d <= today, `lastmod ${d} is not in the future`);
 }
-ok(`sitemap.xml: ${locs.length} locs, each a listed page on ${ORIGIN} whose file exists; no future lastmod`);
+ok(`sitemap.xml: its ${locs.length} locs and the ${shipped.length} shipped HTML pages are the same set, both ways; no future lastmod`);
+
+// ── robots.txt never shuts a search or AI-search crawler out of the whole site (spec item 3) ──
+assert.deepEqual(robotsProblems(read("robots.txt")), [], "robots.txt");
+for (const [txt, want] of [
+  ["User-agent: *\nDisallow: /", 6],
+  ["User-agent: *\nDisallow: /*", 6],
+  ["User-agent: GPTBot\nUser-agent: OAI-SearchBot\nDisallow: /", 1],
+  ["User-agent: Googlebot\nDisallow: /\n\nUser-agent: *\nDisallow:", 1],
+  ["User-agent: *\nDisallow: /\n\nUser-agent: Bingbot\nAllow: /", 5],
+  ["user-agent: perplexitybot # AI search\ndisallow: / # oops", 1],
+  ["User-agent: ClaudeBot\nDisallow: /", 0],
+  ["User-agent: *\nDisallow: /private\nDisallow:\nSitemap: https://imorchy.dev/sitemap.xml", 0],
+])
+  assert.equal(robotsProblems(txt).length, want, JSON.stringify(txt));
+ok("robots.txt: no Disallow: / or /* for *, Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User or PerplexityBot (groups with several User-agent lines parsed; ClaudeBot left to the owner)");
+
+// ── an unknown path is a plain 404 with the headers, not a redirect (spec item 5) ──
+for (const p of [`/no-such-page-${Date.now().toString(36)}`, "/no-such-dir/page"]) {
+  const res = await get(ORIGIN + p);
+  assert.equal(res.status, 404, p);
+  assert.equal(res.headers.get("Location"), null, `${p}: no redirect`);
+  for (const [name, value] of Object.entries(EXPECT_HEADERS.all)) assert.equal(res.headers.get(name), value, `${p}: ${name}`);
+}
+ok("an unknown path answers 404, no Location, with HSTS, nosniff and Referrer-Policy");
+
+// ── the content build (ADR points 1-3), on a fixture site in a temp folder ──
+const fx = fs.mkdtempSync(path.join(os.tmpdir(), "orchy-build-"));
+try {
+  const put = (rel, text) => (fs.mkdirSync(path.dirname(path.join(fx, rel)), { recursive: true }), fs.writeFileSync(path.join(fx, rel), text));
+  put("index.html", read("index.html"));
+  put("assets/og-image.png", "png");
+  put("content/pages.json", '[{ "path": "/", "lastmod": "2026-10-30" }]');
+  put("content/blog/2026-10-31-first-post.md", "---\ntitle: First <post>\ndescription: A test post.\ndate: 2026-10-31\nupdated: 2026-11-01\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n---\n# Why\n\nText with `code`, **bold**, [a link](/approvals) and [bad](javascript:alert(1)).\n\n<script>alert(1)</script>\n\n- one\n- two\n");
+  put("content/changelog/2026-10-31-v1.md", "---\ntitle: v1\ndescription: The first release.\ndate: 2026-10-31\nsecurity: false\n---\nFirst release.\n");
+  const out = build(fx, { today: "2026-11-02" });
+  assert.deepEqual(out.problems, []);
+  assert.deepEqual([...out.files.keys()].sort(), ["blog.html", "blog/first-post.html", "changelog.html", "feed.xml", "sitemap.xml"]);
+  assert.deepEqual(out.pages.map((p) => p.path), ["/blog", "/blog/first-post", "/changelog"]);
+  const mapped = [...out.files.get("sitemap.xml").matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)/g)].map((m) => m[1].slice(ORIGIN.length) + " " + m[2]);
+  assert.deepEqual(mapped, ["/ 2026-10-30", "/blog 2026-11-01", "/blog/first-post 2026-11-01", "/changelog 2026-10-31"], "lastmod = updated || date; an index takes its newest entry");
+  const post = out.files.get("blog/first-post.html");
+  for (const p of out.pages) assert.deepEqual([...seoProblems(out.files.get(fileFor(p.path)), p.path), ...generatedProblems(out.files.get(fileFor(p.path)))], [], p.path);
+  assert.ok(post.includes("<h1>First &lt;post&gt;</h1>") && out.pages[1].markers[0] === "<h1>First &lt;post&gt;</h1>", "the title is escaped, and the row's marker matches it");
+  assert.ok(post.includes("<h2>Why</h2>") && post.includes("<code>code</code>") && post.includes('<a href="/approvals">a link</a>') && post.includes("<li>two</li>"));
+  assert.ok(post.includes("&lt;script&gt;alert(1)&lt;/script&gt;") && !post.includes("javascript:"), "HTML in markdown is text; a javascript: link is dropped");
+  assert.match(out.files.get("feed.xml"), /<updated>2026-11-01T00:00:00Z<\/updated>\n  <author>/);
+  assert.deepEqual(build(fx, { today: "2026-11-02" }).files, out.files, "the same sources give the same bytes");
+  for (const [rel, text] of out.files) put(rel, text);
+  assert.deepEqual(staleFiles(fx, out.files), []);
+  put("blog/first-post.html", post.replace("Why", "Who"));
+  put("blog/old.html", post);
+  assert.deepEqual(staleFiles(fx, out.files), ["blog/first-post.html", "blog/old.html (its source is gone: delete it)"]);
+  for (const [file, text, why] of [
+    ["content/blog/2026-12-01-later.md", "---\ntitle: L\ndescription: D\ndate: 2026-12-01\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/later\n---\n", /after today/],
+    ["content/blog/2026-10-30-x.md", "---\ntitle: X\ndescription: D\ndate: 2026-10-30\nog_image: /assets/nope.png\ncanonical: https://imorchy.dev/blog/y\n---\n", /canonical must be[\s\S]*og_image/],
+    ["content/blog/2026-10-30-x.md", "---\ntitle: X\ndate: 2026-10-30\nupdated: 2026-10-29\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/x\nauthor: me\n---\n", /unknown field "author"[\s\S]*missing description[\s\S]*updated is before date/],
+    ["content/blog/2026-02-30-x.md", "---\ntitle: X\ndescription: D\ndate: 2026-02-30\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/x\n---\n", /isn't a real YYYY-MM-DD/],
+    ["content/changelog/2026-10-30-fix.md", "---\ntitle: Fix\ndescription: D\ndate: 2026-10-30\nsecurity: true\n---\nRun `curl evil`.\n", /a security entry can't have code/],
+    ["content/changelog/Fix.md", "x", /name it/],
+    ["content/pages.json", '[{ "path": "/gone", "lastmod": "2026-10-30" }]', /\/gone has no page file/],
+    ["content/pages.json", '[{ "path": "/", "lastmod": "2026-10-30" }, { "path": "/blog", "lastmod": "2026-10-30" }]', /\/blog is a generated page/],
+  ]) {
+    const before = fs.existsSync(path.join(fx, file)) ? fs.readFileSync(path.join(fx, file)) : null;
+    put(file, text);
+    assert.match(build(fx, { today: "2026-11-02" }).problems.join(" | "), why, file);
+    before ? fs.writeFileSync(path.join(fx, file), before) : fs.rmSync(path.join(fx, file));
+  }
+  // A UTF-8 BOM (Windows editors) is ignored in a source and in pages.json.
+  assert.equal(parseSource("\uFEFF---\ntitle: X\n---\nBody\n").meta.title, "X");
+  put("content/pages.json", '\uFEFF[{ "path": "/", "lastmod": "2026-10-30" }]');
+  assert.deepEqual(build(fx, { today: "2026-11-02" }).problems, [], "pages.json with a BOM");
+  // A pasted U+2028 in a list item used to stop the item from matching, and markdown() never advanced.
+  assert.match(markdown("- a\u2028b\n- c"), /<li>a\u2028b<\/li>\s*<li>c<\/li>/);
+  // Emphasis stays out of link targets and code; a lone * between spaces is just a star.
+  assert.match(markdown("[x](/p/*b*/) and *em* and `*c*` and 2 * 3 * 4"), /<a href="\/p\/\*b\*\/">x<\/a> and <em>em<\/em> and <code>\*c\*<\/code> and 2 \* 3 \* 4/);
+  fs.rmSync(path.join(fx, "content", "blog"), { recursive: true });
+  fs.rmSync(path.join(fx, "content", "changelog"), { recursive: true });
+  assert.deepEqual([...build(fx, { today: "2026-11-02" }).files.keys()], ["sitemap.xml"], "no content: only the sitemap");
+} finally {
+  fs.rmSync(fx, { recursive: true, force: true });
+}
+ok("build.mjs: blog + changelog fixture → pages, feed and sitemap that pass seoProblems and load no script; escaped HTML, safe links; same bytes twice; stale and orphaned outputs found; bad sources fail");
 
 // ── one address: 301 straight to the https://imorchy.dev URL, which answers 200 (one hop, no loop) ──
 for (const { from, to } of REDIRECTS) {

@@ -78,5 +78,54 @@ export function headerProblems(headers, page, csp) {
   const type = headers.get("content-type") || "";
   if (!type.startsWith(page.type)) problems.push(`content-type: got ${JSON.stringify(type)}, want ${page.type}`);
   if (headers.get("location")) problems.push(`location: ${headers.get("location")} (want no redirect)`);
+  if (headers.get("x-robots-tag")) problems.push(`x-robots-tag: ${headers.get("x-robots-tag")} (want none: it can noindex a page)`);
   return problems;
+}
+
+/**
+ * Other spellings of a page: each answers exactly one hop (Cloudflare's html_handling 307, or a 301/308) straight to
+ * the clean URL, which answers 200 itself.
+ */
+export const ONE_HOP = [
+  { from: "/approvals/", to: "/approvals" },
+  { from: "/approvals.html", to: "/approvals" },
+  { from: "/index.html", to: "/" },
+];
+export const HOP_STATUS = [301, 307, 308];
+
+/** The answer search and AI-search crawlers must get on / (spec: OAI-SearchBot and PerplexityBot, as published). */
+export const BOT_UAS = {
+  "OAI-SearchBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; OAI-SearchBot/1.0; +https://openai.com/searchbot",
+  PerplexityBot: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+};
+
+/** Crawlers robots.txt must never shut out of the whole site. ClaudeBot and other training bots are the owner's call. */
+export const MUST_CRAWL = ["*", "googlebot", "bingbot", "oai-searchbot", "chatgpt-user", "perplexitybot"];
+
+/**
+ * What in robots.txt blocks a crawler that must reach the site. Groups follow RFC 9309: consecutive User-agent lines
+ * share the rules that follow them; a crawler obeys its own group, else the `*` group.
+ */
+export function robotsProblems(text) {
+  const groups = [];
+  let open = false;
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.replace(/#.*/, "").trim();
+    const m = /^([a-z-]+)\s*:\s*(.*)$/i.exec(line);
+    if (!m) continue;
+    const [key, value] = [m[1].toLowerCase(), m[2].trim()];
+    if (key === "user-agent") {
+      if (!open) groups.push({ agents: [], disallow: [] });
+      groups.at(-1).agents.push(value.toLowerCase());
+      open = true;
+    } else if (key === "allow" || key === "disallow") {
+      if (groups.length && key === "disallow") groups.at(-1).disallow.push(value);
+      open = false;
+    } else open = false;
+  }
+  return MUST_CRAWL.flatMap((bot) => {
+    const own = groups.filter((g) => g.agents.includes(bot));
+    const rules = (own.length ? own : groups.filter((g) => g.agents.includes("*"))).flatMap((g) => g.disallow);
+    return rules.filter((r) => r === "/" || r === "/*").map((r) => `robots.txt: "Disallow: ${r}" shuts ${bot} out of the whole site`);
+  });
 }
