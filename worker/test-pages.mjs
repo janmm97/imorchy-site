@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+import { build, fileFor, footer, FOOTER_COLUMNS } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
@@ -108,17 +109,40 @@ assert.ok(!fs.existsSync(SITE + "favicon.svg"), "site/favicon.svg (the old robot
 assert.ok(fs.existsSync(SITE + "assets/orchy-icon-64.png"), "site/assets/orchy-icon-64.png exists");
 ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab icon, none names favicon.svg`);
 
-// ── the changelog is findable (Jan, 2026-11-03): every shipped page's footer links the extensionless /changelog ──
+// ── one footer (Jan, 2026-11-03): every shipped page has build.mjs's shared footer, the same on all of them except
+// the back link and aria-current, and every site link in it resolves to a page in the sitemap or a built file ──
 const SHIPPED = ["index", "approvals", "local", "client-workspaces", "claude-code-orchestrator", "changelog"];
 for (const slug of SHIPPED) assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
+const pathOf = (page) => (page === "index.html" ? "/" : "/" + page.replace(/\.html$/, ""));
+const locs = [...fs.readFileSync(SITE + "sitemap.xml", "utf8").matchAll(/<loc>https:\/\/imorchy\.dev([^<]*)<\/loc>/g)].map((m) => m[1]);
+const built = build(SITE).files;
+const same = new Set();
 for (const page of pages) {
   const html = fs.readFileSync(SITE + page, "utf8");
   const footers = html.match(/<footer\b[\s\S]*?<\/footer>/gi) || [];
   assert.equal(footers.length, 1, `${page}: exactly one footer`);
-  const links = footers[0].match(/<nav class="footer-links"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
-  assert.ok(links.includes('<a href="/changelog">Changelog</a>'), `${page}: footer links to /changelog`);
+  assert.equal(footers[0], footer(pathOf(page)).trim(), `${page}: footer is build.mjs's shared one (run node site/build.mjs)`);
+  const nav = footers[0].match(/<nav class="footer-nav" aria-label="Footer">([\s\S]*?)<\/nav>/)?.[1] ?? "";
+  for (const [, href] of nav.matchAll(/<a href="([^"]+)"/g)) {
+    if (/^https:\/\//.test(href)) continue;
+    assert.match(href, /^\/[a-z0-9./-]*$/, `${page}: footer link ${href} is a site path`);
+    assert.ok(fs.existsSync(SITE + fileFor(href)) && (locs.includes(href) || built.has(fileFor(href))), `${page}: footer link ${href} resolves to a built page`);
+  }
+  const current = [...nav.matchAll(/<a href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
+  assert.deepEqual(current, pathOf(page) === "/" ? [] : [pathOf(page)], `${page}: aria-current marks this page only`);
+  same.add(footers[0].replace(/ aria-current="page"/g, "").replace(/href="(#top|\/)"/g, 'href="BACK"').replace(/aria-label="(Back to top|Orchy AI home)"|>Back to (the Top|Home)</g, "X"));
 }
-ok(`changelog link: all ${pages.length} pages' footers link /changelog`);
+assert.equal(same.size, 1, "every page has the identical footer, apart from its back link and aria-current");
+assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Changelog" && h === "/changelog"), "the footer links /changelog");
+ok(`one footer: all ${pages.length} pages carry the shared footer; its site links resolve to built pages`);
+
+// ── the changelog names no pull requests (Jan, 2026-11-03): no "PR #nn" and no /pull/ links in the page or the feed ──
+for (const file of ["changelog.html", "feed.xml"]) {
+  const text = fs.readFileSync(SITE + file, "utf8");
+  assert.doesNotMatch(visibleText(text), /\bPR\s*#\d+/i, `${file}: no PR numbers`);
+  assert.doesNotMatch(text, /\bPR\s*#\d+|\/pull\//i, `${file}: no PR numbers or /pull/ links`);
+}
+ok("changelog.html and feed.xml name no PR numbers and link no /pull/ pages");
 
 // The checker itself catches drift: an answer that isn't on the page fails.
 assert.ok(!visibleText("<p>Orchy asks first.</p>").includes("Orchy never asks."));

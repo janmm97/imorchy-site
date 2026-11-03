@@ -136,6 +136,38 @@ export function generatedProblems(html) {
   return problems;
 }
 
+/**
+ * The site footer, one source for every page (Jan, 2026-11-03): page() puts it on the generated pages and build()
+ * stamps it over the one <footer> of each hand-written page in pages.json, so --check fails if any page drifts.
+ * Columns are data: when the legal pages are live, add { heading: "Legal", links: [...] } as one more row.
+ */
+export const FOOTER_COLUMNS = [
+  { heading: "Product", links: [["Approvals", "/approvals"], ["Client workspaces", "/client-workspaces"], ["Claude Code orchestrator", "/claude-code-orchestrator"], ["Local command center", "/local"]] },
+  { heading: "Resources", links: [["Changelog", "/changelog"], ["RSS feed", "/feed.xml"]] },
+  { heading: "Follow", links: [["Facebook", "https://www.facebook.com/OrchyAI/"], ["YouTube", "https://www.youtube.com/@orchy-ai"]] },
+];
+const FOOTER_TAG = /[ \t]*<footer\b[\s\S]*?<\/footer>/g;
+export function footer(p) {
+  const top = p === "/" ? "#top" : "/";
+  const attrs = (href) => (/^https:/.test(href) ? ' target="_blank" rel="noopener noreferrer"' : href === p ? ' aria-current="page"' : "");
+  const cols = FOOTER_COLUMNS.map(
+    ({ heading, links }) =>
+      `          <div class="footer-col">\n            <h2 class="footer-heading">${esc(heading)}</h2>\n            <ul>\n${links.map(([text, href]) => `              <li><a href="${href}"${attrs(href)}>${esc(text)}</a></li>\n`).join("")}            </ul>\n          </div>\n`,
+  );
+  return `    <footer class="footer wrap">
+      <div class="footer-top" data-perch>
+        <div class="footer-brand">
+          <a class="brand" href="${top}" aria-label="${p === "/" ? "Back to top" : "Orchy AI home"}"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="42" height="42" alt="" /><span>Orchy</span></a>
+          <p class="footer-tagline">A command center for your AI agents, on your own computer.</p>
+          <a class="footer-back" href="${top}">${p === "/" ? "Back to the Top" : "Back to Home"}</a>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+${cols.join("")}        </nav>
+      </div>
+      <p class="footer-wordmark" aria-hidden="true">Orchy</p>
+    </footer>`;
+}
+
 const ld = (data) => JSON.stringify(data, null, 2).replace(/</g, "\\u003c").replace(/^/gm, "      ");
 function page({ path: p, title, description, image = OG_DEFAULT, data, body }) {
   return `<!doctype html>
@@ -175,9 +207,7 @@ ${ld({ "@context": "https://schema.org", ...data, url: ORIGIN + p })}
 ${body}
       </article>
     </main>
-    <footer class="footer wrap">
-      <nav class="footer-links" aria-label="Footer"><a href="/">Back to Home</a><a href="/changelog">Changelog</a></nav>
-    </footer>
+${footer(p)}
   </body>
 </html>
 `;
@@ -222,6 +252,8 @@ function entries(site, kind, today, problems) {
       e.security = meta.security === "true";
       // ADR point 10: a security entry says what was affected and what to do, never how to exploit it.
       if (e.security && /`/.test(body)) problems.push(`${where}: a security entry can't have code`);
+      // Jan, 2026-11-03: the changelog says what changed for readers, never which pull request did it.
+      if (/\bPR\s*#\d+|\/pull\//i.test(body)) problems.push(`${where}: no PR numbers or /pull/ links in the changelog`);
     }
     e.lastmod = meta.updated || meta.date;
     list.push(e);
@@ -250,7 +282,12 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
   for (const { path: p, lastmod } of hand) {
     const file = path.join(site, fileFor(String(p)));
     if (!/^\/[a-z0-9/-]*$/.test(p) || !fs.existsSync(file)) problems.push(`content/pages.json: ${p} has no page file`);
-    else seoProblems(fs.readFileSync(file, "utf8"), p).forEach((m) => problems.push(`${fileFor(p)}: ${m}`));
+    else {
+      const html = lf(fs.readFileSync(file, "utf8"));
+      seoProblems(html, p).forEach((m) => problems.push(`${fileFor(p)}: ${m}`));
+      if ((html.match(FOOTER_TAG) || []).length !== 1) problems.push(`${fileFor(p)}: needs exactly one <footer> (build.mjs writes the shared footer there)`);
+      else files.set(fileFor(p), html.replace(FOOTER_TAG, () => footer(p)));
+    }
     if (!realDate(lastmod) || lastmod > today) problems.push(`content/pages.json: ${p} lastmod ${lastmod} isn't a real date up to today`);
     sitemap.push({ path: p, lastmod });
   }

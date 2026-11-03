@@ -202,7 +202,7 @@ try {
   put("content/changelog/2026-10-31-v1.md", "---\ntitle: v1\ndescription: The first release.\ndate: 2026-10-31\nsecurity: false\n---\nFirst release.\n");
   const out = build(fx, { today: "2026-11-02" });
   assert.deepEqual(out.problems, []);
-  assert.deepEqual([...out.files.keys()].sort(), ["blog.html", "blog/first-post.html", "changelog.html", "feed.xml", "sitemap.xml"]);
+  assert.deepEqual([...out.files.keys()].sort(), ["blog.html", "blog/first-post.html", "changelog.html", "feed.xml", "index.html", "sitemap.xml"]);
   assert.deepEqual(out.pages.map((p) => p.path), ["/blog", "/blog/first-post", "/changelog"]);
   const mapped = [...out.files.get("sitemap.xml").matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)/g)].map((m) => m[1].slice(ORIGIN.length) + " " + m[2]);
   assert.deepEqual(mapped, ["/ 2026-10-30", "/blog 2026-11-01", "/blog/first-post 2026-11-01", "/changelog 2026-10-31"], "lastmod = updated || date; an index takes its newest entry");
@@ -234,6 +234,9 @@ try {
     ["content/blog/2026-02-30-x.md", "---\ntitle: X\ndescription: D\ndate: 2026-02-30\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/x\n---\n", /isn't a real YYYY-MM-DD/],
     ["content/changelog/2026-10-30-fix.md", "---\ntitle: Fix\ndescription: D\ndate: 2026-10-30\nsecurity: true\n---\nRun `curl evil`.\n", /a security entry can't have code/],
     ["content/changelog/Fix.md", "x", /name it/],
+    ["content/changelog/2026-10-30-pr.md", "---\ntitle: P\ndescription: D\ndate: 2026-10-30\nsecurity: false\n---\n- A fix. (PR #12)\n", /no PR numbers/],
+    ["content/changelog/2026-10-30-pull.md", "---\ntitle: P\ndescription: D\ndate: 2026-10-30\nsecurity: false\n---\n- [A fix](https://github.com/x/y/pull/3)\n", /no PR numbers or \/pull\/ links/],
+    ["index.html", "<!doctype html><title>x</title>", /index\.html: needs exactly one <footer>/],
     ["content/pages.json", '[{ "path": "/gone", "lastmod": "2026-10-30" }]', /\/gone has no page file/],
     ["content/pages.json", '{ "path": "/" }', /content\/pages\.json: must be a list/],
     ["content/blog/2026-10-29-first-post.md", "---\ntitle: F\ndescription: D\ndate: 2026-10-29\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n---\n", /duplicate slug: blog\/first-post/],
@@ -256,7 +259,7 @@ try {
   assert.match(markdown("[x](/p/*b*/) and *em* and `*c*` and 2 * 3 * 4"), /<a href="\/p\/\*b\*\/">x<\/a> and <em>em<\/em> and <code>\*c\*<\/code> and 2 \* 3 \* 4/);
   fs.rmSync(path.join(fx, "content", "blog"), { recursive: true });
   fs.rmSync(path.join(fx, "content", "changelog"), { recursive: true });
-  assert.deepEqual([...build(fx, { today: "2026-11-02" }).files.keys()], ["sitemap.xml"], "no content: only the sitemap");
+  assert.deepEqual([...build(fx, { today: "2026-11-02" }).files.keys()], ["index.html", "sitemap.xml"], "no content: only the sitemap and the footer stamped on the hand-written page");
 } finally {
   fs.rmSync(fx, { recursive: true, force: true });
 }
