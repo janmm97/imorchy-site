@@ -155,7 +155,7 @@ export function generatedProblems(html) {
  */
 export const FOOTER_COLUMNS = [
   { heading: "Product", links: [["Approvals", "/approvals"], ["Client workspaces", "/client-workspaces"], ["Claude Code orchestrator", "/claude-code-orchestrator"], ["Local command center", "/local"]] },
-  { heading: "Resources", links: [["Changelog", "/changelog"], ["RSS feed", "/feed.xml"]] },
+  { heading: "Resources", links: [["Blog", "/blog"], ["Changelog", "/changelog"], ["RSS feed", "/feed.xml"]] },
   { heading: "Legal", links: [["Privacy", "/privacy"], ["Terms", "/terms"], ["Security", "/security"], ["Data Privacy", "/data-privacy"]] },
   {
     heading: "Follow",

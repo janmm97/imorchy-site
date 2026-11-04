@@ -160,6 +160,7 @@ for (const page of pages) {
 }
 assert.equal(same.size, 1, "every page has the identical footer, apart from its back link and aria-current");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Changelog" && h === "/changelog"), "the footer links /changelog");
+assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Blog" && h === "/blog"), "the footer links /blog");
 // Orchy's social accounts, in this order (Jan, 2026-11-04). The home page's Organization sameAs names the same four.
 const SOCIAL = [
   ["Facebook", "https://www.facebook.com/OrchyAI/"],
