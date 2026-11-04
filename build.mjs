@@ -157,7 +157,15 @@ export const FOOTER_COLUMNS = [
   { heading: "Product", links: [["Approvals", "/approvals"], ["Client workspaces", "/client-workspaces"], ["Claude Code orchestrator", "/claude-code-orchestrator"], ["Local command center", "/local"]] },
   { heading: "Resources", links: [["Changelog", "/changelog"], ["RSS feed", "/feed.xml"]] },
   { heading: "Legal", links: [["Privacy", "/privacy"], ["Terms", "/terms"], ["Security", "/security"], ["Data Privacy", "/data-privacy"]] },
-  { heading: "Follow", links: [["Facebook", "https://www.facebook.com/OrchyAI/"], ["YouTube", "https://www.youtube.com/@orchy-ai"]] },
+  {
+    heading: "Follow",
+    links: [
+      ["Facebook", "https://www.facebook.com/OrchyAI/"],
+      ["Instagram", "https://www.instagram.com/orchyai/"],
+      ["X", "https://x.com/OrchyAI"],
+      ["YouTube", "https://www.youtube.com/@orchy-ai"],
+    ],
+  },
 ];
 const FOOTER_TAG = /[ \t]*<footer\b[\s\S]*?<\/footer>/g;
 export function footer(p) {

@@ -160,6 +160,18 @@ for (const page of pages) {
 }
 assert.equal(same.size, 1, "every page has the identical footer, apart from its back link and aria-current");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Changelog" && h === "/changelog"), "the footer links /changelog");
+// Orchy's social accounts, in this order (Jan, 2026-11-04). The home page's Organization sameAs names the same four.
+const SOCIAL = [
+  ["Facebook", "https://www.facebook.com/OrchyAI/"],
+  ["Instagram", "https://www.instagram.com/orchyai/"],
+  ["X", "https://x.com/OrchyAI"],
+  ["YouTube", "https://www.youtube.com/@orchy-ai"],
+];
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Follow")?.links, SOCIAL, "the footer's Follow column links Facebook, Instagram, X and YouTube, in that order");
+for (const [, url] of SOCIAL) assert.ok(footer("/").includes(`<a href="${url}" target="_blank" rel="noopener noreferrer">`), `footer opens ${url} in a new tab, safely`);
+const org = [...fs.readFileSync(SITE + "index.html", "utf8").matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+  .flatMap((m) => [JSON.parse(m[1])]).flatMap((j) => j["@graph"] ?? [j]).find((n) => n["@type"] === "Organization");
+assert.deepEqual([...(org?.sameAs ?? [])].sort(), SOCIAL.map(([, u]) => u).sort(), "index.html's Organization sameAs lists the four social accounts");
 ok(`one footer: all ${pages.length} pages carry the shared footer; its site links resolve to built pages`);
 
 // ── the changelog names no pull requests (Jan, 2026-11-03): no "PR #nn" and no /pull/ links in the page or the feed ──
