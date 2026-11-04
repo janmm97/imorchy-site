@@ -1,0 +1,5 @@
+Contact: mailto:security@withone.ai
+Expires: 2027-10-31T23:59:59Z
+Policy: https://imorchy.dev/security
+Canonical: https://imorchy.dev/.well-known/security.txt
+Preferred-Languages: en

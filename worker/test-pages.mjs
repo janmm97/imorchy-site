@@ -62,7 +62,9 @@ const sitemap = fs.readFileSync(SITE + "sitemap.xml", "utf8");
 const head = (html, re) => html.match(re)?.[1];
 const titles = new Set([head(home, /<title>([^<]+)<\/title>/)]);
 const descriptions = new Set([head(home, /name="description"\s+content="([^"]+)"/)]);
-for (const slug of ANSWER) {
+// What every content page shares: it exists, one H1, self-canonical, og:url and og:image, no scripts but JSON-LD,
+// a title and description no other page uses, and a sitemap entry. Returns the page's HTML.
+const contentPage = (slug) => {
   assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
   const html = fs.readFileSync(SITE + `${slug}.html`, "utf8");
   const url = `https://imorchy.dev/${slug}`;
@@ -70,19 +72,23 @@ for (const slug of ANSWER) {
   assert.ok(html.includes(`<link rel="canonical" href="${url}" />`), `${slug}: self-canonical`);
   assert.ok(html.includes(`<meta property="og:url" content="${url}" />`), `${slug}: og:url`);
   assert.ok(html.includes('<meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />'), `${slug}: og:image`);
-  assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), `${slug}: FAQPage JSON-LD`);
   const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map((m) => m[0]);
   assert.ok(scripts.every((s) => s === '<script type="application/ld+json">'), `${slug}: no scripts but JSON-LD`);
-  assert.ok(!/<canvas|importmap|three\.module/i.test(html), `${slug}: no canvas or Three.js`);
   const title = head(html, /<title>([^<]+)<\/title>/);
   const description = head(html, /name="description" content="([^"]+)"/);
   assert.ok(title && !titles.has(title), `${slug}: unique title`);
   assert.ok(description && !descriptions.has(description), `${slug}: unique meta description`);
   titles.add(title);
   descriptions.add(description);
+  assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${slug}: in sitemap.xml`);
+  return html;
+};
+for (const slug of ANSWER) {
+  const html = contentPage(slug);
+  assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), `${slug}: FAQPage JSON-LD`);
+  assert.ok(!/<canvas|importmap|three\.module/i.test(html), `${slug}: no canvas or Three.js`);
   assert.ok(html.includes('href="/"'), `${slug}: links home`);
   assert.ok(html.includes('href="https://flaxen-crayon-74f.notion.site/'), `${slug}: links to the early-access form`);
-  assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${slug}: in sitemap.xml`);
   assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
 }
 const approvals = visibleText(fs.readFileSync(SITE + "approvals.html", "utf8"));
@@ -93,6 +99,26 @@ assert.equal(
 );
 assert.ok(pages.length >= 5, "home plus the four answer pages are checked");
 ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts, in the sitemap, linked from home");
+
+// ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
+// markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
+const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", security: "Security", "data-privacy": "Data Privacy: DPA and sub-processors" };
+for (const [slug, h1] of Object.entries(LEGAL)) {
+  const html = contentPage(slug);
+  assert.ok(html.includes(`<h1>${h1}</h1>`), `${slug}: the H1 is "${h1}"`);
+  assert.doesNotMatch(html, /name="robots"/i, `${slug}: no robots meta`);
+  assert.ok(jsonLd(html).some((n) => n["@type"] === "WebPage" && n.url === `https://imorchy.dev/${slug}` && n.name === h1), `${slug}: WebPage JSON-LD`);
+  assert.doesNotMatch(html, /\[\[|\]\]|DRAFT|TODO/, `${slug}: no placeholders or draft markers`);
+  assert.doesNotMatch(visibleText(html), /\bPR\s*#\d+/i, `${slug}: no PR numbers`);
+  const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
+  levels.forEach((l, i) => i && assert.ok(l <= levels[i - 1] + 1, `${slug}: heading h${l} skips a level after h${levels[i - 1]}`));
+  const tables = html.match(/<table\b/g)?.length ?? 0;
+  const boxed = html.match(/<div class="table-scroll" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
+  assert.equal(boxed, tables, `${slug}: every table sits in a labelled .table-scroll box`);
+  if (slug === "privacy") assert.equal(tables, 2, "privacy.html has its two tables");
+  assert.ok(FOOTER_COLUMNS.some((c) => c.heading === "Legal" && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal group`);
+}
+ok(`legal pages: ${Object.keys(LEGAL).length} pages, one H1 each, indexable, no scripts or placeholders, tables in scroll boxes, in the sitemap and the footer`);
 
 // ── one logo (Jan, 2026-10-31): every page's tab icon is orchy-icon-64.png, cut from orchy-main.svg; the old robot
 // favicon.svg is gone and no page names it ──
@@ -111,7 +137,7 @@ ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab 
 
 // ── one footer (Jan, 2026-11-03): every shipped page has build.mjs's shared footer, the same on all of them except
 // the back link and aria-current, and every site link in it resolves to a page in the sitemap or a built file ──
-const SHIPPED = ["index", "approvals", "local", "client-workspaces", "claude-code-orchestrator", "changelog"];
+const SHIPPED = ["index", "approvals", "local", "client-workspaces", "claude-code-orchestrator", "changelog", ...Object.keys(LEGAL)];
 for (const slug of SHIPPED) assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
 const pathOf = (page) => (page === "index.html" ? "/" : "/" + page.replace(/\.html$/, ""));
 const locs = [...fs.readFileSync(SITE + "sitemap.xml", "utf8").matchAll(/<loc>https:\/\/imorchy\.dev([^<]*)<\/loc>/g)].map((m) => m[1]);

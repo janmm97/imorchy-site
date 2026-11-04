@@ -37,7 +37,7 @@ const button = fs.readFileSync(fileURLToPath(new URL("../index.html", import.met
 const videoOffered = button && !/\sdisabled[\s>=]/.test(button);
 
 const checks = [
-  ...PAGES.filter((page) => !page.ships).map((page) => {
+  ...PAGES.map((page) => {
     let problems = [];
     return {
       name: `https://${domain}${page.path} answers 200 with its type, markers and security headers`,
@@ -117,7 +117,7 @@ const checks = [
       run: () => fetch(`https://${domain}/`, { method: "HEAD", headers: UA, redirect: "manual" }),
       pass: async (res) => {
         problems = [];
-        for (const page of PAGES.filter((p) => !p.ships && p.type === "text/html")) {
+        for (const page of PAGES.filter((p) => p.type === "text/html")) {
           const r = page.path === "/" ? res : await fetch(`https://${domain}${page.path}`, { method: "HEAD", headers: UA, redirect: "manual" });
           if (r.status !== 200 || r.headers.get("location")) problems.push(`${page.path}: HTTP ${r.status}`);
         }

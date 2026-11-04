@@ -70,12 +70,14 @@ const workerFirst = (p) =>
   RUN_WORKER_FIRST.some((r) => !r.startsWith("!") && glob(r).test(p)) &&
   !RUN_WORKER_FIRST.some((r) => r.startsWith("!") && glob(r.slice(1)).test(p));
 const ANSWER_PAGES = ["/approvals", "/client-workspaces", "/claude-code-orchestrator", "/local"];
-for (const p of ["/", ...ANSWER_PAGES, "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html"])
+const LEGAL = ["/privacy", "/terms", "/security", "/data-privacy", "/.well-known/security.txt"];
+for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
+assert.equal(TYPES[".txt"], "text/plain; charset=utf-8", "security.txt is served as text/plain (RFC 9116)");
 for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png"])
   assert.ok(!workerFirst(p), `${p} should skip the Worker`);
-// Every file on disk: root pages (.html, .xml, .txt) and videos reach the Worker, every other file skips it.
-const page = (rel) => (!rel.includes("/") && /\.(html|xml|txt)$/.test(rel)) || rel.endsWith(".mp4");
+// Every file on disk: root pages (.html, .xml, .txt), .well-known files and videos reach the Worker, every other file skips it.
+const page = (rel) => (!rel.includes("/") && /\.(html|xml|txt)$/.test(rel)) || rel.startsWith(".well-known/") || rel.endsWith(".mp4");
 for (const rel of files) assert.equal(workerFirst("/" + rel), page(rel), `/${rel} should ${page(rel) ? "reach" : "skip"} the Worker`);
 const exts = [...new Set(files.filter((f) => f.startsWith("assets/")).map((f) => path.extname(f)))].sort();
 ok(`run_worker_first: pages, videos and google*.html reach the Worker; CSS, JS, fonts and every asset type (${exts.join(" ")}) skip it`);

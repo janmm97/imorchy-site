@@ -783,7 +783,7 @@ h3 {
 }
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 36px 24px;
 }
 .footer-heading {
@@ -3447,7 +3447,8 @@ body::before {
 .answer strong {
   color: var(--text);
 }
-.answer ol {
+.answer ol,
+.legal ul {
   margin: 20px 0 0;
   padding-left: 1.4em;
 }
@@ -3463,6 +3464,7 @@ body::before {
 .answer td {
   padding: 10px 14px 10px 0;
   text-align: left;
+  vertical-align: top;
   border-bottom: 1px solid var(--line);
 }
 .answer th {
@@ -3472,8 +3474,46 @@ body::before {
   margin-top: 48px;
 }
 .answer-links a,
-.answer p a:not(.button) {
+.answer p a:not(.button),
+.legal li a,
+.legal td a {
   color: var(--mint);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* Legal pages (/privacy, /terms, /security, /data-privacy): long text, lists, quotes and wide tables. */
+.legal {
+  overflow-wrap: break-word;
+}
+.legal h1 + p {
+  margin-top: 20px;
+}
+.legal h3 {
+  margin-top: 32px;
+  font-size: 18px;
+}
+.legal code {
+  font-size: 0.92em;
+  color: var(--text);
+}
+.legal blockquote {
+  margin: 20px 0 0;
+  padding: 2px 0 2px 18px;
+  border-left: 2px solid var(--line);
+  overflow-wrap: anywhere;
+}
+/* Wide tables scroll sideways inside their own box, so a 360px phone never scrolls the whole page. */
+.table-scroll {
+  margin-top: 20px;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+.table-scroll:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 4px;
+}
+.table-scroll table {
+  min-width: 640px;
+  margin-top: 0;
 }

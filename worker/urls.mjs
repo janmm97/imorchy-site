@@ -3,8 +3,7 @@
 // after each deploy. ADR "imorchy.dev content, legal pages and access" (2026-11-03), point 7. Side-effect free.
 //
 // Each page: { path, type (Content-Type prefix), profile ("hero" | "page" for HTML: which CSP), markers (text that
-// must be in the raw HTML, no JS), ships? }. `ships: "legal-pr"` marks a URL whose file comes in a later PR: until
-// then only its routing is checked, and the PR that adds the file removes the mark, so from then on a missing file fails.
+// must be in the raw HTML, no JS) }. Every listed URL's file must exist under site/.
 
 export const ORIGIN = "https://imorchy.dev";
 
@@ -26,12 +25,12 @@ export const PAGES = [
   { path: "/local", type: "text/html", profile: "page", markers: ["<h1>A command center for AI agents on your own computer</h1>"] },
   { path: "/robots.txt", type: "text/plain", markers: ["Sitemap: https://imorchy.dev/sitemap.xml"] },
   { path: "/sitemap.xml", type: "application/xml", markers: ["<urlset"] },
-  // The legal pages and security.txt (RFC 9116): direct 200, no redirect, once the legal PR ships them.
-  { path: "/privacy", type: "text/html", profile: "page", markers: [], ships: "legal-pr" },
-  { path: "/terms", type: "text/html", profile: "page", markers: [], ships: "legal-pr" },
-  { path: "/security", type: "text/html", profile: "page", markers: [], ships: "legal-pr" },
-  { path: "/data-privacy", type: "text/html", profile: "page", markers: [], ships: "legal-pr" },
-  { path: "/.well-known/security.txt", type: "text/plain", markers: ["Contact:", "Expires:"], ships: "legal-pr" },
+  // The legal pages and security.txt (RFC 9116): direct 200, no redirect.
+  { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc."] },
+  { path: "/terms", type: "text/html", profile: "page", markers: ["<h1>Terms of Use</h1>", "One Systems, Inc."] },
+  { path: "/security", type: "text/html", profile: "page", markers: ["<h1>Security</h1>", "/.well-known/security.txt"] },
+  { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1>Data Privacy: DPA and sub-processors</h1>"] },
+  { path: "/.well-known/security.txt", type: "text/plain", markers: ["Contact:", "Expires:", "Canonical: https://imorchy.dev/.well-known/security.txt"] },
 ];
 
 /** One address: each of these answers 301 straight to `to`, which answers 200 (one hop, no loop). */

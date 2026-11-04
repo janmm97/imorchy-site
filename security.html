@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Security | Orchy AI</title>
+    <meta name="description" content="How Orchy keeps your work on your own computer, what it protects, where the limits are, and how to report a security problem." />
+    <meta name="theme-color" content="#080a0d" />
+    <link rel="canonical" href="https://imorchy.dev/security" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Orchy AI" />
+    <meta property="og:url" content="https://imorchy.dev/security" />
+    <meta property="og:title" content="Security | Orchy AI" />
+    <meta property="og:description" content="How Orchy keeps your work on your own computer, what it protects, where the limits are, and how to report a security problem." />
+    <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Orchy AI: run your AI agents from your own computer" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Security | Orchy AI" />
+    <meta name="twitter:description" content="How Orchy keeps your work on your own computer, what it protects, where the limits are, and how to report a security problem." />
+    <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
+    <meta name="twitter:image:alt" content="Orchy AI: run your AI agents from your own computer" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Security",
+        "dateModified": "2026-11-04",
+        "url": "https://imorchy.dev/security"
+      }
+    </script>
+    <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
+    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="nav">
+      <div class="nav-inner wrap">
+        <a class="brand" href="/" aria-label="Orchy AI home"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="34" height="34" alt="" /><span>Orchy</span></a>
+      </div>
+    </header>
+    <main id="main" class="answer legal wrap">
+      <article>
+        <h1>Security</h1>
+<p><strong>Last updated:</strong> November 4, 2026 · <strong>Version</strong> 1.0</p>
+<p>Orchy is built so that your work stays on your own computer. This page explains how that works, what we protect, where the limits are, and how to report a security problem.</p>
+<p>We hold no security certifications for Orchy (such as SOC 2 or ISO 27001). This page describes what the software does, not an audit.</p>
+<h2>1. Local first</h2>
+<ul><li>The Orchy app runs on your computer. Its dashboard listens only on your own machine (127.0.0.1), so other devices on your network can't open it.</li><li>Orchy does not send your tasks, files, keys or logs to us. There is no telemetry.</li><li>Data leaves your computer only when you connect a service yourself (your AI engine, a routing provider, One, voice providers, Cloudflare). It goes straight from your computer to that service, under your own account.</li></ul>
+<h2>2. Who can control your Orchy</h2>
+<ul><li><strong>Paired browsers only.</strong> A browser must be paired with a one-time code before it can change anything. Any change request must come from a paired browser and carry that browser's key.</li><li><strong>Approval gate.</strong> Before an agent sends a message, spends money, changes a calendar, deletes something or shares something, Orchy asks you to approve it.</li><li><strong>Separate accounts.</strong> Each workspace uses its own logins for connected apps. Accounts are never mixed between workspaces.</li></ul>
+<h2>3. Secrets</h2>
+<ul><li>The API keys you enter are stored in a settings file (<code>.env</code>) on your computer. They are <strong>not encrypted</strong> by Orchy. Protect your computer with a login password and disk encryption.</li><li>Login tokens for remote tool servers (MCP) are stored in a file only your user account can read.</li></ul>
+<h2>4. Client pages (optional)</h2>
+<p>If you turn on client pages, they run on a separate port and are reached through Cloudflare Tunnel, with Cloudflare Access checking each visitor's identity first. The main dashboard is never exposed this way.</p>
+<h2>5. Our website</h2>
+<ul><li>imorchy.dev is served over HTTPS only. Plain HTTP requests are redirected to HTTPS, and browsers are told to use HTTPS for a year (HSTS).</li><li>A strict Content Security Policy lets pages load code only from imorchy.dev. The one exception is a 3D graphics library loaded from jsDelivr on the home page.</li><li>The site sets no cookies of its own, has no login and runs no analytics.</li><li>Other protections: no framing by other sites, no MIME sniffing, a strict referrer policy, and camera, microphone and location access turned off.</li></ul>
+<h2>6. How we build Orchy</h2>
+<ul><li>Every change goes through a pull request.</li><li>Each pull request is checked by a QA and security reviewer and then reviewed again before it can be merged.</li><li>Each pull request is scanned for leaked secrets before review.</li><li>Automated tests run on each pull request, on Windows and Linux.</li></ul>
+<h2>7. Known limits</h2>
+<p>We'd rather be clear about what Orchy can't protect against:</p>
+<ul><li>The approval gate is a filter, not a sandbox. Agents run with your user account's permissions.</li><li>If your AI engine account or your One account is compromised, an attacker could act through it.</li><li>Other software running as your user on the same computer can read Orchy's files.</li></ul>
+<h2>8. Report a vulnerability</h2>
+<p>Please report security problems privately, not in public: email <strong>security@withone.ai</strong>.</p>
+<p>Please give us a reasonable time to fix the problem before you disclose it. Don't access other people's data, disrupt the service, or test against systems that aren't yours. We won't pursue legal action against good-faith research that follows these rules.</p>
+<p>We aim to reply within 5 business days.</p>
+<p>Our machine-readable contact file is at <a href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
+      </article>
+    </main>
+    <footer class="footer wrap">
+      <div class="footer-top" data-perch>
+        <div class="footer-brand">
+          <a class="brand" href="/" aria-label="Orchy AI home"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="42" height="42" alt="" /><span>Orchy</span></a>
+          <p class="footer-tagline">A command center for your AI agents, on your own computer.</p>
+          <a class="footer-back" href="/">Back to Home</a>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <div class="footer-col">
+            <h2 class="footer-heading">Product</h2>
+            <ul>
+              <li><a href="/approvals">Approvals</a></li>
+              <li><a href="/client-workspaces">Client workspaces</a></li>
+              <li><a href="/claude-code-orchestrator">Claude Code orchestrator</a></li>
+              <li><a href="/local">Local command center</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h2 class="footer-heading">Resources</h2>
+            <ul>
+              <li><a href="/changelog">Changelog</a></li>
+              <li><a href="/feed.xml">RSS feed</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h2 class="footer-heading">Legal</h2>
+            <ul>
+              <li><a href="/privacy">Privacy</a></li>
+              <li><a href="/terms">Terms</a></li>
+              <li><a href="/security" aria-current="page">Security</a></li>
+              <li><a href="/data-privacy">Data Privacy</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h2 class="footer-heading">Follow</h2>
+            <ul>
+              <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+              <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <p class="footer-wordmark" aria-hidden="true">Orchy</p>
+    </footer>
+  </body>
+</html>

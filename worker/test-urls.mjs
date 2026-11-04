@@ -75,42 +75,21 @@ const worksFirst = (p) => {
   const glob = (g) => new RegExp("^" + g.split(/\*+/).map((s) => s.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + "$");
   return RUN_WORKER_FIRST.some((r) => !r.startsWith("!") && glob(r).test(p)) && !RUN_WORKER_FIRST.some((r) => r.startsWith("!") && glob(r.slice(1)).test(p));
 };
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchy-urls-"));
-let live = 0;
-try {
-  for (const page of PAGES) {
-    assert.ok(worksFirst(page.path), `${page.path} runs the Worker first, so it gets the headers`);
-    if (!exists(page.path)) {
-      assert.equal(page.ships, "legal-pr", `site/${fileFor(page.path)} is missing, and ${page.path} isn't marked to ship later`);
-      const res = await get(ORIGIN + page.path);
-      assert.equal(res.headers.get("Location"), null, `${page.path}: main.mjs doesn't redirect it`);
-      assert.equal(assetsSeen.at(-1), page.path, `${page.path}: main.mjs hands it to the static assets`);
-      const file = path.join(tmp, fileFor(page.path));
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file, "x");
-      continue;
-    }
-    assert.equal(page.ships, undefined, `site/${fileFor(page.path)} exists: remove ships from ${page.path} in urls.mjs, so check-live.mjs checks it`);
-    live++;
-    const res = await get(ORIGIN + page.path);
-    assert.equal(res.status, 200, page.path);
-    assert.deepEqual(headerProblems(res.headers, page, CSP), [], page.path);
-    const body = await res.text();
-    for (const marker of page.markers) assert.ok(body.includes(marker), `${page.path} has ${JSON.stringify(marker)} in its raw HTML`);
-  }
-  const uploaded = siteFiles(tmp).map((f) => f.rel).sort();
-  assert.deepEqual(uploaded, PAGES.filter((p) => !exists(p.path)).map((p) => fileFor(p.path)).sort(), "files.mjs uploads the later pages once they exist");
-} finally {
-  fs.rmSync(tmp, { recursive: true, force: true });
+const uploaded = new Set(siteFiles(SITE).map((f) => f.rel));
+for (const page of PAGES) {
+  assert.ok(worksFirst(page.path), `${page.path} runs the Worker first, so it gets the headers`);
+  assert.ok(uploaded.has(fileFor(page.path)), `site/${fileFor(page.path)} exists and files.mjs uploads it`);
+  const res = await get(ORIGIN + page.path);
+  assert.equal(res.status, 200, page.path);
+  assert.deepEqual(headerProblems(res.headers, page, CSP), [], page.path);
+  const body = await res.text();
+  for (const marker of page.markers) assert.ok(body.includes(marker), `${page.path} has ${JSON.stringify(marker)} in its raw HTML`);
 }
-const sec = PAGES.find((p) => p.path === "/.well-known/security.txt");
-if (exists(sec.path)) {
-  const txt = read(fileFor(sec.path));
-  const expires = Date.parse(/^Expires:\s*(\S+)/m.exec(txt)?.[1]);
-  assert.ok(expires > Date.now() && expires <= Date.now() + 366 * 864e5, "security.txt Expires is in the future and at most a year out");
-  assert.match(txt, /^Canonical: https:\/\/imorchy\.dev\/\.well-known\/security\.txt$/m);
-}
-ok(`${live} live URLs answer 200 with no redirect, the right type, their raw-HTML markers and the headers per profile; ${PAGES.length - live} legal URLs (ships: "legal-pr") route through the Worker untouched and would upload`);
+const txt = read(fileFor("/.well-known/security.txt"));
+const expires = Date.parse(/^Expires:\s*(\S+)/m.exec(txt)?.[1]);
+assert.ok(expires > Date.now() && expires <= Date.now() + 366 * 864e5, "security.txt Expires is in the future and at most a year out");
+assert.match(txt, /^Canonical: https:\/\/imorchy\.dev\/\.well-known\/security\.txt$/m);
+ok(`${PAGES.length} listed URLs exist, upload, and answer 200 with no redirect, the right type, their raw-HTML markers and the headers per profile; security.txt's Expires is within a year`);
 
 // ── every shipped HTML page is fit for search (spec item 1): the same seoProblems build.mjs --check runs ──
 const shipped = PAGES.filter((p) => p.type === "text/html" && exists(p.path));
@@ -257,6 +236,15 @@ try {
   assert.equal(markdown("[a](//evil.example) [b](/\\evil.example) [c](\\\\evil.example) [d](/ok)"), '<p>a b c <a href="/ok">d</a></p>');
   // Emphasis stays out of link targets and code; a lone * between spaces is just a star.
   assert.match(markdown("[x](/p/*b*/) and *em* and `*c*` and 2 * 3 * 4"), /<a href="\/p\/\*b\*\/">x<\/a> and <em>em<\/em> and <code>\*c\*<\/code> and 2 \* 3 \* 4/);
+  // A pipe table (header, rule, rows) ends the paragraph above it and sits in a labelled, focusable scroll box.
+  assert.equal(
+    markdown("Who gets it:\n| **What** | Why <b> |\n|---|:-:|\n| A & B | [x](/privacy) |\n| C | D |\nAfter"),
+    '<p>Who gets it:</p>\n<div class="table-scroll" role="region" tabindex="0" aria-label="Table: What, Why &lt;b&gt;"><table><thead><tr>' +
+      '<th scope="col"><strong>What</strong></th><th scope="col">Why &lt;b&gt;</th></tr></thead><tbody>' +
+      '<tr><td>A &amp; B</td><td><a href="/privacy">x</a></td></tr><tr><td>C</td><td>D</td></tr></tbody></table></div>\n<p>After</p>',
+  );
+  // Pipes without a rule line under them are just text.
+  assert.equal(markdown("| a | b |\nno rule"), "<p>| a | b | no rule</p>");
   fs.rmSync(path.join(fx, "content", "blog"), { recursive: true });
   fs.rmSync(path.join(fx, "content", "changelog"), { recursive: true });
   assert.deepEqual([...build(fx, { today: "2026-11-02" }).files.keys()], ["index.html", "sitemap.xml"], "no content: only the sitemap and the footer stamped on the hand-written page");

@@ -61,10 +61,14 @@ function inline(text) {
     .replace(/(^|[^\w*])\*(?!\s)([^*]+?)(?<!\s)\*(?![\w*])/g, "$1<em>$2</em>")
     .replace(/\u0000(\d+)\u0000/g, (_, i) => held[i]);
 }
-const BLOCK = /^(```|#{1,5}\s|>|[-*]\s|\d+\.\s)/;
+const BLOCK = /^(```|#{1,5}\s|>|[-*]\s|\d+\.\s|\|)/;
+const TABLE_ROW = /^\|[^\n]*\|\s*$/;
+const TABLE_RULE = /^\|(\s*:?-+:?\s*\|)+\s*$/;
+const cells = (row) => row.trim().slice(1, -1).split("|").map((c) => c.trim());
 /**
- * The markdown subset: headings, paragraphs, lists, blockquotes, fenced code, inline code, emphasis and links. Every
- * character of text is HTML-escaped. Headings shift down one level (# → h2): the page title is the only h1.
+ * The markdown subset: headings, paragraphs, lists, blockquotes, pipe tables, fenced code, inline code, emphasis and
+ * links. Every character of text is HTML-escaped. Headings shift down one level (# → h2): the page title is the only
+ * h1. A table sits in a focusable, labelled scroll box so it stays readable on a 360px phone.
  */
 export function markdown(md) {
   const lines = lf(md).split("\n");
@@ -85,6 +89,14 @@ export function markdown(md) {
       const quote = [];
       while (i < lines.length && lines[i].startsWith(">")) quote.push(lines[i++].replace(/^>\s?/, ""));
       out.push(`<blockquote>${markdown(quote.join("\n"))}</blockquote>`);
+    } else if (TABLE_ROW.test(line) && TABLE_RULE.test(lines[i + 1] || "")) {
+      const head = cells(line);
+      const rows = [];
+      for (i += 2; i < lines.length && TABLE_ROW.test(lines[i]); i++) rows.push(cells(lines[i]));
+      const label = esc(`Table: ${head.join(", ").replace(/[*`]/g, "")}`);
+      const th = head.map((c) => `<th scope="col">${inline(c)}</th>`).join("");
+      const body = rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("");
+      out.push(`<div class="table-scroll" role="region" tabindex="0" aria-label="${label}"><table><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`);
     } else if (/^([-*]|\d+\.)\s/.test(line)) {
       const tag = /^\d/.test(line) ? "ol" : "ul";
       // [^\n] rather than ., so a pasted U+2028 can't make the opening line fail to match (and loop forever).
@@ -139,11 +151,12 @@ export function generatedProblems(html) {
 /**
  * The site footer, one source for every page (Jan, 2026-11-03): page() puts it on the generated pages and build()
  * stamps it over the one <footer> of each hand-written page in pages.json, so --check fails if any page drifts.
- * Columns are data: when the legal pages are live, add { heading: "Legal", links: [...] } as one more row.
+ * Columns are data: a new group is one more row.
  */
 export const FOOTER_COLUMNS = [
   { heading: "Product", links: [["Approvals", "/approvals"], ["Client workspaces", "/client-workspaces"], ["Claude Code orchestrator", "/claude-code-orchestrator"], ["Local command center", "/local"]] },
   { heading: "Resources", links: [["Changelog", "/changelog"], ["RSS feed", "/feed.xml"]] },
+  { heading: "Legal", links: [["Privacy", "/privacy"], ["Terms", "/terms"], ["Security", "/security"], ["Data Privacy", "/data-privacy"]] },
   { heading: "Follow", links: [["Facebook", "https://www.facebook.com/OrchyAI/"], ["YouTube", "https://www.youtube.com/@orchy-ai"]] },
 ];
 const FOOTER_TAG = /[ \t]*<footer\b[\s\S]*?<\/footer>/g;
