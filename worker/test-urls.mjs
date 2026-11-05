@@ -177,7 +177,23 @@ try {
   put("index.html", read("index.html"));
   put("assets/og-image.png", "png");
   put("content/pages.json", '[{ "path": "/", "lastmod": "2026-10-30" }]');
-  put("content/blog/2026-10-31-first-post.md", "---\ntitle: First <post>\ndescription: A test post.\ndate: 2026-10-31\nupdated: 2026-11-01\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n---\n# Why\n\nText with `code`, **bold**, [a link](/approvals) and [bad](javascript:alert(1)).\n\n<script>alert(1)</script>\n\n- one\n- two\n");
+  // A WebP header the build can size: RIFF + WEBP + a VP8X chunk holding width-1 and height-1 as 24-bit numbers.
+  const webp = (w, h) => {
+    const b = Buffer.alloc(30);
+    b.write("RIFF", 0, "latin1");
+    b.writeUInt32LE(22, 4);
+    b.write("WEBPVP8X", 8, "latin1");
+    b.writeUInt32LE(10, 16);
+    b.writeUIntLE(w - 1, 24, 3);
+    b.writeUIntLE(h - 1, 27, 3);
+    return b;
+  };
+  put("assets/blog/first-post.webp", webp(1600, 900));
+  const IMG = "image: /assets/blog/first-post.webp\nimage_alt: Two cartoon helpers at a desk.\ntag: How-to\n";
+  const CHART =
+    "```chart\ntype: bar\ntitle: Wages\nnote: Per hour.\nsource: Source: [BLS](https://www.bls.gov/oes/tables.htm)\nmax: 90\nstep: 30\nprefix: $\next: 0.3\n" +
+    "legend: Wage | +30% costs\ncolumns: Job | Wage | Page\nrows:\n  - label: A & B | v: 36.82 | src: [bls.gov](https://www.bls.gov/oes/tables.htm)\n```\n";
+  put("content/blog/2026-10-31-first-post.md", "---\ntitle: First <post>\ndescription: A test post.\ndate: 2026-10-31\nupdated: 2026-11-01\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n" + IMG + "takeaways:\n  - One.\n  - Two.\n---\n# Why\n\nText with `code`, **bold**, [a link](/approvals) and [bad](javascript:alert(1)).\n\n<script>alert(1)</script>\n\n- one\n- two\n\n" + CHART);
   put("content/changelog/2026-10-31-v1.md", "---\ntitle: v1\ndescription: The first release.\ndate: 2026-10-31\nsecurity: false\n---\nFirst release.\n");
   const out = build(fx, { today: "2026-11-02" });
   assert.deepEqual(out.problems, []);
@@ -190,6 +206,18 @@ try {
   assert.ok(post.includes("<h1>First &lt;post&gt;</h1>") && out.pages[1].markers[0] === "<h1>First &lt;post&gt;</h1>", "the title is escaped, and the row's marker matches it");
   assert.ok(post.includes("<h2>Why</h2>") && post.includes("<code>code</code>") && post.includes('<a href="/approvals">a link</a>') && post.includes("<li>two</li>"));
   assert.ok(post.includes("&lt;script&gt;alert(1)&lt;/script&gt;") && !post.includes("javascript:"), "HTML in markdown is text; a javascript: link is dropped");
+  // Blog design: breadcrumb, read time, featured image with its alt, takeaways, CTA; one post → no "More posts", only "← All posts".
+  assert.ok(post.includes('<nav class="crumbs" aria-label="Breadcrumb"><a href="/blog">Blog</a> <span aria-hidden="true">/</span> <span class="tag">How-to</span></nav>'));
+  assert.ok(post.includes('<time datetime="2026-10-31">Oct 31, 2026</time> · 1 min read · Updated <time datetime="2026-11-01">Nov 1, 2026</time>'));
+  assert.ok(post.includes('<img src="/assets/blog/first-post.webp" width="1600" height="900" alt="Two cartoon helpers at a desk." fetchpriority="high" />'));
+  assert.ok(post.includes("<li>One.</li><li>Two.</li>") && post.includes('class="cta-card"') && post.includes('<a href="/blog">← All posts</a>') && !post.includes("More posts"));
+  assert.match(post, /"@type": "BlogPosting"[\s\S]*"image": "https:\/\/imorchy\.dev\/assets\/blog\/first-post\.webp"/, "BlogPosting image is the featured image");
+  assert.ok(out.files.get("blog.html").includes('class="lead-card"') && !out.files.get("blog.html").includes("More posts"), "one post: a lead card and no grid");
+  // The chart is static HTML (the page loop above found no script): bars from the data, a text description and the numbers table.
+  assert.ok(post.includes('<figure class="viz" aria-labelledby="chart-1-t" aria-describedby="chart-1-d">'));
+  assert.ok(post.includes('<span class="viz-bar b" style="left:0;width:40.91%"') && post.includes('<span class="viz-bar ext" style="left:40.91%;width:12.27%"'));
+  assert.ok(post.includes('$36.82 <small>→ ~$48</small>') && post.includes('id="chart-1-d">Wages. A &amp; B: $36.82, about $48 with +30% costs.</p>'));
+  assert.ok(post.includes('<summary>See the numbers</summary>') && post.includes('<td><a href="https://www.bls.gov/oes/tables.htm">bls.gov</a></td>') && !post.includes("<canvas"));
   assert.match(out.files.get("feed.xml"), /<updated>2026-11-01T00:00:00Z<\/updated>\n  <author>/);
   assert.deepEqual(build(fx, { today: "2026-11-02" }).files, out.files, "the same sources give the same bytes");
   for (const [rel, text] of out.files) put(rel, text);
@@ -206,6 +234,18 @@ try {
   assert.equal(cli(fx, ["--check"], say), 1, "--check exits 1 on the orphan too");
   fs.rmSync(path.join(fx, "blog/old.html"));
   assert.deepEqual([cli(fx, [], say), cli(fx, ["--check"], say)], [0, 0], "no orphan: both modes pass");
+  // Two posts: the index shows the newest as the lead card and the other in the grid; each post links the other.
+  const X = (fields) => "---\ntitle: X\ndescription: D\ndate: 2026-10-30\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/x\n" + fields + "---\nBody.\n";
+  put("assets/blog/x.webp", webp(800, 450));
+  put("content/blog/2026-10-30-second.md", X(IMG).replace(/\/x\b/, "/second").replace("first-post", "second"));
+  put("assets/blog/second.webp", webp(1600, 900));
+  const two = build(fx, { today: "2026-11-02" });
+  assert.deepEqual(two.problems, []);
+  assert.match(two.files.get("blog.html"), /class="lead-card"[\s\S]*href="\/blog\/first-post"[\s\S]*id="more-h">More posts[\s\S]*class="card"[\s\S]*href="\/blog\/second"/);
+  assert.match(two.files.get("blog/first-post.html"), /id="more-h">More posts[\s\S]*href="\/blog\/second"/);
+  fs.rmSync(path.join(fx, "content/blog/2026-10-30-second.md"));
+  // Without a ctx, a bad chart throws instead of rendering half a figure.
+  assert.throws(() => markdown("```chart\ntype: pie\n```"), /type must be range or bar/);
   for (const [file, text, why] of [
     ["content/blog/2026-12-01-later.md", "---\ntitle: L\ndescription: D\ndate: 2026-12-01\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/later\n---\n", /after today/],
     ["content/blog/2026-10-30-x.md", "---\ntitle: X\ndescription: D\ndate: 2026-10-30\nog_image: /assets/nope.png\ncanonical: https://imorchy.dev/blog/y\n---\n", /canonical must be[\s\S]*og_image/],
@@ -220,6 +260,13 @@ try {
     ["content/pages.json", '{ "path": "/" }', /content\/pages\.json: must be a list/],
     ["content/blog/2026-10-29-first-post.md", "---\ntitle: F\ndescription: D\ndate: 2026-10-29\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n---\n", /duplicate slug: blog\/first-post/],
     ["content/pages.json", '[{ "path": "/", "lastmod": "2026-10-30" }, { "path": "/blog", "lastmod": "2026-10-30" }]', /\/blog is a generated page/],
+    // Blog design: featured image, alt, tag and takeaways rules, and charts that don't match their data.
+    ["content/blog/2026-10-30-x.md", X("image_alt: A desk.\ntag: Pricing\n"), /missing image(?!_)/],
+    ["content/blog/2026-10-30-x.md", X("image: /assets/blog/x.webp\ntag: Pricing\n"), /^(?=[\s\S]*missing image_alt)(?=[\s\S]*x\.webp must be a 1600x900 WebP \(got 800x450\))/],
+    ["content/blog/2026-10-30-x.md", X("image: /assets/blog/other.webp\nimage_alt: Image\ntag: News\ntakeaways:\n  - Only one.\n"), /^(?=[\s\S]*image must be \/assets\/blog\/x\.webp)(?=[\s\S]*image_alt must say)(?=[\s\S]*tag "News" must be one of)(?=[\s\S]*takeaways must be 2 to 4)/],
+    ["content/blog/2026-10-30-x.md", X("description:\n  - D\n"), /description must be one line, not a list/],
+    ["content/blog/2026-10-30-x.md", X(IMG) + "```chart\ntype: range\ntitle: T\nnote: N\nsource: S\nmax: 10\ncolumns: A | B | C\nrows:\n  - label: Low | lo: 9 | hi: 5 | src: S\n```\n", /chart row "Low": lo 9 is above hi 5/],
+    ["content/blog/2026-10-30-x.md", X(IMG) + "```chart\ntype: bar\ntitle: T\nnote: N\nsource: S\nmax: 10\ncolumns: A | B | C\nrows:\n  - label: Big | v: 12\n```\n", /^(?=[\s\S]*chart row "Big": missing src)(?=[\s\S]*chart row "Big": 12 is above max 10)/],
   ]) {
     const before = fs.existsSync(path.join(fx, file)) ? fs.readFileSync(path.join(fx, file)) : null;
     put(file, text);
@@ -251,7 +298,7 @@ try {
 } finally {
   fs.rmSync(fx, { recursive: true, force: true });
 }
-ok("build.mjs: blog + changelog fixture → pages, feed and sitemap that pass seoProblems and load no script; escaped HTML, safe links; same bytes twice; stale and orphaned outputs found, and write mode exits 1 on an orphan as --check does; bad sources (blank description, non-list pages.json, duplicate slug) fail");
+ok("build.mjs: blog + changelog fixture → pages, feed and sitemap that pass seoProblems and load no script; escaped HTML, safe links; same bytes twice; stale and orphaned outputs found, and write mode exits 1 on an orphan as --check does; bad sources (blank description, non-list pages.json, duplicate slug) fail; blog cards, featured image (1600x900 WebP, alt, tag, takeaways) and static charts render with no script, and a chart that disagrees with its data (lo > hi, over max, no src) fails");
 
 // ── one address: 301 straight to the https://imorchy.dev URL, which answers 200 (one hop, no loop) ──
 for (const { from, to } of REDIRECTS) {

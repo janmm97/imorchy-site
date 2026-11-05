@@ -5,6 +5,13 @@ date: 2026-11-04
 updated: 2026-11-05
 og_image: /assets/og/virtual-assistant-cost.png
 canonical: https://imorchy.dev/blog/virtual-assistant-cost
+image: /assets/blog/virtual-assistant-cost.webp
+image_alt: Ten of Orchy's blocky cartoon helpers in two rows, each a different colour, on a dark background.
+tag: Pricing
+takeaways:
+  - Where you hire moves the hourly cost more than anything else.
+  - BLS has no VA category; the closest US job is executive and admin assistants.
+  - AI agents suit routine, checkable work: reading, sorting and drafting.
 ---
 
 A virtual assistant's hourly cost depends mostly on where and how you hire. Published figures start at about $5 an hour for a direct hire in the Philippines. In the US, the median wage for executive secretaries and executive administrative assistants is $36.82 an hour, before employer costs. Below is each rate with its source, then where AI agents can take routine tasks off a VA's plate.
@@ -13,20 +20,41 @@ A virtual assistant's hourly cost depends mostly on where and how you hire. Publ
 
 Here are the ranges we found, with the page each one comes from. Vendor figures are what staffing companies publish about their own market, so treat them as ranges, not quotes. We last checked every page in November 2026.
 
-| Hiring option | Hourly range | Source |
-|---|---|---|
-| Direct hire in the Philippines | $5.00 to $11.50, rising with experience | [HireTalent.ph salary guide, 2026](https://www.hiretalent.ph/salary-guide-for-hiring-filipino-virtual-assistants) (vendor-published) |
-| Managed offshore agency, full time | $1,988 to $3,000 a month, an effective $12 to $19 an hour | [MyOutDesk, virtual assistant cost in 2026](https://www.myoutdesk.com/blog/virtual-assistant-cost/) (vendor-published) |
-| Freelance platform | $18 to $35 typical; $50 to $65 for US and Canada specialists | Same MyOutDesk page, which cites the platform's own cost guide (vendor-published) |
-| US-based agency, full time | $4,000 to $8,000 a month | Same MyOutDesk page (vendor-published) |
+```chart
+type: range
+title: What a virtual assistant costs per hour, by how you hire
+note: Low to high, US dollars an hour. Vendor-published ranges, not quotes.
+source: Sources: HireTalent.ph and MyOutDesk pages, checked November 2026. Monthly prices are converted at 160 hours a month (our assumption).
+max: 70
+step: 10
+prefix: $
+columns: Hiring option | Published range | Source
+rows:
+  - label: Direct hire, Philippines | lo: 5 | hi: 11.5 | text: $5.00 to $11.50 an hour, rising with experience | src: [HireTalent.ph salary guide, 2026](https://www.hiretalent.ph/salary-guide-for-hiring-filipino-virtual-assistants) (vendor-published)
+  - label: Managed offshore agency | lo: 12 | hi: 19 | flag: monthly ÷ 160 h | text: $1,988 to $3,000 a month full time, an effective $12 to $19 an hour | src: [MyOutDesk, virtual assistant cost in 2026](https://www.myoutdesk.com/blog/virtual-assistant-cost/) (vendor-published)
+  - label: Freelance platform | lo: 18 | hi: 35 | text: $18 to $35 an hour typical | src: Same MyOutDesk page, which cites the platform's own cost guide (vendor-published)
+  - label: US-based agency | lo: 25 | hi: 50 | flag: monthly ÷ 160 h | text: $4,000 to $8,000 a month full time; $25 to $50 an hour at 160 hours a month (our conversion) | src: Same MyOutDesk page (vendor-published)
+  - label: Freelance, US & Canada specialists | lo: 50 | hi: 65 | text: $50 to $65 an hour | src: Same MyOutDesk page, which cites the platform's own cost guide (vendor-published)
+```
 
 For a US local hire, the main public numbers come from the Bureau of Labor Statistics. These are median hourly wages for May 2025. They are wages only, so payroll tax, health insurance and paid leave come on top. We add about 30% as a rough estimate for those costs. That 30% is our estimate, not a BLS figure.
 
-| Occupation (BLS title) | Median hourly wage, May 2025 | BLS page |
-|---|---|---|
-| Executive secretaries and executive administrative assistants | $36.82 | [bls.gov OEWS tables](https://www.bls.gov/oes/tables.htm), code 43-6011 |
-| Customer service representatives | $21.53 | [bls.gov OEWS tables](https://www.bls.gov/oes/tables.htm), code 43-4051 |
-| Software developers | $65.38 | [bls.gov OEWS tables](https://www.bls.gov/oes/tables.htm), code 15-1252 |
+```chart
+type: bar
+title: US median wages for the closest BLS jobs
+note: Wages only, not a VA rate. BLS has no virtual assistant category.
+source: Source: U.S. Bureau of Labor Statistics, OEWS, May 2025 ([bls.gov](https://www.bls.gov/oes/tables.htm)). The hatched part is our estimate of payroll tax, insurance and leave, as described above.
+max: 90
+step: 15
+prefix: $
+ext: 0.3
+legend: BLS median wage | +30% employer costs (our estimate)
+columns: Occupation (BLS title) | Median hourly wage, May 2025 | BLS page
+rows:
+  - label: Customer service representatives | v: 21.53 | src: [bls.gov OEWS tables](https://www.bls.gov/oes/tables.htm), code 43-4051
+  - label: Executive secretaries and executive administrative assistants | v: 36.82 | src: [bls.gov OEWS tables](https://www.bls.gov/oes/tables.htm), code 43-6011
+  - label: Software developers | v: 65.38 | src: [bls.gov OEWS tables](https://www.bls.gov/oes/tables.htm), code 15-1252
+```
 
 # What changes the cost besides the hourly rate
 

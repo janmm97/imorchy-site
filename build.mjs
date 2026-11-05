@@ -25,8 +25,15 @@ const KINDS = {
   blog: { index: "/blog", title: "Blog", description: "Notes from the team building Orchy AI, a command center for AI agents on your own computer.", pages: true },
   changelog: { index: "/changelog", title: "Changelog", description: "What changed in Orchy AI, release by release.", pages: false },
 };
-const FIELDS = { blog: ["title", "description", "date", "updated", "og_image", "canonical"], changelog: ["title", "description", "date", "updated", "security"] };
-const REQUIRED = { blog: ["title", "description", "date", "og_image", "canonical"], changelog: ["title", "description", "date", "security"] };
+const FIELDS = {
+  blog: ["title", "description", "date", "updated", "og_image", "canonical", "image", "image_alt", "tag", "takeaways"],
+  changelog: ["title", "description", "date", "updated", "security"],
+};
+const REQUIRED = { blog: ["title", "description", "date", "og_image", "canonical", "image", "image_alt", "tag"], changelog: ["title", "description", "date", "security"] };
+// Blog design spec §5 (Jan approved 2026-11-05): a fixed tag list, and a 16:9 featured image small enough for phones.
+const TAGS = ["Pricing", "Hiring", "AI workforce", "How-to"];
+const IMAGE = { width: 1600, height: 900, bytes: 150_000 };
+const BLOG_INTRO = "Notes from the team building Orchy AI: costs, hiring, and how to hand routine work to AI agents while you keep the final say.";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // Line ends and a UTF-8 BOM (Windows editors add one) don't count.
@@ -34,19 +41,48 @@ const lf = (s) => s.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
 const realDate = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && new Date(d + "T00:00:00Z").toISOString().slice(0, 10) === d;
 export const fileFor = (p) => (p === "/" ? "index.html" : path.extname(p) ? p.slice(1) : p.slice(1) + ".html");
 
-/** Front matter (`key: value` lines between `---` fences) and the markdown after it. */
+/**
+ * Front matter (`key: value` lines between `---` fences) and the markdown after it. A key with no value may be
+ * followed by indented `  - item` lines, which make it a list (takeaways).
+ */
 export function parseSource(text) {
   const m = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(lf(text));
   if (!m) return { meta: null, body: lf(text), bad: [] };
   const meta = {};
   const bad = [];
+  let last = null;
   for (const line of m[1].split("\n").filter((l) => l.trim())) {
     const kv = /^([a-z_]+):\s*(.*)$/.exec(line);
-    if (!kv) bad.push(line);
-    else meta[kv[1]] = kv[2].trim().replace(/^"(.*)"$/, "$1");
+    const item = /^\s+-\s+(\S[^\n]*)$/.exec(line);
+    if (kv) meta[(last = kv[1])] = kv[2].trim().replace(/^"(.*)"$/, "$1");
+    else if (item && last && (meta[last] === "" || Array.isArray(meta[last]))) meta[last] = [...(meta[last] || []), item[1].trim()];
+    else bad.push(line);
   }
   return { meta, body: m[2], bad };
 }
+
+/** Width and height of a WebP file from its header (lossy VP8, lossless VP8L or extended VP8X), or null. */
+export function webpSize(buf) {
+  if (buf.length < 30 || buf.toString("latin1", 0, 4) !== "RIFF" || buf.toString("latin1", 8, 12) !== "WEBP") return null;
+  const chunk = buf.toString("latin1", 12, 16);
+  if (chunk === "VP8 " && buf[23] === 0x9d && buf[24] === 0x01 && buf[25] === 0x2a) return { width: buf.readUInt16LE(26) & 0x3fff, height: buf.readUInt16LE(28) & 0x3fff };
+  if (chunk === "VP8L" && buf[20] === 0x2f) {
+    const bits = buf.readUInt32LE(21);
+    return { width: (bits & 0x3fff) + 1, height: ((bits >>> 14) & 0x3fff) + 1 };
+  }
+  if (chunk === "VP8X") return { width: buf.readUIntLE(24, 3) + 1, height: buf.readUIntLE(27, 3) + 1 };
+  return null;
+}
+
+/** Read time in minutes: the words a reader reads (no chart data, no link targets) ÷ 220, rounded up. */
+export function readMinutes(md) {
+  const prose = lf(md)
+    .replace(/^```[\s\S]*?^```/gm, "")
+    .replace(/\]\([^)\s]*\)/g, "]");
+  return Math.max(1, Math.ceil((prose.match(/[\p{L}\p{N}$][\p{L}\p{N}$'’.,%-]*/gu) || []).length / 220));
+}
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const day = (d) => `<time datetime="${d}">${MONTHS[+d.slice(5, 7) - 1]} ${+d.slice(8)}, ${d.slice(0, 4)}</time>`;
 
 // Links may go to https://, a site path or a fragment. Anything else (javascript:, data:) renders as plain text.
 const safeHref = (href) => /^(https:\/\/|\/(?![\/\\])|#)/.test(href);
@@ -65,12 +101,103 @@ const BLOCK = /^(```|#{1,5}\s|>|[-*]\s|\d+\.\s|\|)/;
 const TABLE_ROW = /^\|[^\n]*\|\s*$/;
 const TABLE_RULE = /^\|(\s*:?-+:?\s*\|)+\s*$/;
 const cells = (row) => row.trim().slice(1, -1).split("|").map((c) => c.trim());
+const scrollTable = (label, head, rows) =>
+  `<div class="table-scroll" role="region" tabindex="0" aria-label="${esc(label)}"><table><thead><tr>${head.map((c) => `<th scope="col">${inline(c)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+
+const CHART_KEYS = ["type", "title", "note", "source", "max", "step", "prefix", "ext", "legend", "columns"];
+const ROW_KEYS = { range: ["label", "lo", "hi", "flag", "text", "src"], bar: ["label", "v", "flag", "text", "src"] };
+const NUM = /^\d+(\.\d+)?$/;
 /**
- * The markdown subset: headings, paragraphs, lists, blockquotes, pipe tables, fenced code, inline code, emphasis and
- * links. Every character of text is HTML-escaped. Headings shift down one level (# → h2): the page title is the only
- * h1. A table sits in a focusable, labelled scroll box so it stays readable on a 360px phone.
+ * A ```chart block (blog design spec §7, ADR "Static build-time charts for the blog"): a horizontal range or bar
+ * chart drawn at build time as plain HTML and CSS (inline left/width percentages), so a page still loads no script.
+ * Each figure has a title, note, a text description built from the data (so its numbers can't drift), a source
+ * caption and a "See the numbers" table with every row's exact wording and source link. Returns { html, problems }.
  */
-export function markdown(md) {
+export function chart(src, id) {
+  const problems = [];
+  const c = { rows: [] };
+  for (const line of src) {
+    if (!line.trim()) continue;
+    const row = /^\s+-\s+(.*)$/.exec(line);
+    const kv = /^([a-z]+):\s*(.*)$/.exec(line);
+    if (row) {
+      const r = {};
+      for (const part of row[1].split(/\s+\|\s+/)) {
+        const p = /^([a-z]+):\s*(.*)$/.exec(part.trim());
+        if (!p || !ROW_KEYS[c.type]?.includes(p[1])) problems.push(`chart row: unknown part ${JSON.stringify(part.trim())}`);
+        else r[p[1]] = p[2].trim();
+      }
+      c.rows.push(r);
+    } else if (kv && kv[1] === "rows" && !kv[2].trim()) continue;
+    else if (kv && CHART_KEYS.includes(kv[1])) c[kv[1]] = kv[2].trim();
+    else problems.push(`chart: bad line ${JSON.stringify(line)}`);
+  }
+  if (!ROW_KEYS[c.type]) problems.push(`chart: type must be range or bar, got ${JSON.stringify(c.type)}`);
+  for (const k of ["title", "note", "source", "columns"]) if (!c[k]) problems.push(`chart: missing ${k}`);
+  if (!NUM.test(c.max || "") || !(+c.max > 0)) problems.push("chart: max must be a number above 0");
+  if (c.step && !(NUM.test(c.step) && +c.step > 0)) problems.push("chart: step must be a number above 0");
+  if (c.ext && !(c.type === "bar" && NUM.test(c.ext) && +c.ext > 0 && +c.ext < 1 && c.legend?.split("|").length === 2))
+    problems.push("chart: ext is a bar-only fraction (0.3 = +30%) and needs legend: <bar> | <extension>");
+  if (!c.rows.length) problems.push("chart: no rows");
+  const max = +c.max;
+  const ext = +(c.ext || 0);
+  const cols = (c.columns || "").split("|").map((s) => s.trim());
+  if (c.columns && cols.length !== 3) problems.push("chart: columns names 3 table columns (row, value, source)");
+  for (const r of c.rows) {
+    const name = JSON.stringify(r.label || "?");
+    if (!r.label) problems.push("chart row: missing label");
+    if (!r.src) problems.push(`chart row ${name}: missing src (every row names its source)`);
+    const nums = c.type === "range" ? ["lo", "hi"] : ["v"];
+    for (const k of nums) if (!NUM.test(r[k] || "")) problems.push(`chart row ${name}: ${k} must be a number`);
+    if (c.type === "range" && +r.lo > +r.hi) problems.push(`chart row ${name}: lo ${r.lo} is above hi ${r.hi}`);
+    const top = c.type === "range" ? +r.hi : +r.v * (1 + ext);
+    if (top > max) problems.push(`chart row ${name}: ${top} is above max ${max}`);
+  }
+  if (problems.length) return { html: "", problems };
+
+  const pre = c.prefix || "";
+  const fmt = (n) => pre + (Number.isInteger(n) ? n : n.toFixed(2));
+  const pct = (n) => `${+((n / max) * 100).toFixed(2)}%`;
+  const [barName, extName] = (c.legend || "").split("|").map((s) => s.trim());
+  const plus = (v) => Math.round(v * (1 + ext));
+  const flag = (r) => (r.flag ? ` <em class="viz-flag">${esc(r.flag)}</em>` : "");
+  const said = (r) => (c.type === "range" ? `${fmt(+r.lo)} to ${fmt(+r.hi)}` : `${fmt(+r.v)}${ext ? `, about ${fmt(plus(+r.v))} with ${extName}` : ""}`);
+  const rows = c.rows.map((r) => {
+    const label = `${r.label}${r.flag ? ` (${r.flag})` : ""}`;
+    const bars =
+      c.type === "range"
+        ? `<span class="viz-bar a" style="left:${pct(+r.lo)};width:${pct(r.hi - r.lo)}" title="${esc(`${label}: ${said(r)}`)}"></span><span class="viz-val" style="left:calc(${pct(+r.hi)} + 8px)">${esc(`${fmt(+r.lo)}–${fmt(+r.hi)}`)}</span>`
+        : `<span class="viz-bar b" style="left:0;width:${pct(+r.v)}" title="${esc(`${label}: ${fmt(+r.v)}`)}"></span>` +
+          (ext ? `<span class="viz-bar ext" style="left:${pct(+r.v)};width:${pct(r.v * ext)}" title="${esc(`${extName}: about ${fmt(plus(+r.v))}`)}"></span>` : "") +
+          `<span class="viz-val" style="left:calc(${pct(r.v * (1 + ext))} + 8px)">${esc(fmt(+r.v))}${ext ? ` <small>→ ~${esc(fmt(plus(+r.v)))}</small>` : ""}</span>`;
+    return `<li class="viz-row"><span class="viz-label">${esc(r.label)}${flag(r)}</span><span class="viz-track">${bars}</span></li>`;
+  });
+  const step = +(c.step || max);
+  const ticks = [];
+  for (let t = 0; t <= max + 1e-9; t += step) ticks.push(`<span style="left:${pct(t)}">${t ? esc(fmt(+t.toFixed(2))) : "0"}</span>`);
+  const desc = `${c.title}. ${c.rows.map((r) => `${r.label}${r.flag ? ` (${r.flag})` : ""}: ${said(r)}.`).join(" ")}`;
+  const head = ext ? [...cols.slice(0, 2), `With ${extName}`, cols[2]] : cols;
+  // Table cells are markdown (inline() escapes them), so the source links stay links.
+  const table = c.rows.map((r) => (ext ? [r.label, r.text || fmt(+r.v), `about ${fmt(plus(+r.v))}`, r.src] : [r.label + (r.flag ? ` (${r.flag})` : ""), r.text || said(r), r.src]));
+  const legend = ext ? `<p class="viz-legend" aria-hidden="true"><span><i class="viz-key b"></i>${esc(barName)}</span><span><i class="viz-key ext"></i>${esc(extName)}</span></p>` : "";
+  const html = `<figure class="viz" aria-labelledby="${id}-t" aria-describedby="${id}-d">
+<figcaption><p class="viz-title" id="${id}-t">${inline(c.title)}</p><p class="viz-note">${inline(c.note)}</p></figcaption>
+<p class="sr-only" id="${id}-d">${esc(desc)}</p>
+${legend}<ul class="viz-plot" role="list" aria-hidden="true">${rows.join("")}</ul>
+<div class="viz-axis" aria-hidden="true">${ticks.join("")}</div>
+<p class="viz-source">${inline(c.source)}</p>
+<details class="viz-data"><summary>See the numbers</summary>${scrollTable(`Numbers: ${c.title}`, head, table)}</details>
+</figure>`;
+  return { html, problems };
+}
+
+/**
+ * The markdown subset: headings, paragraphs, lists, blockquotes, pipe tables, fenced code, ```chart blocks, inline
+ * code, emphasis and links. Every character of text is HTML-escaped. Headings shift down one level (# → h2): the page
+ * title is the only h1. A table sits in a focusable, labelled scroll box so it stays readable on a 360px phone.
+ * Chart problems go to ctx.problems (the build fails on them); without a ctx they throw.
+ */
+export function markdown(md, ctx = { charts: 0 }) {
   const lines = lf(md).split("\n");
   const out = [];
   for (let i = 0; i < lines.length; ) {
@@ -81,22 +208,24 @@ export function markdown(md) {
       const code = [];
       while (++i < lines.length && !lines[i].startsWith("```")) code.push(lines[i]);
       i++;
-      out.push(`<pre><code>${esc(code.join("\n"))}</code></pre>`);
+      if (line.trim() === "```chart") {
+        const { html, problems } = chart(code, `chart-${(ctx.charts = (ctx.charts || 0) + 1)}`);
+        if (problems.length && !ctx.problems) throw new Error(problems.join("; "));
+        problems.forEach((p) => ctx.problems.push(p));
+        out.push(html);
+      } else out.push(`<pre><code>${esc(code.join("\n"))}</code></pre>`);
     } else if ((m = /^(#{1,5})\s+(.*)$/.exec(line))) {
       out.push(`<h${m[1].length + 1}>${inline(m[2])}</h${m[1].length + 1}>`);
       i++;
     } else if (line.startsWith(">")) {
       const quote = [];
       while (i < lines.length && lines[i].startsWith(">")) quote.push(lines[i++].replace(/^>\s?/, ""));
-      out.push(`<blockquote>${markdown(quote.join("\n"))}</blockquote>`);
+      out.push(`<blockquote>${markdown(quote.join("\n"), ctx)}</blockquote>`);
     } else if (TABLE_ROW.test(line) && TABLE_RULE.test(lines[i + 1] || "")) {
       const head = cells(line);
       const rows = [];
       for (i += 2; i < lines.length && TABLE_ROW.test(lines[i]); i++) rows.push(cells(lines[i]));
-      const label = esc(`Table: ${head.join(", ").replace(/[*`]/g, "")}`);
-      const th = head.map((c) => `<th scope="col">${inline(c)}</th>`).join("");
-      const body = rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("");
-      out.push(`<div class="table-scroll" role="region" tabindex="0" aria-label="${label}"><table><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`);
+      out.push(scrollTable(`Table: ${head.join(", ").replace(/[*`]/g, "")}`, head, rows));
     } else if (/^([-*]|\d+\.)\s/.test(line)) {
       const tag = /^\d/.test(line) ? "ol" : "ul";
       // [^\n] rather than ., so a pasted U+2028 can't make the opening line fail to match (and loop forever).
@@ -190,7 +319,8 @@ ${cols.join("")}        </nav>
 }
 
 const ld = (data) => JSON.stringify(data, null, 2).replace(/</g, "\\u003c").replace(/^/gm, "      ");
-function page({ path: p, title, description, image = OG_DEFAULT, data, body }) {
+// `main` replaces the default plain-article layout (the blog index and posts have their own).
+function page({ path: p, title, description, image = OG_DEFAULT, data, body, main }) {
   return `<!doctype html>
 ${MARK}
 <html lang="en">
@@ -222,18 +352,83 @@ ${ld({ "@context": "https://schema.org", ...data, url: ORIGIN + p })}
         <a class="brand" href="/" aria-label="Orchy AI home"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="34" height="34" alt="" /><span>Orchy</span></a>
       </div>
     </header>
-    <main id="main" class="answer wrap">
+${
+  main ||
+  `    <main id="main" class="answer wrap">
       <article>
         <h1>${esc(title)}</h1>
 ${body}
       </article>
-    </main>
+    </main>`
+}
 ${footer(p)}
   </body>
 </html>
 `;
 }
 const when = (e) => `<p class="answer-lede"><time datetime="${e.date}">${e.date}</time>${e.updated ? `, updated <time datetime="${e.updated}">${e.updated}</time>` : ""}</p>`;
+
+// Blog layouts (design spec §3-4). Card images are decorative (alt=""): the link's title names the card.
+const img = (e, { alt = "", eager = false } = {}) =>
+  `<img src="${e.image}" width="${IMAGE.width}" height="${IMAGE.height}" alt="${esc(alt)}"${eager ? ' fetchpriority="high"' : ' loading="lazy" decoding="async"'} />`;
+const meta = (e) => `${day(e.date)} · ${e.minutes} min read`;
+const card = (e) =>
+  `          <article class="card"><a href="${e.path}"><span class="feat">${img(e)}</span><span class="tag">${esc(e.tag)}</span><h3>${esc(e.title)}</h3><p class="meta">${meta(e)}</p><p class="excerpt">${esc(e.description)}</p></a></article>`;
+const grid = (list) => `        <h2 class="grid-head" id="more-h">More posts</h2>\n        <div class="grid">\n${list.map(card).join("\n")}\n        </div>`;
+function blogIndex(list) {
+  const [lead, ...rest] = list;
+  return `    <main id="main" class="blog wrap">
+      <header class="blog-head">
+        <h1>Blog</h1>
+        <p class="blog-intro">${esc(BLOG_INTRO)}</p>
+      </header>
+      <article class="lead-card"><a href="${lead.path}"><span class="feat">${img(lead, { eager: true })}</span><span class="lead-text"><span class="tag">${esc(lead.tag)}</span><h2>${esc(lead.title)}</h2><p class="meta">${meta(lead)}</p><p class="excerpt">${esc(lead.description)}</p><span class="read">Read the post →</span></span></a></article>
+${rest.length ? `      <section class="more" aria-labelledby="more-h">\n${grid(rest)}\n      </section>\n` : ""}    </main>`;
+}
+function blogPost(e, list, html) {
+  const others = list.filter((o) => o !== e).slice(0, 3);
+  const takeaways = Array.isArray(e.takeaways)
+    ? `        <aside class="takeaways" aria-labelledby="takeaways-h"><p class="tk-head" id="takeaways-h">Key takeaways</p><ul>${e.takeaways.map((t) => `<li>${inline(t)}</li>`).join("")}</ul></aside>\n`
+    : "";
+  return `    <main id="main" class="answer post wrap">
+      <article>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/blog">Blog</a> <span aria-hidden="true">/</span> <span class="tag">${esc(e.tag)}</span></nav>
+        <h1>${esc(e.title)}</h1>
+        <p class="meta big">${meta(e)}${e.updated ? ` · Updated ${day(e.updated)}` : ""}</p>
+        <div class="feat feat-hero">${img(e, { alt: e.image_alt, eager: true })}</div>
+${takeaways}        <div class="prose">
+${html}
+        </div>
+        <aside class="cta-card" aria-labelledby="cta-h">
+          <p class="cta-title" id="cta-h">Run routine work with agents, keep the final say</p>
+          <p>Orchy AI asks before it sends, posts, spends or deletes. For VAs and agencies with several clients.</p>
+          <p><a class="button button-mint" href="/#access">Join the early-access list</a></p>
+        </aside>
+${list.length >= 2 ? `        <section class="more" aria-labelledby="more-h">\n${grid(others)}\n        </section>\n` : ""}        <p class="back"><a href="/blog">← All posts</a></p>
+      </article>
+    </main>`;
+}
+
+/** A blog post's featured image, alt text, tag and takeaways against design spec §5. */
+function blogProblems(site, e) {
+  const problems = [];
+  const want = `/assets/blog/${e.slug}.webp`;
+  if (e.image !== undefined) {
+    const file = path.join(site, "assets", "blog", `${e.slug}.webp`);
+    const size = e.image === want && fs.existsSync(file) ? webpSize(fs.readFileSync(file)) : null;
+    if (e.image !== want) problems.push(`image must be ${want}`);
+    else if (!fs.existsSync(file)) problems.push(`image ${want} doesn't exist`);
+    else if (!size || size.width !== IMAGE.width || size.height !== IMAGE.height)
+      problems.push(`image ${want} must be a ${IMAGE.width}x${IMAGE.height} WebP (got ${size ? `${size.width}x${size.height}` : "not a WebP"})`);
+    else if (fs.statSync(file).size > IMAGE.bytes) problems.push(`image ${want} is ${fs.statSync(file).size} bytes; the most is ${IMAGE.bytes} (150 KB)`);
+  }
+  if (e.image_alt !== undefined && (typeof e.image_alt !== "string" || e.image_alt.length > 125 || /^(an? )?(image|picture|photo|img|featured image)\.?$/i.test(e.image_alt.trim())))
+    problems.push("image_alt must say what the image shows in 125 characters or fewer");
+  if (e.tag !== undefined && !TAGS.includes(e.tag)) problems.push(`tag ${JSON.stringify(e.tag)} must be one of ${TAGS.join(", ")}`);
+  if (e.takeaways !== undefined && !(Array.isArray(e.takeaways) && e.takeaways.length >= 2 && e.takeaways.length <= 4))
+    problems.push('takeaways must be 2 to 4 "  - " lines under "takeaways:"');
+  return problems;
+}
 
 /** Every content entry of a kind, newest first, with its problems. */
 function entries(site, kind, today, problems) {
@@ -255,6 +450,7 @@ function entries(site, kind, today, problems) {
     const e = { kind, slug: named[2], ...meta, body, where };
     bad.forEach((l) => problems.push(`${where}: bad front matter line ${JSON.stringify(l)}`));
     for (const k of Object.keys(meta)) if (!FIELDS[kind].includes(k)) problems.push(`${where}: unknown field "${k}"`);
+    for (const [k, v] of Object.entries(meta)) if (Array.isArray(v) && k !== "takeaways") problems.push(`${where}: ${k} must be one line, not a list`);
     for (const k of REQUIRED[kind]) if (!meta[k]) problems.push(`${where}: missing ${k}`);
     for (const k of ["date", "updated"]) {
       if (meta[k] === undefined) continue;
@@ -268,6 +464,8 @@ function entries(site, kind, today, problems) {
       if (meta.canonical && meta.canonical !== ORIGIN + e.path) problems.push(`${where}: canonical must be ${ORIGIN + e.path}`);
       if (meta.og_image && !(/^\/assets\/[\w./-]+$/.test(meta.og_image) && !meta.og_image.includes("..") && fs.existsSync(path.join(site, meta.og_image))))
         problems.push(`${where}: og_image ${meta.og_image} isn't a file under site/assets/`);
+      problems.push(...blogProblems(site, e).map((m) => `${where}: ${m}`));
+      e.minutes = readMinutes(body);
     } else {
       if (!["true", "false"].includes(meta.security)) problems.push(`${where}: security must be true or false`);
       e.security = meta.security === "true";
@@ -318,18 +516,30 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
     if (!list.length) continue;
     all.push(...list);
     const newest = list.map((e) => e.lastmod).sort().at(-1);
-    const items = list.map((e) =>
-      k.pages
-        ? `        <section><h2><a href="${e.path}">${esc(e.title)}</a></h2>\n        ${when(e)}\n        <p>${esc(e.description)}</p></section>`
-        : `        <section id="${e.slug}"><h2>${esc(e.title)}</h2>\n        ${when(e)}\n${e.security ? "        <p><strong>Security fix.</strong> Update to the latest version.</p>\n" : ""}${markdown(e.body)}</section>`,
-    );
-    const data = kind === "blog" ? { "@type": "Blog", name: "Orchy AI blog", blogPost: list.map((e) => ({ "@type": "BlogPosting", headline: e.title, url: ORIGIN + e.path, datePublished: e.date })) } : { "@type": "WebPage", name: "Orchy AI changelog", dateModified: newest };
-    files.set(fileFor(k.index), page({ path: k.index, title: k.title, description: k.description, data, body: items.join("\n") }));
+    // Chart problems are reported against the entry they came from.
+    const md = (e) => {
+      const ctx = { problems: [] };
+      const html = markdown(e.body, ctx);
+      ctx.problems.forEach((m) => problems.push(`${e.where}: ${m}`));
+      return html;
+    };
+    const items = k.pages
+      ? []
+      : list.map(
+          (e) =>
+            `        <section id="${e.slug}"><h2>${esc(e.title)}</h2>\n        ${when(e)}\n${e.security ? "        <p><strong>Security fix.</strong> Update to the latest version.</p>\n" : ""}${md(e)}</section>`,
+        );
+    const data =
+      kind === "blog"
+        ? { "@type": "Blog", name: "Orchy AI blog", blogPost: list.map((e) => ({ "@type": "BlogPosting", headline: e.title, url: ORIGIN + e.path, datePublished: e.date, image: ORIGIN + e.image })) }
+        : { "@type": "WebPage", name: "Orchy AI changelog", dateModified: newest };
+    files.set(fileFor(k.index), page({ path: k.index, title: k.title, description: k.description, data, body: items.join("\n"), main: k.pages ? blogIndex(list) : undefined }));
     pages.push({ path: k.index, title: k.title });
     sitemap.push({ path: k.index, lastmod: newest });
     for (const e of k.pages ? list : []) {
-      const data = { "@type": "BlogPosting", headline: e.title, description: e.description, datePublished: e.date, dateModified: e.lastmod, image: ORIGIN + e.og_image, author: { "@type": "Organization", name: "Orchy AI" }, publisher: { "@type": "Organization", name: "Orchy AI" } };
-      files.set(fileFor(e.path), page({ path: e.path, title: e.title, description: e.description, image: e.og_image, data, body: `        ${when(e)}\n${markdown(e.body)}\n        <p><a href="${k.index}">All posts</a></p>` }));
+      // The JSON-LD image is the 16:9 featured image; og_image stays the 1200x630 link-preview card.
+      const data = { "@type": "BlogPosting", headline: e.title, description: e.description, datePublished: e.date, dateModified: e.lastmod, image: ORIGIN + e.image, author: { "@type": "Organization", name: "Orchy AI" }, publisher: { "@type": "Organization", name: "Orchy AI" } };
+      files.set(fileFor(e.path), page({ path: e.path, title: e.title, description: e.description, image: e.og_image, data, main: blogPost(e, list, md(e)) }));
       pages.push({ path: e.path, title: e.title });
       sitemap.push({ path: e.path, lastmod: e.lastmod });
     }

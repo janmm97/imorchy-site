@@ -3517,3 +3517,421 @@ body::before {
   min-width: 640px;
   margin-top: 0;
 }
+
+/* Blog (design spec, Jan approved 2026-11-05): card index, featured images and static charts. No script anywhere. */
+:root {
+  --viz-a: #2f9e6a; /* vendor ranges */
+  --viz-b: #7d62d9; /* wages and hiring costs */
+  --viz-c: #b8862a; /* our own estimates: always hatched */
+  --viz-surface: #0f1216;
+}
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid #b8f9d433;
+  border-radius: 999px;
+  color: var(--mint);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.blog .meta,
+.post .meta {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.feat {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--viz-surface);
+}
+.feat img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* /blog */
+.blog {
+  max-width: 1180px;
+  padding-bottom: 72px;
+}
+.blog-head {
+  max-width: 70ch;
+  padding: clamp(32px, 6vw, 56px) 0 28px;
+}
+.blog-head h1 {
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: 1.15;
+  letter-spacing: -2px;
+}
+.blog-intro {
+  margin-top: 12px;
+  color: #c3c8c6;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.lead-card,
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: #ffffff06;
+}
+.lead-card {
+  margin-bottom: 48px;
+  padding: 14px;
+}
+.lead-card a,
+.card a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.lead-card a {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 28px;
+  align-items: center;
+}
+.lead-text {
+  display: block;
+  padding: 8px 12px 8px 0;
+}
+.lead-text h2 {
+  margin-top: 12px;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.25;
+  letter-spacing: -1px;
+}
+.blog .excerpt,
+.post .excerpt {
+  margin: 12px 0 0;
+  color: #c3c8c6;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.read {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--mint);
+  font-size: 14px;
+}
+.lead-card a:hover h2,
+.card a:hover h3 {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.lead-card a:focus-visible,
+.card a:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 6px;
+  border-radius: var(--r-md);
+}
+.answer .grid-head,
+.grid-head {
+  margin: 0 0 14px;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.card {
+  padding: 12px 12px 18px;
+}
+.card .tag {
+  margin-top: 14px;
+}
+.card h3 {
+  margin-top: 10px;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+/* /blog/<slug> */
+.post .crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+.post .crumbs a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.post h1 {
+  max-width: 24ch;
+  margin-top: 16px;
+  font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 1.18;
+  letter-spacing: -1.6px;
+}
+.post .meta.big {
+  margin-top: 12px;
+  font-size: 14px;
+}
+.feat.feat-hero {
+  margin-top: 26px;
+  border-radius: var(--r-lg);
+}
+.takeaways {
+  margin-top: 28px;
+  padding: 16px 20px;
+  border: 1px solid #b8f9d433;
+  border-radius: var(--r-md);
+  background: #b8f9d40a;
+}
+.answer .tk-head {
+  color: var(--mint);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.takeaways ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+.takeaways li + li {
+  margin-top: 4px;
+}
+.post .prose {
+  margin-top: 8px;
+}
+/* Body text keeps a reading measure; figures and tables may use the full 860px article. */
+.post .prose > :not(figure):not(.table-scroll) {
+  max-width: 70ch;
+}
+.post .prose > ul {
+  margin: 16px 0 0;
+  padding-left: 1.4em;
+}
+.cta-card {
+  margin-top: 56px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, #b8f9d414, #b7a2fa14);
+}
+.answer .cta-title {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+}
+.cta-card .button {
+  margin-top: 6px;
+}
+.post .more {
+  margin-top: 56px;
+}
+.answer .back {
+  margin-top: 40px;
+}
+.answer .back a {
+  color: var(--mint);
+}
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lead-card a {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .lead-text {
+    padding: 0 6px 6px;
+  }
+}
+@media (max-width: 620px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Charts (chart blocks in a post): horizontal bars in HTML/CSS. Labels sit above the bars so text never shrinks on a phone. */
+.viz {
+  margin: 32px 0 28px;
+  padding: 18px 20px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--viz-surface);
+}
+.answer .viz-title {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.answer .viz-note,
+.answer .viz-source {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.answer .viz-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 12px 0 0;
+  color: #c3c8c6;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.viz-legend span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.viz-key {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border-radius: 3px;
+}
+.viz-key.b {
+  background: var(--viz-b);
+}
+.viz-key.ext,
+.viz-bar.ext {
+  background: repeating-linear-gradient(135deg, var(--viz-c) 0 3px, transparent 3px 6px);
+  outline: 1px dashed var(--viz-c);
+  outline-offset: -1px;
+}
+.answer .viz-plot {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.answer .viz-row {
+  margin: 0 0 12px;
+}
+.viz-label {
+  display: block;
+  margin: 0 0 4px;
+  color: #c3c8c6;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.viz-flag {
+  margin-left: 6px;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+}
+.viz-track {
+  position: relative;
+  display: block;
+  height: 14px;
+  margin-right: 92px;
+  background-image: linear-gradient(to right, #ffffff10 1px, transparent 1px);
+}
+.viz-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 4px;
+}
+.viz-bar.a {
+  background: var(--viz-a);
+}
+.viz-bar.b {
+  background: var(--viz-b);
+  border-radius: 4px 0 0 4px;
+}
+.viz-bar.ext {
+  margin-left: 2px;
+  border-radius: 0 4px 4px 0;
+}
+.viz-val {
+  position: absolute;
+  top: 50%;
+  color: var(--text);
+  font-size: 12px;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+.viz-val small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.viz-axis {
+  position: relative;
+  height: 18px;
+  margin: 4px 92px 0 0;
+  border-top: 1px solid #ffffff24;
+}
+.viz-axis span {
+  position: absolute;
+  top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  transform: translateX(-50%);
+}
+.viz-axis span:first-child {
+  transform: none;
+}
+.answer .viz-source {
+  margin-top: 12px;
+  font-size: 12px;
+}
+.answer .viz-source a,
+.viz-data td a {
+  color: var(--mint);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.viz-data {
+  margin-top: 10px;
+}
+.viz-data summary {
+  color: var(--mint);
+  font-size: 13px;
+  cursor: pointer;
+}
+.viz-data summary:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 3px;
+}
+.viz-data .table-scroll {
+  margin-top: 8px;
+}
+.answer .viz-data th,
+.answer .viz-data td {
+  padding: 6px 8px 6px 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 620px) {
+  .viz {
+    margin-inline: -6px;
+    padding: 14px 12px 12px;
+  }
+  .viz-track,
+  .viz-axis {
+    margin-right: 104px;
+  }
+  .viz-axis span:nth-child(even) {
+    display: none;
+  }
+}
+@media (forced-colors: active) {
+  .viz-bar,
+  .viz-key {
+    forced-color-adjust: none;
+    border: 1px solid CanvasText;
+  }
+}
