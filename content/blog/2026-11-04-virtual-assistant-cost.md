@@ -2,6 +2,7 @@
 title: Virtual assistant cost in 2026: rates, hours and AI help
 description: What a virtual assistant costs per hour in the US, the Philippines and on freelance platforms, with sources, and where AI agents can take on routine work.
 date: 2026-11-04
+updated: 2026-11-05
 og_image: /assets/og/virtual-assistant-cost.png
 canonical: https://imorchy.dev/blog/virtual-assistant-cost
 ---
@@ -43,39 +44,6 @@ AI agents suit work that is routine, repeatable and checkable: reading, sorting 
 Orchy AI is built around that split. It asks before it sends, posts, spends, deletes, shares, or changes your calendar, while reading, sorting and drafting carry on without stopping you. You can see how that works on the page about how Orchy [asks before it sends or spends](/approvals).
 
 That matters for VAs. If you handle several clients, you want the routine drafts and sorting done while you keep the final say on anything that goes out under a client's name.
-
-# An illustrative cost comparison: what agent tasks would have cost to hire out
-
-We took the task log from three workspaces and priced the same work as if people had done it.
-
-> Illustrative example, not a promise of results. Task counts and AI cost come from Orchy's run log; the hours a person would need and the hourly rates are our estimates. Your costs and savings will differ.
-
-All three examples are workspaces run on Orchy AI. Business A and Business B cover Oct 5 to Oct 30, 2026 (25 days). Business C is a 3-day sample.
-
-| Business | Tasks | Estimated human hours | AI cost (pay-as-you-go) | Hire out: US local | Hire out: Philippines direct | Hire out: freelance platform | Hire out: VA agency |
-|---|---|---|---|---|---|---|---|
-| Business A | 150 | 149.4 | $347 | $6,258 | $1,526 | $4,182 | $2,783 |
-| Business B | 139 | 128.5 | $235 | $6,223 | $1,340 | $3,001 | $2,166 |
-| Business C (3-day sample) | 41 | 136.6 | $179 | $7,727 | $2,126 | $6,359 | $3,902 |
-
-## How the numbers were built
-
-- **Tasks and AI cost** are measured. The AI cost includes every agent run, failed runs and hand-offs among them, plus the agents' own setup runs and the orchestrator's routing and reporting.
-- **Hours** are estimates. Each completed task was given the time a capable, already-trained person would need to do it by hand.
-- **Hire-out cost** multiplies those hours by hourly rates for each hiring option. The hourly rates are our estimates for each type of work, based on 2025 and 2026 published ranges and BLS wages where they exist. They are not quotes and don't map one to one onto the tables above.
-- **The AI cost** is priced at pay-as-you-go API rates, not the amount a business was billed.
-- **Business C** covers only 3 days, so its figures are a short sample, not a month.
-
-# What this comparison leaves out
-
-> **What this leaves out.** Orchy's own price, the owner's setup time, and any subscription or API plan costs. The time the owner spent giving instructions and reviewing drafts. The value of a person's judgment on work an agent can't do. The recruiting and onboarding a hire needs.
-
-The assumptions run both ways:
-
-- Nobody hires an assistant for 149 scattered hours. A real hire often means a salary, a retainer or an agency minimum, plus recruiting and onboarding time. That would push the hire-out figures up.
-- The per-task times are estimates for a trained person. A different person, or a different way of working, would change them in either direction.
-- Owner time exists with a human hire too, so leaving it out affects both sides.
-- Three businesses over a few weeks, one of them over 3 days, is a small sample. It shows how the comparison works. It does not predict what you would see.
 
 # Where Orchy AI fits
 
