@@ -55,7 +55,7 @@ export function parseSource(text) {
     const kv = /^([a-z_]+):\s*(.*)$/.exec(line);
     const item = /^\s+-\s+(\S[^\n]*)$/.exec(line);
     if (kv) meta[(last = kv[1])] = kv[2].trim().replace(/^"(.*)"$/, "$1");
-    else if (item && last && (meta[last] === "" || Array.isArray(meta[last]))) meta[last] = [...(meta[last] || []), item[1].trim()];
+    else if (item && last && (meta[last] === "" || Array.isArray(meta[last]))) meta[last] = [...(meta[last] || []), item[1].trim().replace(/^"(.*)"$/, "$1")];
     else bad.push(line);
   }
   return { meta, body: m[2], bad };
@@ -516,18 +516,21 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
     if (!list.length) continue;
     all.push(...list);
     const newest = list.map((e) => e.lastmod).sort().at(-1);
-    // Chart problems are reported against the entry they came from.
-    const md = (e) => {
-      const ctx = { problems: [] };
+    // Chart problems are reported against the entry they came from. Entries that share a page (the changelog) share
+    // one chart counter, so every chart id on a page is unique.
+    const md = (e, page = { charts: 0 }) => {
+      const ctx = { problems: [], charts: page.charts };
       const html = markdown(e.body, ctx);
+      page.charts = ctx.charts;
       ctx.problems.forEach((m) => problems.push(`${e.where}: ${m}`));
       return html;
     };
+    const onePage = { charts: 0 };
     const items = k.pages
       ? []
       : list.map(
           (e) =>
-            `        <section id="${e.slug}"><h2>${esc(e.title)}</h2>\n        ${when(e)}\n${e.security ? "        <p><strong>Security fix.</strong> Update to the latest version.</p>\n" : ""}${md(e)}</section>`,
+            `        <section id="${e.slug}"><h2>${esc(e.title)}</h2>\n        ${when(e)}\n${e.security ? "        <p><strong>Security fix.</strong> Update to the latest version.</p>\n" : ""}${md(e, onePage)}</section>`,
         );
     const data =
       kind === "blog"
