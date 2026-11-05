@@ -71,6 +71,12 @@ assert.equal(res.status, 200);
 assert.equal(seen.at(-1), "https://imorchy.dev/google0123abcd");
 ok("google*.html: served from assets at the bare name, so it answers 200 with no redirect");
 
+// ── Bing Webmaster verification file ──
+res = await get("/BingSiteAuth.xml");
+assert.equal(res.status, 200);
+assert.equal(seen.at(-1), "https://imorchy.dev/BingSiteAuth.xml");
+ok("/BingSiteAuth.xml passes through to the static assets at its exact path with 200");
+
 // ── the launch video, from R2 ──
 assert.deepEqual(byteRange("bytes=0-1023", 5000), { start: 0, end: 1023 });
 assert.deepEqual(byteRange("bytes=4000-", 5000), { start: 4000, end: 4999 });

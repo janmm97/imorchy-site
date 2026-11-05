@@ -71,7 +71,7 @@ const workerFirst = (p) =>
   !RUN_WORKER_FIRST.some((r) => r.startsWith("!") && glob(r.slice(1)).test(p));
 const ANSWER_PAGES = ["/approvals", "/client-workspaces", "/claude-code-orchestrator", "/local"];
 const LEGAL = ["/privacy", "/terms", "/security", "/data-privacy", "/.well-known/security.txt"];
-for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html"])
+for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html", "/BingSiteAuth.xml"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
 assert.equal(TYPES[".txt"], "text/plain; charset=utf-8", "security.txt is served as text/plain (RFC 9116)");
 for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png"])
@@ -81,4 +81,5 @@ for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2
 const page = (rel) => /^([^/]+\.(html|xml|txt)|blog\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || rel.endsWith(".mp4");
 for (const rel of files) assert.equal(workerFirst("/" + rel), page(rel), `/${rel} should ${page(rel) ? "reach" : "skip"} the Worker`);
 const exts = [...new Set(files.filter((f) => f.startsWith("assets/")).map((f) => path.extname(f)))].sort();
-ok(`run_worker_first: pages, videos and google*.html reach the Worker; CSS, JS, fonts and every asset type (${exts.join(" ")}) skip it`);
+assert.ok(files.includes("BingSiteAuth.xml"), "Bing Webmaster verification file is in site/ at its exact case");
+ok(`run_worker_first: pages, videos, google*.html and BingSiteAuth.xml reach the Worker; CSS, JS, fonts and every asset type (${exts.join(" ")}) skip it`);
