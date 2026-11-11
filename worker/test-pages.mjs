@@ -103,7 +103,7 @@ ok("answer pages: one H1, unique title and description, self-canonical, og image
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
 // markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
-// (2026-11-12) v2 texts add the DPA at /dpa: linked from Data Privacy, not a footer link (the Legal column stays four).
+// (2026-11-11) v2 texts add the DPA at /dpa: linked from Data Privacy, not a footer link (the Legal column stays four).
 const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", security: "Security", "data-privacy": "Data Privacy: DPA and sub-processors", dpa: "Data Processing Agreement (DPA)" };
 for (const [slug, h1] of Object.entries(LEGAL)) {
   const html = contentPage(slug);
