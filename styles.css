@@ -3942,3 +3942,13 @@ body::before {
     border: 1px solid CanvasText;
   }
 }
+
+.answer-note {
+  margin: 0 0 1rem;
+  color: var(--muted, inherit);
+}
+
+.access-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+}

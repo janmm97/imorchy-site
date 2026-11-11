@@ -69,7 +69,7 @@ The hourly rate is the number everyone quotes. Four other things move the bill:
 
 AI agents suit work that is routine, repeatable and checkable: reading, sorting and drafting. Tasks where a person's judgment or relationships matter, such as handling a client conversation, still need a person.
 
-Orchy AI is built around that split. It asks before it sends, posts, spends, deletes, shares, or changes your calendar, while reading, sorting and drafting carry on without stopping you. You can see how that works on the page about how Orchy [asks before it sends or spends](/approvals).
+Orchy AI is built around that split. It asks before it sends, posts or deletes, while reading, sorting and drafting carry on without stopping you. You can see how that works on the page about how Orchy [asks before it sends or deletes](/approvals).
 
 That matters for VAs. If you handle several clients, you want the routine drafts and sorting done while you keep the final say on anything that goes out under a client's name.
 
@@ -77,7 +77,7 @@ That matters for VAs. If you handle several clients, you want the routine drafts
 
 Orchy AI is built for people who juggle several clients: virtual assistants, small AI agencies and business owners with more than one project. Each client gets its own workspace, logins, agents, and instructions, which you can read about on the page for [separate workspaces for each client](/client-workspaces).
 
-You decide what goes out. Sending, posting, spending and deleting wait for your OK.
+You decide what goes out. Sending, posting and deleting wait for your OK.
 
 # Frequently asked questions
 
@@ -97,4 +97,4 @@ HireTalent.ph's 2026 guide lists $880 to $1,056 a month for beginners, $1,144 to
 
 Price the hours you need, not the headline rate: the same task can cost very different amounts depending on how you hire. Then look at which of those hours are routine reading, sorting and drafting. Those are the ones an agent can take on, with you approving whatever goes out.
 
-If you handle several clients and want to see how that works, [join the early-access list](https://imorchy.dev/#access). Setup is done with the team on the access call.
+If you handle several clients and want to see how that works, [Get Started](https://app.imorchy.dev). Orchy AI is in invite-only early access.

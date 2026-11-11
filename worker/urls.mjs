@@ -15,8 +15,8 @@ export const PAGES = [
     markers: [
       '<h1 id="heroTitle"',
       "Orchy <span class=\"hero-ai\">AI</span>",
-      "A command center for your AI agents, in your browser.",
-      "Early access: we review every sign-up and let people in in small groups.",
+      "A command center for your AI agents.",
+      "Early access: we approve each sign-up by hand and let people in in small groups.",
     ],
   },
   { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>AI agents that ask before they act</h1>"] },
