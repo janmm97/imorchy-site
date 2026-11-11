@@ -15,8 +15,8 @@ export const PAGES = [
     markers: [
       '<h1 id="heroTitle"',
       "Orchy <span class=\"hero-ai\">AI</span>",
-      "A command center for your AI agents, on your own computer.",
-      "Orchy AI is in early access.",
+      "A command center for your AI agents, in your browser.",
+      "Early access: we review every sign-up and let people in in small groups.",
     ],
   },
   { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>AI agents that ask before they act</h1>"] },
@@ -45,11 +45,11 @@ export const REDIRECTS = [
 
 /**
  * The calls to action on / (imorchy.dev has no form or approval endpoint of its own: both are outbound links).
- * Each must be on the page, open in a new tab with rel="noopener", and point at its host.
+ * Each must be on the page and point at its host; all but Get Started (the app, same tab) open in a new tab with rel="noopener".
  */
 export const LINKS = [
-  { text: "Join the early-access list", host: "flaxen-crayon-74f.notion.site" },
-  { text: "Book 30 minutes", host: "calendly.com" },
+  { text: "Get Started", host: "app.imorchy.dev", sameTab: true },
+  { text: "Book a call", host: "calendly.com" },
 ];
 
 /** Hosts a page may load anything from (script, style, image, font, frame, media). Links are not loads. */

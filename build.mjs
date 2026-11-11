@@ -308,7 +308,7 @@ export function footer(p) {
       <div class="footer-top" data-perch>
         <div class="footer-brand">
           <a class="brand" href="${top}" aria-label="${p === "/" ? "Back to top" : "Orchy AI home"}"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="42" height="42" alt="" /><span>Orchy</span></a>
-          <p class="footer-tagline">A command center for your AI agents, on your own computer.</p>
+          <p class="footer-tagline">A command center for your AI agents, in your browser.</p>
           <a class="footer-back" href="${top}">${p === "/" ? "Back to the Top" : "Back to Home"}</a>
         </div>
         <nav class="footer-nav" aria-label="Footer">

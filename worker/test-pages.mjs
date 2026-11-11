@@ -89,7 +89,7 @@ for (const slug of ANSWER) {
   assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), `${slug}: FAQPage JSON-LD`);
   assert.ok(!/<canvas|importmap|three\.module/i.test(html), `${slug}: no canvas or Three.js`);
   assert.ok(html.includes('href="/"'), `${slug}: links home`);
-  assert.ok(html.includes('href="https://flaxen-crayon-74f.notion.site/'), `${slug}: links to the early-access form`);
+  assert.ok(html.includes('href="https://app.imorchy.dev"') && !html.includes("notion.site"), `${slug}: Get Started links to the app, no Notion form`);
   assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
 }
 const approvals = visibleText(fs.readFileSync(SITE + "approvals.html", "utf8"));

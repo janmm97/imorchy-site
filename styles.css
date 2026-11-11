@@ -253,7 +253,7 @@ h3 {
   box-shadow: 0 5px 25px #b8f9d421;
 }
 .button-small {
-  min-height: 40px;
+  min-height: 44px;
   padding: 9px 18px;
   font-size: 13px;
   gap: 12px;
@@ -1133,7 +1133,7 @@ h3 {
     gap: 8px;
   }
   .nav-actions > .button {
-    min-height: 35px;
+    min-height: 44px;
     font-size: 12px;
     padding: 8px 12px;
     gap: 12px;
@@ -1143,8 +1143,8 @@ h3 {
     flex-direction: column;
     justify-content: center;
     gap: 5px;
-    width: 32px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     padding: 8px;
   }
   .menu-toggle > span {
@@ -3286,7 +3286,9 @@ body::before {
   color: #acb5b0;
 }
 .access-call {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   margin: 18px 0 0 18px;
 }
 /* FAQ: a centred list of native <details>, so each answer opens without JS. */

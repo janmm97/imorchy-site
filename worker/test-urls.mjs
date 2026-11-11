@@ -314,16 +314,18 @@ ok("http:// and www. answer 301 with Location kept, then 200 on https://imorchy.
 
 // ── the calls to action on /: outbound, new tab, noopener, on their host ──
 const home = read("index.html");
-for (const { text, host } of LINKS) {
+for (const { text, host, sameTab } of LINKS) {
   const anchors = [...home.matchAll(/<a\b([^>]*)>\s*([^<]*)/g)].filter((m) => m[2].trim().startsWith(text));
   assert.ok(anchors.length, `/ links "${text}"`);
   for (const [, attrs] of anchors) {
     assert.equal(new URL(/href="([^"]+)"/.exec(attrs)[1]).host, host, text);
-    assert.match(attrs, /target="_blank"/, text);
-    assert.match(attrs, /rel="[^"]*noopener/, text);
+    if (!sameTab) {
+      assert.match(attrs, /target="_blank"/, text);
+      assert.match(attrs, /rel="[^"]*noopener/, text);
+    }
   }
 }
-ok("/ has the early-access and booking links, each opening its own host in a new tab with rel=noopener");
+ok("/ has Get Started (the app) and the booking link, each on its own host; booking opens in a new tab with rel=noopener");
 
 // ── nothing loads from a host outside the allowlist (scripts, styles, images, fonts, frames, media, imports) ──
 const outside = (text, allowed) =>
