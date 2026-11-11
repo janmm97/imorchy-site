@@ -4,8 +4,9 @@
   { "path": "/client-workspaces", "lastmod": "2026-10-30" },
   { "path": "/claude-code-orchestrator", "lastmod": "2026-10-30" },
   { "path": "/local", "lastmod": "2026-10-30" },
-  { "path": "/privacy", "lastmod": "2026-11-04" },
-  { "path": "/terms", "lastmod": "2026-11-04" },
-  { "path": "/security", "lastmod": "2026-11-04" },
-  { "path": "/data-privacy", "lastmod": "2026-11-04" }
+  { "path": "/privacy", "lastmod": "2026-11-11" },
+  { "path": "/terms", "lastmod": "2026-11-11" },
+  { "path": "/security", "lastmod": "2026-11-11" },
+  { "path": "/data-privacy", "lastmod": "2026-11-11" },
+  { "path": "/dpa", "lastmod": "2026-11-11" }
 ]

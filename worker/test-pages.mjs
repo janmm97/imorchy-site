@@ -48,7 +48,8 @@ for (const page of pages) {
   }
   assert.ok(!JSON.stringify(nodes).includes('"offers"'), `${page}: structured data claims no offers or price`);
   assert.ok(!/github\.com/i.test(html), `${page}: no GitHub links (no public GitHub)`);
-  assert.ok(!/open[\s-]source/i.test(html),`${page}: no open-licence claim`);
+  // The legal pages name a third-party tool ("the open-source tool age"); that's not a claim about Orchy's licence.
+  assert.ok(!/open[\s-]source/i.test(html.replaceAll("the open-source tool age", "")), `${page}: no open-licence claim`);
 }
 assert.ok(jsonLd(fs.readFileSync(SITE + "index.html", "utf8")).some((n) => n["@type"] === "FAQPage"), "index.html has a FAQPage");
 ok(`FAQPage JSON-LD matches the visible FAQ (${checked} Q&As on ${pages.length} page(s))`);
@@ -102,22 +103,25 @@ ok("answer pages: one H1, unique title and description, self-canonical, og image
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
 // markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
-const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", security: "Security", "data-privacy": "Data Privacy: DPA and sub-processors" };
+// (2026-11-12) v2 texts add the DPA at /dpa: linked from Data Privacy, not a footer link (the Legal column stays four).
+const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", security: "Security", "data-privacy": "Data Privacy: DPA and sub-processors", dpa: "Data Processing Agreement (DPA)" };
 for (const [slug, h1] of Object.entries(LEGAL)) {
   const html = contentPage(slug);
   assert.ok(html.includes(`<h1>${h1}</h1>`), `${slug}: the H1 is "${h1}"`);
   assert.doesNotMatch(html, /name="robots"/i, `${slug}: no robots meta`);
   assert.ok(jsonLd(html).some((n) => n["@type"] === "WebPage" && n.url === `https://imorchy.dev/${slug}` && n.name === h1), `${slug}: WebPage JSON-LD`);
-  assert.doesNotMatch(html, /\[\[|\]\]|DRAFT|TODO/, `${slug}: no placeholders or draft markers`);
+  assert.doesNotMatch(html, /\[\[|\]\]|DRAFT|TODO|<!--|READY TO PUBLISH|not for publication/i, `${slug}: no placeholders, draft box, comments or revision notes`);
   assert.doesNotMatch(visibleText(html), /\bPR\s*#\d+/i, `${slug}: no PR numbers`);
   const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
   levels.forEach((l, i) => i && assert.ok(l <= levels[i - 1] + 1, `${slug}: heading h${l} skips a level after h${levels[i - 1]}`));
   const tables = html.match(/<table\b/g)?.length ?? 0;
   const boxed = html.match(/<div class="table-scroll" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
   assert.equal(boxed, tables, `${slug}: every table sits in a labelled .table-scroll box`);
-  if (slug === "privacy") assert.equal(tables, 2, "privacy.html has its two tables");
-  assert.ok(FOOTER_COLUMNS.some((c) => c.heading === "Legal" && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal group`);
+  if (slug === "privacy") assert.equal(tables, 3, "privacy.html has its three tables");
+  if (slug !== "dpa") assert.ok(FOOTER_COLUMNS.some((c) => c.heading === "Legal" && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal group`);
 }
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Legal").links.map(([t]) => t), ["Privacy", "Terms", "Security", "Data Privacy"], "the footer's Legal column is exactly Privacy · Terms · Security · Data Privacy");
+assert.ok(fs.readFileSync(SITE + "data-privacy.html", "utf8").includes('<a href="/dpa">'), "Data Privacy links the DPA at /dpa");
 ok(`legal pages: ${Object.keys(LEGAL).length} pages, one H1 each, indexable, no scripts or placeholders, tables in scroll boxes, in the sitemap and the footer`);
 
 // ── one logo (Jan, 2026-10-31): every page's tab icon is orchy-icon-64.png, cut from orchy-main.svg; the old robot
@@ -155,7 +159,9 @@ for (const page of pages) {
     assert.ok(fs.existsSync(SITE + fileFor(href)) && (locs.includes(href) || built.has(fileFor(href))), `${page}: footer link ${href} resolves to a built page`);
   }
   const current = [...nav.matchAll(/<a href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
-  assert.deepEqual(current, pathOf(page) === "/" ? [] : [pathOf(page)], `${page}: aria-current marks this page only`);
+  // A page that isn't a footer link (/dpa, reached from Data Privacy) has no aria-current.
+  const linked = FOOTER_COLUMNS.some((c) => c.links.some(([, h]) => h === pathOf(page)));
+  assert.deepEqual(current, pathOf(page) !== "/" && linked ? [pathOf(page)] : [], `${page}: aria-current marks this page only`);
   same.add(footers[0].replace(/ aria-current="page"/g, "").replace(/href="(#top|\/)"/g, 'href="BACK"').replace(/aria-label="(Back to top|Orchy AI home)"|>Back to (the Top|Home)</g, "X"));
 }
 assert.equal(same.size, 1, "every page has the identical footer, apart from its back link and aria-current");

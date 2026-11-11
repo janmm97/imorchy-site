@@ -70,7 +70,7 @@ const workerFirst = (p) =>
   RUN_WORKER_FIRST.some((r) => !r.startsWith("!") && glob(r).test(p)) &&
   !RUN_WORKER_FIRST.some((r) => r.startsWith("!") && glob(r.slice(1)).test(p));
 const ANSWER_PAGES = ["/approvals", "/client-workspaces", "/claude-code-orchestrator", "/local"];
-const LEGAL = ["/privacy", "/terms", "/security", "/data-privacy", "/.well-known/security.txt"];
+const LEGAL = ["/privacy", "/terms", "/security", "/data-privacy", "/dpa", "/.well-known/security.txt"];
 for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html", "/BingSiteAuth.xml"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
 assert.equal(TYPES[".txt"], "text/plain; charset=utf-8", "security.txt is served as text/plain (RFC 9116)");

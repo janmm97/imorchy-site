@@ -4,21 +4,21 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Security | Orchy AI</title>
-    <meta name="description" content="How Orchy keeps your work on your own computer, what it protects, where the limits are, and how to report a security problem." />
+    <meta name="description" content="How Orchy protects the desktop app and hosted Orchy, where the limits are, and how to report a security problem." />
     <meta name="theme-color" content="#080a0d" />
     <link rel="canonical" href="https://imorchy.dev/security" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Orchy AI" />
     <meta property="og:url" content="https://imorchy.dev/security" />
     <meta property="og:title" content="Security | Orchy AI" />
-    <meta property="og:description" content="How Orchy keeps your work on your own computer, what it protects, where the limits are, and how to report a security problem." />
+    <meta property="og:description" content="How Orchy protects the desktop app and hosted Orchy, where the limits are, and how to report a security problem." />
     <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Orchy AI: run your AI agents from your own computer" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Security | Orchy AI" />
-    <meta name="twitter:description" content="How Orchy keeps your work on your own computer, what it protects, where the limits are, and how to report a security problem." />
+    <meta name="twitter:description" content="How Orchy protects the desktop app and hosted Orchy, where the limits are, and how to report a security problem." />
     <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta name="twitter:image:alt" content="Orchy AI: run your AI agents from your own computer" />
     <script type="application/ld+json">
@@ -26,7 +26,7 @@
         "@context": "https://schema.org",
         "@type": "WebPage",
         "name": "Security",
-        "dateModified": "2026-11-04",
+        "dateModified": "2026-11-11",
         "url": "https://imorchy.dev/security"
       }
     </script>
@@ -44,28 +44,32 @@
     <main id="main" class="answer legal wrap">
       <article>
         <h1>Security</h1>
-<p><strong>Last updated:</strong> November 4, 2026 · <strong>Version</strong> 1.0</p>
-<p>Orchy is built so that your work stays on your own computer. This page explains how that works, what we protect, where the limits are, and how to report a security problem.</p>
-<p>We hold no security certifications for Orchy (such as SOC 2 or ISO 27001). This page describes what the software does, not an audit.</p>
-<h2>1. Local first</h2>
-<ul><li>The Orchy app runs on your computer. Its dashboard listens only on your own machine (127.0.0.1), so other devices on your network can't open it.</li><li>Orchy does not send your tasks, files, keys or logs to us. There is no telemetry.</li><li>Data leaves your computer only when you connect a service yourself (your AI engine, a routing provider, One, voice providers, Cloudflare). It goes straight from your computer to that service, under your own account.</li></ul>
-<h2>2. Who can control your Orchy</h2>
-<ul><li><strong>Paired browsers only.</strong> A browser must be paired with a one-time code before it can change anything. Any change request must come from a paired browser and carry that browser's key.</li><li><strong>Approval gate.</strong> Before an agent sends a message, spends money, changes a calendar, deletes something or shares something, Orchy asks you to approve it.</li><li><strong>Separate accounts.</strong> Each workspace uses its own logins for connected apps. Accounts are never mixed between workspaces.</li></ul>
-<h2>3. Secrets</h2>
+<p><strong>Last updated:</strong> 12 November 2026 · <strong>Version</strong> 1.0</p>
+<p>Orchy comes two ways: the <strong>desktop app</strong>, which runs on your own computer, and <strong>hosted Orchy</strong>, which runs on our server in Canada. This page explains what we protect in each, where the limits are, and how to report a security problem.</p>
+<p>We hold no security certifications (such as SOC 2 or ISO 27001). This page describes what the software and our server do, not an audit.</p>
+<h2>1. The desktop app</h2>
+<ul><li>The Orchy app runs on your computer. Its dashboard listens only on your own machine (127.0.0.1), so other devices on your network can't open it.</li><li>The app does not send your tasks, files, keys or logs to us. There is no telemetry.</li><li>Data leaves your computer only when you connect a service yourself (your AI engine, a routing provider, One, voice providers, Cloudflare). It goes straight from your computer to that service, under your own account. One (withone.ai) is run by our own company, One Systems, Inc.</li></ul>
+<p><strong>Who can control your desktop Orchy</strong></p>
+<ul><li><strong>Paired browsers only.</strong> A browser must be paired with a one-time code before it can change anything. Any change request must come from a paired browser and carry that browser's key.</li><li><strong>Approval gate.</strong> Orchy asks you to approve before an agent sends, posts or deletes something. Some actions in connected apps may not ask first, so check what your agents can reach.</li><li><strong>Separate accounts.</strong> Each workspace uses its own logins for connected apps. Accounts are never mixed between workspaces.</li></ul>
+<p><strong>Secrets on your computer</strong></p>
 <ul><li>The API keys you enter are stored in a settings file (<code>.env</code>) on your computer. They are <strong>not encrypted</strong> by Orchy. Protect your computer with a login password and disk encryption.</li><li>Login tokens for remote tool servers (MCP) are stored in a file only your user account can read.</li></ul>
-<h2>4. Client pages (optional)</h2>
-<p>If you turn on client pages, they run on a separate port and are reached through Cloudflare Tunnel, with Cloudflare Access checking each visitor's identity first. The main dashboard is never exposed this way.</p>
-<h2>5. Our website</h2>
-<ul><li>imorchy.dev is served over HTTPS only. Plain HTTP requests are redirected to HTTPS, and browsers are told to use HTTPS for a year (HSTS).</li><li>A strict Content Security Policy lets pages load code only from imorchy.dev. The one exception is a 3D graphics library loaded from jsDelivr on the home page.</li><li>The site sets no cookies of its own, has no login and runs no analytics.</li><li>Other protections: no framing by other sites, no MIME sniffing, a strict referrer policy, and camera, microphone and location access turned off.</li></ul>
-<h2>6. How we build Orchy</h2>
-<ul><li>Every change goes through a pull request.</li><li>Each pull request is checked by a QA and security reviewer and then reviewed again before it can be merged.</li><li>Each pull request is scanned for leaked secrets before review.</li><li>Automated tests run on each pull request, on Windows and Linux.</li></ul>
-<h2>7. Known limits</h2>
+<p><strong>Client pages (optional).</strong> If you turn on client pages, they run on a separate port and are reached through Cloudflare Tunnel, with Cloudflare Access checking each visitor's identity first. The main dashboard is never exposed this way.</p>
+<h2>2. Hosted Orchy</h2>
+<p>Hosted Orchy runs on our server at OVHcloud in Beauharnois, Canada. We list only measures we can show are in place:</p>
+<ul><li>Each customer has its <strong>own container</strong> on our server; access passes an authentication check before it reaches the container.</li><li>Web traffic reaches our server only through a <strong>Cloudflare Tunnel</strong>. The server's firewall admits nothing else from the internet except administrative access, which is by <strong>key-only SSH</strong> with password and root login turned off.</li><li>Sign-in is by Google or a one-time email link. Sessions use a random value of which <strong>only a hash is stored</strong>; the cookie is HttpOnly and Secure and lasts 30 days.</li><li>Your own AI-provider key is <strong>sealed with AES-256-GCM</strong>, using a key derived from a server-side secret that is separate for each customer.</li><li><strong>Backups</strong> are encrypted (with the open-source tool age) before upload to Cloudflare R2; copies older than 14 days are removed.</li><li>Connections to the service use <strong>HTTPS</strong>. Encryption in transit ends at Cloudflare's edge, and traffic is carried to our server over the Cloudflare Tunnel.</li><li>The run log for connected apps keeps <strong>no message bodies</strong> and is kept for 90 days.</li><li>Each customer's agents run as a <strong>separate unprivileged user</strong> with no system privileges.</li><li>A customer's container <strong>cannot reach the server itself or private networks</strong>.</li><li>Each sign-in cookie is <strong>limited to its own address</strong> (our app and each customer's Orchy get separate host-only cookies), and every signed-in change needs an <strong>anti-forgery token</strong> and must come from Orchy's own page (the browser's Origin is checked).</li><li>A customer's Orchy <strong>won't open until the current Terms are accepted</strong>.</li></ul>
+<p>Our <a href="/dpa">Data Processing Agreement</a> (Annex 2) lists the same measures, and the <a href="/data-privacy">Data Privacy page</a> lists the companies that help us run the service.</p>
+<h2>3. Our website</h2>
+<ul><li>imorchy.dev is served over HTTPS only. Plain HTTP requests, and requests to www.imorchy.dev, are redirected to https://imorchy.dev, and browsers are told to use HTTPS for imorchy.dev for a year (HSTS).</li><li>A strict Content Security Policy lets pages load code only from imorchy.dev. The one exception is a 3D graphics library loaded from jsDelivr on the home page.</li><li>The website sets no cookies, shows no challenge page and runs no analytics. (Hosted Orchy uses the sign-in cookies described in section 2.)</li><li>Other protections: no framing by other sites, no MIME sniffing, a strict referrer policy, and camera, microphone and location access turned off.</li></ul>
+<h2>4. How we build Orchy</h2>
+<ul><li>Every change goes through a pull request.</li><li>Automated tests run on each pull request, on Windows, macOS and Linux.</li></ul>
+<h2>5. Known limits</h2>
 <p>We'd rather be clear about what Orchy can't protect against:</p>
-<ul><li>The approval gate is a filter, not a sandbox. Agents run with your user account's permissions.</li><li>If your AI engine account or your One account is compromised, an attacker could act through it.</li><li>Other software running as your user on the same computer can read Orchy's files.</li></ul>
-<h2>8. Report a vulnerability</h2>
-<p>Please report security problems privately, not in public: email <strong>security@withone.ai</strong>.</p>
-<p>Please give us a reasonable time to fix the problem before you disclose it. Don't access other people's data, disrupt the service, or test against systems that aren't yours. We won't pursue legal action against good-faith research that follows these rules.</p>
+<ul><li>On the desktop, the approval gate is a filter, not a sandbox. Agents run with your user account's permissions, and other software running as your user can read Orchy's files.</li><li>If your AI engine account or your One account is compromised, an attacker could act through it.</li><li>In hosted Orchy, live data on our server is protected by the measures in section 2; we don't claim it is encrypted at rest.</li></ul>
+<h2>6. Report a vulnerability</h2>
+<p>Please report security problems privately, not in a public issue:</p>
+<ul><li><strong>Email:</strong> support@imorchy.dev</li></ul>
 <p>We aim to reply within 5 business days.</p>
+<p>We won't pursue good-faith research that follows this page. That means: test only your own account and Orchy; stop and tell us once you reach anyone else's data; no denial of service, spam or social engineering; give us 90 days before going public.</p>
 <p>Our machine-readable contact file is at <a href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
       </article>
     </main>
