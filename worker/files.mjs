@@ -17,8 +17,8 @@ export const TYPES = {
 };
 // Only the page's own files go up: never the deploy script, the preview server, the content build or the README.
 export const SKIP = new Set(["deploy.mjs", "serve.mjs", "build.mjs", "README.md"]);
-// Folders that never go up: the Worker's own code, and the sources build.mjs turns into pages (content/).
-export const SKIP_DIRS = new Set(["worker", "content"]);
+// Folders that never go up: the repo's own .git and .github, the Worker's own code, and the sources build.mjs turns into pages (content/).
+export const SKIP_DIRS = new Set(["worker", "content", ".git", ".github"]);
 export const skipDir = (rel, name) => SKIP_DIRS.has(rel) || name === "node_modules";
 // Videos are git-ignored and too big for static assets (25 MiB per file), so they're never uploaded: the Worker
 // serves them from the R2 bucket bound as MEDIA, under the same path (assets/video.mp4). serve.mjs reads the file

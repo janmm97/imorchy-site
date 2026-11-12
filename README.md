@@ -7,7 +7,7 @@ A standalone landing page built with HTML, CSS, and native JavaScript modules. T
 From the repository root:
 
 ```sh
-node site/serve.mjs
+node serve.mjs
 ```
 
 Open http://127.0.0.1:4173. Stop with Ctrl+C. The preview serves only this folder and listens on loopback; it does not start or connect to the Orchy dashboard. An optional port can be passed as the first argument.
@@ -56,17 +56,17 @@ First paint never waits on the big art. `worker/test-speed.mjs` (part of `npm te
 - `serve.mjs`: optional local preview server.
 - `deploy.mjs`: publishes the page and its Worker to Cloudflare (below).
 - `worker/`: the Cloudflare Worker: 301s from `http://` and `www.` to `https://imorchy.dev`, the launch video from R2 (with byte ranges, `worker/range.mjs`), and Google's verification file at its exact `.html` path. `worker/routes.mjs` lists which paths run the Worker first (pages and videos; not CSS, JS, fonts or images), and `worker/files.mjs` lists which files `deploy.mjs` uploads and their Content-Types (a new file type needs an entry there, or it 404s live while `serve.mjs` still shows it) and which are served from R2 instead. `worker/test.mjs` checks the Worker offline (part of `npm test`), `worker/test-deploy.mjs` checks that every site file is uploaded and every static file skips the Worker, `worker/test-deploy-api.mjs` runs `deploy.mjs` end to end against a fake Cloudflare API (`worker/fake-cloudflare.mjs`), and `worker/test-pages.mjs` checks each page's FAQPage JSON-LD against its visible FAQ text. `worker/check-live.mjs` checks the live site after a deploy.
-- `build.mjs` and `content/`: the content build (Node built-ins only; neither is uploaded). `content/pages.json` lists the hand-written pages with the date each last really changed; `content/blog/<YYYY-MM-DD>-<slug>.md` and `content/changelog/<YYYY-MM-DD>-<slug>.md` are front matter plus markdown. `node site/build.mjs` writes `sitemap.xml` and any generated pages (marked as generated in their first lines: edit the source, never the output); `node site/build.mjs --check` (part of `npm test`) fails on a broken source, an SEO problem on any page, or a committed output that's out of date. Generated pages load `/styles.css` and no script but JSON-LD. Dates come only from the sources, so the same content always builds the same bytes.
+- `build.mjs` and `content/`: the content build (Node built-ins only; neither is uploaded). `content/pages.json` lists the hand-written pages with the date each last really changed; `content/blog/<YYYY-MM-DD>-<slug>.md` and `content/changelog/<YYYY-MM-DD>-<slug>.md` are front matter plus markdown. `node build.mjs` writes `sitemap.xml` and any generated pages (marked as generated in their first lines: edit the source, never the output); `node build.mjs --check` (part of `npm test`) fails on a broken source, an SEO problem on any page, or a committed output that's out of date. Generated pages load `/styles.css` and no script but JSON-LD. Dates come only from the sources, so the same content always builds the same bytes.
 - `sitemap.xml` (generated), `robots.txt` (only the Sitemap line) and `assets/og-image.png` (the 1200×630 share image) are for search engines and link previews. Structured data in `<head>` must say what the page says.
 - `privacy.html`, `terms.html`, `security.html`, `data-privacy.html` and `dpa.html`: the legal pages, hand-written from the approved text, word for word (legal wording changes only with legal sign-off). Their tables sit in a labelled `.table-scroll` box so they scroll sideways on a phone instead of the page; `build.mjs`'s markdown does pipe tables the same way. `worker/test-pages.mjs` checks them (one h1, no skipped heading levels, every table boxed, no placeholders).
 - `.well-known/security.txt`: the RFC 9116 security contact, served as `text/plain; charset=utf-8`. It's uploaded like any file (`worker/files.mjs` doesn't skip dot-folders) and runs the Worker first like the pages (`worker/routes.mjs`), so http:// and www. still get their 301. Renew its `Expires:` line before it passes.
 
 ## Going live
 
-**Merging a `site/` PR into main deploys it.** The merge starts the **Deploy site** workflow (`.github/workflows/deploy-site.yml`): it runs the Worker tests, deploys to imorchy.dev, then checks the live site. Watch that run and its live checks in the repo's Actions tab. A red run means the deploy or a check failed; the step log says which.
+**Merging a PR into main deploys it.** The merge starts the **Deploy site** workflow (`.github/workflows/deploy-site.yml`): it runs the Worker tests, deploys to imorchy.dev, then checks the live site. Watch that run and its live checks in the repo's Actions tab. A red run means the deploy or a check failed; the step log says which.
 
-- **Live checks** (`worker/check-live.mjs`): every page in the URL list (`worker/urls.mjs` plus the generated pages) answers 200 with its markers and security headers; https://www.imorchy.dev and http:// end at https://imorchy.dev; every `<loc>` in the live sitemap answers 200 with its own canonical; `/approvals/`, `/approvals.html` and `/index.html` take one hop to the clean URL; an unknown path is a 404 with the security headers; robots.txt blocks no search crawler and OAI-SearchBot and PerplexityBot get the home page; and a Range request for `/assets/video.mp4` answers 206. While the "Watch Launch Video" button is still disabled (Coming soon), a video missing from R2 is only a notice; once the button is enabled, it fails the run. **A new hand-written page** goes in `content/pages.json` (then run `node site/build.mjs`) and in `PAGES` in `worker/urls.mjs` with its markers; `npm test` fails if the sitemap and that list disagree. Generated pages are added to both on their own.
-- **Roll back** by reverting the PR (GitHub's "Revert" button on the merged PR, or `git revert -m 1 <merge sha>` on a branch) and merging the revert. That merge touches `site/` too, so it redeploys the previous version.
+- **Live checks** (`worker/check-live.mjs`): every page in the URL list (`worker/urls.mjs` plus the generated pages) answers 200 with its markers and security headers; https://www.imorchy.dev and http:// end at https://imorchy.dev; every `<loc>` in the live sitemap answers 200 with its own canonical; `/approvals/`, `/approvals.html` and `/index.html` take one hop to the clean URL; an unknown path is a 404 with the security headers; robots.txt blocks no search crawler and OAI-SearchBot and PerplexityBot get the home page; and a Range request for `/assets/video.mp4` answers 206. While the "Watch Launch Video" button is still disabled (Coming soon), a video missing from R2 is only a notice; once the button is enabled, it fails the run. **A new hand-written page** goes in `content/pages.json` (then run `node build.mjs`) and in `PAGES` in `worker/urls.mjs` with its markers; `npm test` fails if the sitemap and that list disagree. Generated pages are added to both on their own.
+- **Roll back** by reverting the PR (GitHub's "Revert" button on the merged PR, or `git revert -m 1 <merge sha>` on a branch) and merging the revert. That merge is a push to main too, so it redeploys the previous version.
 - **Redeploy** without a change: Actions → Deploy site → Run workflow, on `main`. Other branches never deploy.
 - **One deploy at a time.** Merges deploy in order; if several queue up, only the newest runs, and it deploys the latest main.
 
@@ -79,8 +79,8 @@ The site runs as a Cloudflare Worker with static assets on its domain. In the wo
 `deploy.mjs` also runs on a computer, for checking a token or the plan before a merge:
 
 ```sh
-npm install --prefix site/worker                 # once: the Worker's packages
-node site/deploy.mjs <domain> --dry-run          # what would change: reads only, nothing uploaded
+npm install --prefix worker                 # once: the Worker's packages
+node deploy.mjs <domain> --dry-run          # what would change: reads only, nothing uploaded
 ```
 
 With `CLOUDFLARE_API_TOKEN` set it uses that token. Without it, it goes through this repo folder's own One login and its Cloudflare connection (`one init --auth browser --project` in the repo root, then connect Cloudflare in that One organization). Dropping `--dry-run` publishes.
