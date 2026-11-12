@@ -1,15 +1,15 @@
 // Deploy the landing page to Cloudflare (Workers static assets on a custom domain). Two ways in:
-// - CLOUDFLARE_API_TOKEN set (the Deploy site workflow, on every merge into main that touches site/): straight to
+// - CLOUDFLARE_API_TOKEN set (the Deploy site workflow, on every merge into main): straight to
 //   Cloudflare's API with that token. Nothing from One is read.
 // - Unset: through One, with this repo folder's own One login (`one init --auth browser --project`, run in the repo
 //   root) and that login's Cloudflare connection. The CLI can't carry file bodies (they go on the command line), so
 //   the calls go to One's passthrough API directly, with the same key, connection and action IDs the CLI would send.
 //
-// The Worker (site/worker/main.mjs: the video and Google's verification file) is bundled with esbuild from
-// site/worker's own packages (`npm install` there first). It has no secrets; a deploy clears any left from the
+// The Worker (worker/main.mjs: the video and Google's verification file) is bundled with esbuild from
+// worker/'s own packages (`npm install` there first). It has no secrets; a deploy clears any left from the
 // old live playground. Videos aren't uploaded: the Worker serves them from the R2 bucket bound as MEDIA.
 //
-//   node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]
+//   node deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]
 import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
@@ -20,7 +20,7 @@ import { MEDIA_BUCKET, siteFiles } from "./worker/files.mjs";
 import { RUN_WORKER_FIRST } from "./worker/routes.mjs";
 
 const SITE = fileURLToPath(new URL(".", import.meta.url));
-const REPO = path.resolve(SITE, "..");
+const REPO = path.resolve(SITE); // the repo root (this folder), where the One login lives
 const MAX_FILE = 25 * 1024 * 1024; // Workers static assets: 25 MiB per file
 // One action IDs (One's catalogue, not secrets): sent as x-one-action-id, as the CLI does.
 const ACTION = {
@@ -44,11 +44,11 @@ const name = opt("--name") || "orchy-site";
 const dryRun = flag("--dry-run");
 const hosts = flag("--no-www") ? [domain] : [domain, `www.${domain}`];
 if (flag("--file")) {
-  console.error("--file is gone: videos are served from the R2 bucket, never uploaded. See site/README.md.");
+  console.error("--file is gone: videos are served from the R2 bucket, never uploaded. See README.md.");
   process.exit(1);
 }
 if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
-  console.error("Usage: node site/deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]");
+  console.error("Usage: node deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]");
   process.exit(1);
 }
 

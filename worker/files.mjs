@@ -16,7 +16,7 @@ export const TYPES = {
   ".txt": "text/plain; charset=utf-8",
 };
 // Only the page's own files go up: never the deploy script, the preview server, the content build or the README.
-export const SKIP = new Set(["deploy.mjs", "serve.mjs", "build.mjs", "README.md"]);
+export const SKIP = new Set(["deploy.mjs", "serve.mjs", "build.mjs", "README.md", ".gitignore"]);
 // Folders that never go up: the repo's own .git and .github, the Worker's own code, and the sources build.mjs turns into pages (content/).
 export const SKIP_DIRS = new Set(["worker", "content", ".git", ".github"]);
 export const skipDir = (rel, name) => SKIP_DIRS.has(rel) || name === "node_modules";

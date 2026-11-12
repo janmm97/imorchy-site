@@ -26,8 +26,8 @@ const files = onDisk();
 const deployed = new Set(siteFiles(SITE).map((f) => f.rel));
 
 // ── (a) deploy.mjs uploads every file of the site ──
-for (const rel of files) assert.ok(deployed.has(rel), `deploy.mjs would skip site/${rel}: add "${path.extname(rel)}" to TYPES in worker/files.mjs`);
-for (const dir of ["assets", "js", "fonts"]) assert.ok(files.some((f) => f.startsWith(dir + "/")), `site/${dir} has files`);
+for (const rel of files) assert.ok(deployed.has(rel), `deploy.mjs would skip ${rel}: add "${path.extname(rel)}" to TYPES in worker/files.mjs`);
+for (const dir of ["assets", "js", "fonts"]) assert.ok(files.some((f) => f.startsWith(dir + "/")), `${dir} has files`);
 ok(`deploy.mjs uploads all ${files.length} files of the site (assets, js, fonts, pages, sitemap, robots.txt)`);
 
 // A video on disk (the local preview's copy) is never uploaded: a deploy can't need it, so CI can deploy without it.
@@ -57,7 +57,7 @@ for (const src of sources) {
   for (const [, ref] of fs.readFileSync(path.join(SITE, src), "utf8").matchAll(LOCAL)) {
     if (ref.endsWith(".mp4")) continue;
     refs++;
-    assert.ok(deployed.has(ref), `site/${src} points at ${ref}, which deploy.mjs doesn't upload`);
+    assert.ok(deployed.has(ref), `${src} points at ${ref}, which deploy.mjs doesn't upload`);
   }
 }
 assert.ok(refs > 20, `found the pages' local references (${refs})`);
@@ -81,5 +81,5 @@ for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2
 const page = (rel) => /^([^/]+\.(html|xml|txt)|blog\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || rel.endsWith(".mp4");
 for (const rel of files) assert.equal(workerFirst("/" + rel), page(rel), `/${rel} should ${page(rel) ? "reach" : "skip"} the Worker`);
 const exts = [...new Set(files.filter((f) => f.startsWith("assets/")).map((f) => path.extname(f)))].sort();
-assert.ok(files.includes("BingSiteAuth.xml"), "Bing Webmaster verification file is in site/ at its exact case");
+assert.ok(files.includes("BingSiteAuth.xml"), "Bing Webmaster verification file is in the repo root at its exact case");
 ok(`run_worker_first: pages, videos, google*.html and BingSiteAuth.xml reach the Worker; CSS, JS, fonts and every asset type (${exts.join(" ")}) skip it`);

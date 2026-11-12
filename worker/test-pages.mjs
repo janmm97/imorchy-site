@@ -135,8 +135,8 @@ for (const page of pages) {
   assert.ok(icons[0].includes('type="image/png"'), `${page}: icon type is image/png`);
   assert.ok(!/favicon\.svg|lilorchy/i.test(html), `${page}: no old robot icon (favicon.svg, lilorchy)`);
 }
-assert.ok(!fs.existsSync(SITE + "favicon.svg"), "site/favicon.svg (the old robot) is removed");
-assert.ok(fs.existsSync(SITE + "assets/orchy-icon-64.png"), "site/assets/orchy-icon-64.png exists");
+assert.ok(!fs.existsSync(SITE + "favicon.svg"), "favicon.svg (the old robot) is removed");
+assert.ok(fs.existsSync(SITE + "assets/orchy-icon-64.png"), "assets/orchy-icon-64.png exists");
 ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab icon, none names favicon.svg`);
 
 // ── one footer (Jan, 2026-11-03): every shipped page has build.mjs's shared footer, the same on all of them except
@@ -151,7 +151,7 @@ for (const page of pages) {
   const html = fs.readFileSync(SITE + page, "utf8");
   const footers = html.match(/<footer\b[\s\S]*?<\/footer>/gi) || [];
   assert.equal(footers.length, 1, `${page}: exactly one footer`);
-  assert.equal(footers[0], footer(pathOf(page)).trim(), `${page}: footer is build.mjs's shared one (run node site/build.mjs)`);
+  assert.equal(footers[0], footer(pathOf(page)).trim(), `${page}: footer is build.mjs's shared one (run node build.mjs)`);
   const nav = footers[0].match(/<nav class="footer-nav" aria-label="Footer">([\s\S]*?)<\/nav>/)?.[1] ?? "";
   for (const [, href] of nav.matchAll(/<a href="([^"]+)"/g)) {
     if (/^https:\/\//.test(href)) continue;

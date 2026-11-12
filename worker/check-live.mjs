@@ -13,7 +13,7 @@
 // - robots.txt shuts out no search or AI-search crawler, and OAI-SearchBot and PerplexityBot get / with its h1.
 // Each check is retried for about a minute, while the new version reaches every edge.
 //
-//   node site/worker/check-live.mjs <domain>
+//   node worker/check-live.mjs <domain>
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { build, canonicals } from "../build.mjs";
@@ -25,7 +25,7 @@ const PAGES = [...LISTED, ...build(fileURLToPath(new URL("..", import.meta.url))
 
 const domain = process.argv[2];
 if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
-  console.error("Usage: node site/worker/check-live.mjs <domain>");
+  console.error("Usage: node worker/check-live.mjs <domain>");
   process.exit(1);
 }
 const TRIES = 7;

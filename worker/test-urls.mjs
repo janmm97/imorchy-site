@@ -78,7 +78,7 @@ const worksFirst = (p) => {
 const uploaded = new Set(siteFiles(SITE).map((f) => f.rel));
 for (const page of PAGES) {
   assert.ok(worksFirst(page.path), `${page.path} runs the Worker first, so it gets the headers`);
-  assert.ok(uploaded.has(fileFor(page.path)), `site/${fileFor(page.path)} exists and files.mjs uploads it`);
+  assert.ok(uploaded.has(fileFor(page.path)), `${fileFor(page.path)} exists and files.mjs uploads it`);
   const res = await get(ORIGIN + page.path);
   assert.equal(res.status, 200, page.path);
   assert.deepEqual(headerProblems(res.headers, page, CSP), [], page.path);
@@ -121,7 +121,7 @@ const today = new Date().toISOString().slice(0, 10);
 assert.ok(locs.length >= 5);
 assert.equal(new Set(locs).size, locs.length, "no loc twice");
 for (const loc of locs) assert.ok(shipped.some((p) => ORIGIN + p.path === loc), `${loc} is in the sitemap but not a shipped HTML page in urls.mjs PAGES (or generated)`);
-for (const p of shipped) assert.ok(locs.includes(ORIGIN + p.path), `${p.path} is a shipped HTML page but not in the sitemap: add it to content/pages.json and run node site/build.mjs`);
+for (const p of shipped) assert.ok(locs.includes(ORIGIN + p.path), `${p.path} is a shipped HTML page but not in the sitemap: add it to content/pages.json and run node build.mjs`);
 for (const [, d] of sitemap.matchAll(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/g)) {
   assert.match(d, /^\d{4}-\d{2}-\d{2}$/);
   assert.ok(d <= today, `lastmod ${d} is not in the future`);
@@ -229,7 +229,7 @@ try {
   const said = [];
   const say = { log: (m) => said.push(m), error: (m) => said.push(m) };
   assert.equal(cli(fx, [], say), 1, "write mode exits 1 on an orphaned output");
-  assert.match(said.join("\n"), /site\/blog\/old\.html \(its source is gone: delete it\)/);
+  assert.match(said.join("\n"), /blog\/old\.html \(its source is gone: delete it\)/);
   assert.equal(fs.readFileSync(path.join(fx, "blog/first-post.html"), "utf8"), post, "write mode rewrote the stale page");
   assert.equal(cli(fx, ["--check"], say), 1, "--check exits 1 on the orphan too");
   fs.rmSync(path.join(fx, "blog/old.html"));

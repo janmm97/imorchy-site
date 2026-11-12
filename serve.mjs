@@ -96,7 +96,7 @@ const server = http.createServer(async (req, res) => {
 server.on("error", (error) => {
   console.error(
     error.code === "EADDRINUSE"
-      ? `Port ${port} is in use. Try: node site/serve.mjs ${port + 1}`
+      ? `Port ${port} is in use. Try: node serve.mjs ${port + 1}`
       : error.message,
   );
   process.exitCode = 1;

@@ -145,7 +145,7 @@ await import("./test-urls.mjs");
 // The committed generated files (sitemap.xml, and any blog/changelog pages) match a fresh build of site/content.
 const said = [];
 const code = cli(fileURLToPath(new URL("..", import.meta.url)), ["--check"], { log: (m) => (said.push(m), console.log(m)), error: console.error });
-assert.equal(code, 0, "node site/build.mjs --check failed: run node site/build.mjs and commit what it writes");
+assert.equal(code, 0, "node build.mjs --check failed: run node build.mjs and commit what it writes");
 assert.match(said.join("\n"), /^build --check: [1-9]\d* generated file\(s\) match their sources/m, "build.mjs --check ran its check (not just returned 0)");
-console.log("ok - node site/build.mjs --check: the committed generated files match site/content");
+console.log("ok - node build.mjs --check: the committed generated files match content/");
 console.log("test-worker: all passed");

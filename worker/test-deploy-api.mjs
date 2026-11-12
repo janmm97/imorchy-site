@@ -1,7 +1,7 @@
 // Offline checks for how deploy.mjs talks to Cloudflare, run end to end against fake-cloudflare.mjs (no network):
 // with CLOUDFLARE_API_TOKEN it calls api.cloudflare.com with that token and nothing from One, except the assets
 // upload, which signs with its upload-session JWT; without it, it goes through this folder's One login as before.
-// Both modes bind the R2 video bucket and upload no video. Needs esbuild (`npm ci --prefix site/worker`), which the
+// Both modes bind the R2 video bucket and upload no video. Needs esbuild (`npm ci --prefix worker`), which the
 // Deploy site workflow installs; without it this file says so and skips. Run by test.mjs (part of `npm test`).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -12,11 +12,11 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const WORKER = fileURLToPath(new URL(".", import.meta.url));
 const SITE = path.resolve(WORKER, "..");
-const REPO = path.resolve(SITE, "..");
+const REPO = SITE; // the repo root is the site folder
 const ok = (name) => console.log(`ok - ${name}`);
 
 if (!fs.existsSync(path.join(WORKER, "node_modules", "esbuild"))) {
-  console.log("skip - deploy.mjs against a fake Cloudflare API: esbuild isn't installed (npm ci --prefix site/worker)");
+  console.log("skip - deploy.mjs against a fake Cloudflare API: esbuild isn't installed (npm ci --prefix worker)");
 } else {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchy-deploy-"));
   try {
