@@ -70,7 +70,7 @@ First paint never waits on the big art. `worker/test-speed.mjs` (part of `npm te
 - **Redeploy** without a change: Actions → Deploy site → Run workflow, on `main`. Other branches never deploy.
 - **One deploy at a time.** Merges deploy in order; if several queue up, only the newest runs, and it deploys the latest main.
 
-The site runs as a Cloudflare Worker with static assets on its domain. In the workflow, `deploy.mjs` signs in with the `CLOUDFLARE_API_TOKEN` repository secret. The Worker itself has no secrets, and the script won't touch existing DNS records.
+The site runs as a Cloudflare Worker with static assets on its domain. In the workflow, `deploy.mjs` signs in with the `CLOUDFLARE_API_TOKEN` secret of the `production` environment (deployment branches: `main` only). The Worker itself has no secrets, and the script won't touch existing DNS records.
 
 **The launch video** (`assets/video.mp4`) is kept out of git and isn't uploaded with the site: the Worker serves it from the R2 bucket `orchy-site-media` (bound as `MEDIA`) under the same key, `assets/video.mp4`, with byte ranges. There's no launch video yet: when there is, the owner uploads it to that bucket (Content-Type `video/mp4`), then a PR enables the button. Replacing it later is an upload, not a deploy. `serve.mjs` plays your local copy, if you have one.
 

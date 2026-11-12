@@ -22,6 +22,9 @@ jobs:
   deploy:
     # Only main goes live, even when someone runs it by hand on another branch.
     if: github.ref == 'refs/heads/main'
+    # The Cloudflare token lives in the `production` environment, whose deployment branches are main only: a workflow
+    # run from any other branch (or a changed copy of this file there) never gets it.
+    environment: production
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -38,7 +41,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::error title=No Cloudflare token::Add the CLOUDFLARE_API_TOKEN repository secret (Settings → Secrets and variables → Actions)."
+            echo "::error title=No Cloudflare token::Add the CLOUDFLARE_API_TOKEN secret to the production environment (Settings → Environments → production)."
             exit 1
           fi
           node deploy.mjs imorchy.dev
