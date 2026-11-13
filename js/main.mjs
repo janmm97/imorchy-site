@@ -150,7 +150,7 @@ $$("[data-approve]").forEach((button) =>
 // The launch video opens in a glass window over the page; closing it stops playback.
 const videoDialog = $("#launchVideo"),
   launchVideo = $("video", videoDialog);
-$(".hero-video").addEventListener("click", () => {
+$(".hero-video")?.addEventListener("click", () => {
   videoDialog.showModal();
   launchVideo.play().catch(() => {});
 });
@@ -159,5 +159,5 @@ videoDialog.addEventListener("click", (e) => {
 });
 videoDialog.addEventListener("close", () => {
   launchVideo.pause();
-  $(".hero-video").focus({ preventScroll: true });
+  $(".hero-video")?.focus({ preventScroll: true });
 });

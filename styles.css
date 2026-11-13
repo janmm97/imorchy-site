@@ -3952,3 +3952,51 @@ body::before {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
 }
+
+/* ---- Hero outcome line and quote strip (plain-language, non-technical visitors) ---- */
+.hero-outcome {
+  display: block;
+  margin-bottom: 10px;
+  font: 700 clamp(20px, 3.4vw, 28px) / 1.25 system-ui, "Segoe UI", sans-serif;
+  color: var(--mint);
+}
+.proof {
+  padding-block: clamp(40px, 7vw, 72px) 0;
+}
+.proof-title {
+  margin-bottom: 20px;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.proof-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.proof-list li {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--glass-edge-soft);
+  border-radius: var(--r-md);
+  background: #ffffff0a;
+}
+.proof-list blockquote {
+  margin: 0;
+  font: 16px / 1.55 system-ui, "Segoe UI", sans-serif;
+  color: var(--text);
+}
+.proof-list p {
+  margin: 0;
+}
+.proof-list span {
+  font-size: 13px;
+  color: #acb5b0;
+}
