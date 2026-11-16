@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { IN_R2, SKIP, TYPES, siteFiles, skipDir } from "./files.mjs";
+import { SKIP, TYPES, inR2, siteFiles, skipDir } from "./files.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
@@ -20,7 +20,7 @@ const onDisk = (dir = SITE) =>
     const full = path.join(dir, entry.name);
     const rel = path.relative(SITE, full).split(path.sep).join("/");
     if (entry.isDirectory()) return skipDir(rel, entry.name) ? [] : onDisk(full);
-    return SKIP.has(rel) || IN_R2.has(path.extname(rel)) ? [] : [rel];
+    return SKIP.has(rel) || inR2(rel) ? [] : [rel];
   });
 const files = onDisk();
 const deployed = new Set(siteFiles(SITE).map((f) => f.rel));
@@ -36,26 +36,31 @@ try {
   fs.mkdirSync(path.join(tmp, "assets"));
   fs.writeFileSync(path.join(tmp, "index.html"), "<!doctype html>");
   fs.writeFileSync(path.join(tmp, "assets", "video.mp4"), Buffer.alloc(64));
+  // The homepage's short loops are in git and do go up, with their types.
+  fs.mkdirSync(path.join(tmp, "media"));
+  fs.writeFileSync(path.join(tmp, "media", "clip.mp4"), Buffer.alloc(64));
+  fs.writeFileSync(path.join(tmp, "media", "clip.webm"), Buffer.alloc(64));
   // The content build and its sources are tooling, never site files (ADR point 1).
   fs.mkdirSync(path.join(tmp, "content", "blog"), { recursive: true });
   fs.writeFileSync(path.join(tmp, "content", "pages.json"), "[]");
   fs.writeFileSync(path.join(tmp, "content", "blog", "x.html"), "<!doctype html>");
   fs.writeFileSync(path.join(tmp, "build.mjs"), "");
-  assert.deepEqual(siteFiles(tmp).map((f) => f.rel), ["index.html"]);
+  assert.deepEqual(siteFiles(tmp).map((f) => `${f.rel} ${f.type}`).sort(), ["index.html text/html; charset=utf-8", "media/clip.mp4 video/mp4", "media/clip.webm video/webm"]);
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
 }
-assert.ok(IN_R2.has(".mp4") && !TYPES[".mp4"]);
-ok("videos (.mp4) are never uploaded as static assets, even with a local copy on disk: the Worker serves them from R2");
+assert.ok(inR2("assets/video.mp4") && !inR2("media/clip.mp4") && !inR2("assets/x/video.mp4"));
+ok("the launch video (assets/*.mp4) is never uploaded, even with a local copy on disk: the Worker serves it from R2");
+ok("the homepage loops (media/*.mp4, *.webm) are uploaded as video/mp4 and video/webm");
 ok("build.mjs and content/ (the sources of the generated pages) are never uploaded");
 
 // Every local file a page, the stylesheet or a script names is uploaded too (the video comes from R2).
-const LOCAL = /(?:https:\/\/imorchy\.dev)?\/?((?:assets|fonts|js)\/[\w./-]+\.\w+|styles\.css|favicon\.svg)/g;
+const LOCAL = /(?:https:\/\/imorchy\.dev)?\/?((?:assets|fonts|js|media)\/[\w./-]+\.\w+|styles\.css|favicon\.svg)/g;
 const sources = files.filter((f) => /\.(html|css|mjs)$/.test(f));
 let refs = 0;
 for (const src of sources) {
   for (const [, ref] of fs.readFileSync(path.join(SITE, src), "utf8").matchAll(LOCAL)) {
-    if (ref.endsWith(".mp4")) continue;
+    if (inR2(ref)) continue;
     refs++;
     assert.ok(deployed.has(ref), `${src} points at ${ref}, which deploy.mjs doesn't upload`);
   }
@@ -71,14 +76,14 @@ const workerFirst = (p) =>
   !RUN_WORKER_FIRST.some((r) => r.startsWith("!") && glob(r.slice(1)).test(p));
 const ANSWER_PAGES = ["/approvals", "/client-workspaces", "/claude-code-orchestrator", "/local"];
 const LEGAL = ["/privacy", "/terms", "/security", "/data-privacy", "/dpa", "/.well-known/security.txt"];
-for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html", "/BingSiteAuth.xml"])
+for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/media/x.mp4", "/media/x.webm", "/googlec22430d134477d04.html", "/BingSiteAuth.xml"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
 assert.equal(TYPES[".txt"], "text/plain; charset=utf-8", "security.txt is served as text/plain (RFC 9116)");
-for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png"])
+for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png", "/media/x-poster.jpg"])
   assert.ok(!workerFirst(p), `${p} should skip the Worker`);
 // Every file on disk: root pages (.html, .xml, .txt), blog posts (blog/*.html), .well-known files and videos reach the
 // Worker, every other file skips it.
-const page = (rel) => /^([^/]+\.(html|xml|txt)|blog\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || rel.endsWith(".mp4");
+const page = (rel) => /^([^/]+\.(html|xml|txt)|blog\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || /\.(mp4|webm)$/.test(rel);
 for (const rel of files) assert.equal(workerFirst("/" + rel), page(rel), `/${rel} should ${page(rel) ? "reach" : "skip"} the Worker`);
 const exts = [...new Set(files.filter((f) => f.startsWith("assets/")).map((f) => path.extname(f)))].sort();
 assert.ok(files.includes("BingSiteAuth.xml"), "Bing Webmaster verification file is in the repo root at its exact case");

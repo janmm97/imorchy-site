@@ -109,7 +109,7 @@ async function cf(action, method, apiPath, { query, json, form, headers = {} } =
 const files = siteFiles(SITE);
 const tooBig = files.filter((f) => f.data.length > MAX_FILE);
 if (tooBig.length) {
-  for (const f of tooBig) console.error(`${f.rel} is ${(f.data.length / 1048576).toFixed(1)} MB; Cloudflare takes 25 MiB per file. Make it smaller, or serve it from R2 like the video (IN_R2 in worker/files.mjs).`);
+  for (const f of tooBig) console.error(`${f.rel} is ${(f.data.length / 1048576).toFixed(1)} MB; Cloudflare takes 25 MiB per file. Make it smaller, or serve it from R2 like the launch video (inR2 in worker/files.mjs).`);
   process.exit(1);
 }
 const manifest = {};

@@ -30,6 +30,8 @@ const env = {
       const req = typeof input === "string" ? new Request(input) : input;
       const p = new URL(req.url).pathname;
       assetsSeen.push(p);
+      // A homepage loop, the way static assets answer it: whole file, ETag, no Range.
+      if (p === "/media/clip.webm") return new Response(VIDEO, { headers: { "Content-Type": "video/webm", ETag: '"a1"' } });
       if (!exists(p)) return new Response("Not found", { status: 404 });
       const data = fs.readFileSync(path.join(SITE, fileFor(p)));
       const etag = `"${createHash("sha1").update(data).digest("hex")}"`;
@@ -358,6 +360,22 @@ res = await get(ORIGIN + "/assets/video.mp4", { "If-None-Match": '"v9"' });
 assert.equal(res.status, 304);
 assert.equal(res.headers.get("ETag"), '"v9"');
 for (const [name, value] of Object.entries(EXPECT_HEADERS.all)) assert.equal(res.headers.get(name), value, name);
+// The homepage loops are static assets (which ignore Range), so the Worker slices them the same way.
+res = await get(ORIGIN + "/media/clip.webm", { Range: "bytes=100-199" });
+assert.equal(res.status, 206);
+assert.equal(res.headers.get("Content-Range"), "bytes 100-199/3000");
+assert.equal(res.headers.get("Content-Length"), "100");
+assert.equal(res.headers.get("Content-Type"), "video/webm");
+assert.equal(res.headers.get("Cache-Control"), "public, max-age=86400");
+assert.deepEqual(new Uint8Array(await res.arrayBuffer()), VIDEO.slice(100, 200));
+res = await get(ORIGIN + "/media/clip.webm");
+assert.equal(res.status, 200);
+assert.equal(res.headers.get("Content-Length"), "3000");
+assert.equal((await get(ORIGIN + "/media/clip.webm", { "If-None-Match": '"a1"' })).status, 304);
+assert.equal((await get(ORIGIN + "/media/clip.webm", { Range: "bytes=3000-" })).status, 416);
+assert.equal((await get(ORIGIN + "/media/clip.webm", {}, "HEAD")).headers.get("Accept-Ranges"), "bytes");
+assert.equal((await get(ORIGIN + "/media/missing.mp4", { Range: "bytes=0-9" })).status, 404, "a missing loop is a 404, not an R2 lookup");
+ok("homepage loops (/media/*.mp4, *.webm): 206 with the right slice, 200, 304, 416, HEAD and 404 from the static assets");
 const samples = [
   new Response(null, { status: 304, headers: { ETag: '"a"', "Cache-Control": "no-cache" } }),
   new Response("part", { status: 206, statusText: "Partial Content", headers: { "Content-Range": "bytes 0-3/9", "Content-Type": "video/mp4" } }),
