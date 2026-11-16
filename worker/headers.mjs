@@ -3,23 +3,13 @@
 // no I/O, no globals, so test-urls.mjs and check-live.mjs import it directly. Static files on the negated
 // run_worker_first paths (routes.mjs) skip the Worker and get none of this; they're same-origin subresources.
 
-/**
- * The sha256 of the inline importmap in site/index.html, as the browser hashes it (the text between the tags, line
- * ends as LF). Hard-coded on purpose (the deploy path stays untouched): change the importmap and this in the same
- * PR. test-urls.mjs fails if they disagree; a stale hash would leave the hero on its static fallback.
- */
-export const IMPORTMAP_SHA256 = "sha256-oRZKROs/rPg3kUle68jwgMPfk4YGUFiZzB6Q02QFCN0=";
-
-/** The only outside host any page may load from: three.js for the hero, on / only. */
-export const SCRIPT_HOST = "https://cdn.jsdelivr.net";
-
 const csp = (scriptSrc) =>
   [
     "default-src 'self'",
     `script-src ${scriptSrc}`,
-    // 'unsafe-inline' for styles only: a few style="" attributes and CSSOM writes from the hero scripts.
+    // 'unsafe-inline' for styles only: a few style="" attributes and CSSOM writes from the homepage script.
     "style-src 'self' 'unsafe-inline'",
-    // data: for art.mjs's decoded PNG masks.
+    // data: for the homepage's grain texture (an inline SVG in home.css).
     "img-src 'self' data:",
     "font-src 'self'",
     "connect-src 'self'",
@@ -31,9 +21,9 @@ const csp = (scriptSrc) =>
     "upgrade-insecure-requests",
   ].join("; ");
 
-/** The two Content-Security-Policy profiles: the WebGL hero (/) and every other page (no scripts; JSON-LD is data, not run). */
+/** The two Content-Security-Policy profiles: the homepage (/, its own scripts only, no inline script) and every other page (no scripts; JSON-LD is data, not run). */
 export const CSP = {
-  hero: csp(`'self' ${SCRIPT_HOST} '${IMPORTMAP_SHA256}'`),
+  hero: csp("'self'"),
   page: csp("'none'"),
 };
 const HERO_PATHS = new Set(["/", "/index", "/index.html"]);

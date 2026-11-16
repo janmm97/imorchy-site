@@ -14,9 +14,11 @@ Open http://127.0.0.1:4173. Stop with Ctrl+C. The preview serves only this folde
 
 ## The page
 
-Four sections: the hero (the "Orchy AI" wordmark centred on screen with the squad standing on it, a two-line tagline, a "Join the early-access list" button, the launch-video button marked "Coming soon", and the line "Orchy AI is in early access."), How it works (the in-action loop), Your rules (approvals, separate workspaces, local-first, harnesses and apps), and Get access (the early-access list, plus "Book 30 minutes" on Calendly).
+The v3 homepage (`index.html`, `home.css`, `js/home-head.mjs`, `js/home.mjs`, loops in `media/`): the hero ("Hand off the busywork. Approve what matters." over a looping video), the apps it works with, How it works, use cases, a day with Orchy, safety, quotes, the FAQ (mirrored in its FAQPage JSON-LD) and the final call to action. "Get early access" opens the app (https://app.imorchy.dev). Every script is a file on this origin, so the homepage CSP is `script-src 'self'`; with reduced motion, `home-head.mjs` leaves the page static.
 
 ## The living squad
+
+The pre-v3 hero; no page loads it since v3, and its code (`js/main.mjs` and the files it imports) is due to be removed.
 
 Orchy and his nine teammates are real 3D characters built from the supplied art in `assets/`. The page reads each SVG's embedded render and luminance mask, cuts every character out, traces its silhouette, and extrudes it into a bevelled solid with the original art on its front. Nothing is redrawn.
 

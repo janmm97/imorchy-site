@@ -1,5 +1,5 @@
 // Offline checks for the mobile-speed budget: first paint never waits on the big SVG art, every image has a size,
-// the hero art is preloaded, the 3D squad boots late and only on desktop, and the character SVGs keep the
+// the hero poster is preloaded, the 3D squad boots late and only on desktop, and the character SVGs keep the
 // mask-then-colour PNG pair that js/art.mjs reads. Run by test.mjs (part of `npm test`). No network.
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -31,18 +31,17 @@ for (const page of pages) {
 }
 ok(`every <img>, icon and image preload on ${pages.length} pages is sized and under ${BUDGET / 1024} KB`);
 
-// ── the hero art (the desktop LCP element) is preloaded with the same candidates the <img> picks from ──
+// ── the hero video's poster (the LCP element) is the only image preload, high priority, ahead of the CSS ──
 const home = read("index.html");
-const hero = home.match(/<img\b[^>]*fetchpriority="high"[^>]*>/i)?.[0];
-const preload = home.match(/<link\b[^>]*rel="preload"[^>]*as="image"[^>]*>/i)?.[0];
-assert.ok(hero && preload, "index.html has a high-priority hero image and an image preload");
-assert.equal(attr(preload, "href"), attr(hero, "src"));
-assert.equal(attr(preload, "imagesrcset"), attr(hero, "srcset"));
-assert.equal(attr(preload, "imagesizes"), attr(hero, "sizes"));
-assert.ok(home.indexOf(preload) < home.indexOf('rel="stylesheet"'), "the preload comes before the stylesheet");
+const heroVideo = home.match(/<section class="hero[\s\S]*?(<video\b[^>]*>)/)?.[1];
+const preloads = home.match(/<link\b[^>]*rel="preload"[^>]*as="image"[^>]*>/gi) || [];
+assert.ok(heroVideo && preloads.length === 1, "index.html has a hero video and one image preload");
+assert.equal(attr(preloads[0], "href"), attr(heroVideo, "poster"));
+assert.equal(attr(preloads[0], "fetchpriority"), "high");
+assert.ok(home.indexOf(preloads[0]) < home.indexOf('rel="stylesheet"'), "the preload comes before the stylesheet");
 const css = read("styles.css");
 assert.equal((css.match(/@font-face/g) || []).length, (css.match(/font-display:\s*swap/g) || []).length);
-ok("the hero art is preloaded ahead of the CSS, and every font uses font-display: swap");
+ok("the hero poster is preloaded ahead of the CSS, and every font uses font-display: swap");
 
 // ── the squad: after load + idle, never on small screens, Save-Data or reduced motion ──
 const main = read("js/main.mjs");
@@ -52,7 +51,6 @@ assert.ok(main.includes("(max-width: 768px)") && main.includes("saveData") && /r
 assert.ok(/else root\.classList\.add\("no-stage"\)/.test(main), "skipped devices keep the static art");
 const sheet = read("js/robots.mjs").match(/img\.src = "([^"]+)"/)?.[1];
 assert.ok(sheet && fs.statSync(local(sheet)).size <= BUDGET, "the demo sprites use a small sheet, not the 1 MB SVG");
-assert.ok(read("index.html").includes("three@0.169.0/build/three.module.js"), "same Three.js version and host");
 ok("the 3D squad waits for load + idle, and phones, Save-Data and reduced motion keep the static art");
 
 // ── js/art.mjs reads the first two embedded PNGs of each SVG: the mask (greyscale), then the colour render ──

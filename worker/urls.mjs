@@ -14,9 +14,9 @@ export const PAGES = [
     profile: "hero",
     markers: [
       '<h1 id="heroTitle"',
-      "Orchy <span class=\"hero-ai\">AI</span>",
-      "A command center for your AI agents.",
-      "Early access: we approve each sign-up by hand and let people in in small groups.",
+      "Hand off the busywork. <span>Approve what matters.</span>",
+      "What is Orchy AI?",
+      'href="https://app.imorchy.dev"',
     ],
   },
   { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>AI agents that ask before they act</h1>"] },
@@ -45,15 +45,12 @@ export const REDIRECTS = [
 
 /**
  * The calls to action on / (imorchy.dev has no form or approval endpoint of its own: both are outbound links).
- * Each must be on the page and point at its host; all but Get Started (the app, same tab) open in a new tab with rel="noopener".
+ * Each must be on the page and point at its host; same-tab links don't open a new tab, the rest do with rel="noopener".
  */
-export const LINKS = [
-  { text: "Get Started", host: "app.imorchy.dev", sameTab: true },
-  { text: "Book a call", host: "calendly.com" },
-];
+export const LINKS = [{ text: "Get early access", host: "app.imorchy.dev", sameTab: true }];
 
 /** Hosts a page may load anything from (script, style, image, font, frame, media). Links are not loads. */
-export const LOAD_HOSTS = { "/": ["cdn.jsdelivr.net"] };
+export const LOAD_HOSTS = {};
 
 /** The security headers every https answer carries, and the ones an HTML page adds next to its CSP profile. */
 export const EXPECT_HEADERS = {

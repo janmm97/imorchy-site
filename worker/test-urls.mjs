@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { TYPES, siteFiles } from "./files.mjs";
-import { CSP, IMPORTMAP_SHA256, SCRIPT_HOST, securityHeaders, withSecurityHeaders } from "./headers.mjs";
+import { CSP, securityHeaders, withSecurityHeaders } from "./headers.mjs";
 import worker from "./main.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
 import { EXPECT_HEADERS, LINKS, LOAD_HOSTS, ORIGIN, PAGES as LISTED, REDIRECTS, headerProblems, liveUrl, locProblem, robotsProblems } from "./urls.mjs";
@@ -50,27 +50,23 @@ const env = {
 };
 const get = (url, headers = {}, method = "GET") => worker.fetch(new Request(url, { method, headers, redirect: "manual" }), env);
 
-// ── the CSP: one hash for the importmap, one outside script host, no inline scripts ──
-const importmaps = [...read("index.html").matchAll(/<script type="importmap">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-assert.equal(importmaps.length, 1, "index.html has one inline importmap");
-const hash = "sha256-" + createHash("sha256").update(importmaps[0]).digest("base64");
-assert.equal(IMPORTMAP_SHA256, hash, `the importmap in index.html changed: set IMPORTMAP_SHA256 in worker/headers.mjs to "${hash}"`);
+// ── the CSP: the homepage runs only its own files, every other page no script; no inline script anywhere ──
 const directive = (csp, name) => csp.split("; ").find((d) => d.startsWith(name + " "));
-assert.equal(directive(CSP.hero, "script-src"), `script-src 'self' ${SCRIPT_HOST} '${hash}'`);
+assert.equal(directive(CSP.hero, "script-src"), "script-src 'self'");
 assert.equal(directive(CSP.page, "script-src"), "script-src 'none'");
 for (const csp of Object.values(CSP)) {
   assert.doesNotMatch(csp, /unsafe-eval|report-uri|report-to/);
   for (const d of ["default-src 'self'", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'self'", "font-src 'self'", "img-src 'self' data:"])
     assert.ok(csp.includes(d), d);
 }
-assert.deepEqual(LOAD_HOSTS, { "/": [new URL(SCRIPT_HOST).host] }, "the CSP's outside host and the load allowlist agree");
+assert.deepEqual(LOAD_HOSTS, {}, "no page loads from an outside host");
 for (const html of fs.readdirSync(SITE).filter((f) => f.endsWith(".html")))
-  assert.equal([...read(html).matchAll(/<script\b(?![^>]*type="(?:importmap|application\/ld\+json)")[^>]*>\s*[^<\s]/g)].length, 0, `${html}: no inline script besides the importmap and JSON-LD`);
+  assert.equal([...read(html).matchAll(/<script\b(?![^>]*type="application\/ld\+json")[^>]*>\s*[^<\s]/g)].length, 0, `${html}: no inline script besides JSON-LD`);
 const preview = securityHeaders({ https: false, pathname: "/", contentType: "text/html; charset=utf-8" });
 assert.equal(preview["Content-Security-Policy"], CSP.hero.replace("; upgrade-insecure-requests", ""), "the http preview's CSP doesn't upgrade its own files to https");
 assert.equal(preview["Strict-Transport-Security"], undefined, "no HSTS over http");
 assert.ok(CSP.hero.endsWith("; upgrade-insecure-requests") && CSP.page.endsWith("; upgrade-insecure-requests"));
-ok("CSP: IMPORTMAP_SHA256 is the sha256 of index.html's importmap; / allows only self, cdn.jsdelivr.net and that hash; other pages run no script");
+ok("CSP: / runs only its own script files (script-src 'self', no inline script, no outside host); other pages run no script");
 
 // ── every page in the list ──
 const worksFirst = (p) => {
@@ -314,10 +310,10 @@ for (const { from, to } of REDIRECTS) {
 }
 ok("http:// and www. answer 301 with Location kept, then 200 on https://imorchy.dev; HSTS only on the https answers");
 
-// ── the calls to action on /: outbound, new tab, noopener, on their host ──
+// ── the calls to action on /: each outbound link with that text is on its host (in-page #anchors scroll to the final CTA) ──
 const home = read("index.html");
 for (const { text, host, sameTab } of LINKS) {
-  const anchors = [...home.matchAll(/<a\b([^>]*)>\s*([^<]*)/g)].filter((m) => m[2].trim().startsWith(text));
+  const anchors = [...home.matchAll(/<a\b([^>]*)>\s*([^<]*)/g)].filter((m) => m[2].trim().startsWith(text) && !/href="#/.test(m[1]));
   assert.ok(anchors.length, `/ links "${text}"`);
   for (const [, attrs] of anchors) {
     assert.equal(new URL(/href="([^"]+)"/.exec(attrs)[1]).host, host, text);
@@ -327,7 +323,7 @@ for (const { text, host, sameTab } of LINKS) {
     }
   }
 }
-ok("/ has Get Started (the app) and the booking link, each on its own host; booking opens in a new tab with rel=noopener");
+ok("/ links Get early access to the app (app.imorchy.dev, same tab)");
 
 // ── nothing loads from a host outside the allowlist (scripts, styles, images, fonts, frames, media, imports) ──
 const outside = (text, allowed) =>
@@ -337,7 +333,7 @@ const outside = (text, allowed) =>
 for (const page of PAGES.filter((p) => p.profile && exists(p.path))) assert.deepEqual(outside(read(fileFor(page.path)), LOAD_HOSTS[page.path] || []), [], page.path);
 for (const css of ["styles.css", "home.css"]) assert.deepEqual(outside(read(css), []), [], css);
 assert.deepEqual(outside('<img src="https://example.com/x.png">', []), ["example.com"], "the scan sees an outside load");
-ok("no page or stylesheet loads from a host outside the allowlist (cdn.jsdelivr.net, on / only)");
+ok("no page or stylesheet loads from an outside host");
 
 // ── the wrapper keeps status, body and every header: 304, video 206/416, redirects ──
 const etag = (await get(ORIGIN + "/")).headers.get("ETag");
