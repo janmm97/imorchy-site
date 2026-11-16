@@ -134,11 +134,6 @@ h1 span{display:block;color:var(--ivory)}
 .ph img{height:clamp(56px,10vw,112px);width:auto;filter:drop-shadow(0 12px 24px rgb(0 0 0/.5))}
 .ph span{font:500 13px var(--sans);color:var(--text-2);padding:4px 12px;border-radius:var(--r-pill);border:1px solid var(--glass-line);background:rgb(255 255 255/.04)}
 .vf.ready .ph{visibility:hidden}
-.vbtn{position:absolute;right:22px;bottom:22px;z-index:2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--text-1);
- background:rgb(20 20 20/.6);border:1px solid var(--glass-line-hi);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);opacity:.85;transition:opacity var(--m-fast)}
-.vbtn:hover,.vbtn:focus-visible{opacity:1}
-.vbtn svg{width:18px;height:18px}.vbtn .i-play,.vbtn[data-state=paused] .i-pause{display:none}.vbtn[data-state=paused] .i-play{display:block}
-.vf.missing .vbtn{display:none}
 .hero .vf{border-radius:34px;padding:12px}
 /* r1 hero glow: a wider warm-white and grey halo behind the hero frame */
 .hero .vf::before{inset:6% -4% -10%;background:radial-gradient(40% 55% at 25% 50%,rgb(255 253 250/.16),transparent 70%),radial-gradient(45% 60% at 75% 45%,rgb(160 158 154/.30),transparent 70%),radial-gradient(30% 40% at 50% 95%,rgb(255 253 250/.10),transparent 70%);filter:blur(40px);border-radius:0}

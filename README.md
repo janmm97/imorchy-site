@@ -14,7 +14,7 @@ Open http://127.0.0.1:4173. Stop with Ctrl+C. The preview serves only this folde
 
 ## The page
 
-The v3 homepage (`index.html`, `home.css`, `js/home-head.mjs`, `js/home.mjs`, loops in `media/`): the hero ("Hand off the busywork. Approve what matters." over a looping video), the apps it works with, How it works, use cases, a day with Orchy, safety, quotes, the FAQ (mirrored in its FAQPage JSON-LD) and the final call to action. "Get early access" opens the app (https://app.imorchy.dev). Every script is a file on this origin, so the homepage CSP is `script-src 'self'`; with reduced motion, `home-head.mjs` leaves the page static.
+The v3 homepage (`index.html`, `home.css`, `js/home-head.mjs`, `js/home.mjs`, loops in `media/`): the hero ("Hand off the busywork. Approve what matters." over a looping video), the apps it works with, How it works, use cases, a day with Orchy, safety, quotes, the FAQ (mirrored in its FAQPage JSON-LD) and the final call to action. "Get early access" opens the app (https://app.imorchy.dev). Every script is a file on this origin, so the homepage CSP is `script-src 'self'`; with reduced motion, `home-head.mjs` leaves the page static. The loops always autoplay while on screen, reduced motion included, and have no pause button (Jan, 2026-11-16).
 
 ## The living squad
 
