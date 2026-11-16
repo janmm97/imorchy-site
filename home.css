@@ -231,18 +231,18 @@ section.s{padding:clamp(72px,10vw,var(--s9)) 0}
 .final .cta{justify-content:center}
 
 @media(prefers-reduced-motion:reduce){*,.lit::before,.lit::after,.vf::before{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-/* the shared footer (build.mjs footer()), in v3 tokens */
+/* the shared footer (build.mjs footer()), in v3 tokens; its <nav> also undoes the header nav rules above */
 .footer{border-top:1px solid var(--glass-line);padding-top:var(--s7);color:var(--text-2);font-size:15px;overflow:hidden}
 .footer-top{display:grid;gap:var(--s5)}
 @media(min-width:820px){.footer-top{grid-template-columns:1.4fr 2.6fr}}
 .footer .brand{display:inline-flex;align-items:center;gap:10px;color:var(--text-1);font-weight:600;text-decoration:none}
 .footer .brand-logo{width:28px;height:28px}
 .footer-tagline{margin:var(--s2) 0 0;max-width:32ch}
-.footer-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5) var(--s4)}
+.footer-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5) var(--s4);align-items:start}
 @media(min-width:820px){.footer-nav{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .footer-heading{font:600 14px var(--sans);color:var(--text-1);margin:0 0 var(--s2)}
 .footer-col ul{list-style:none;margin:0;padding:0}
-.footer-col a,.footer-back{color:var(--text-2);display:inline-flex;align-items:center;min-height:36px;text-decoration:none}
-.footer-col a:hover,.footer-back:hover{color:var(--text-1);text-decoration:underline}
+.footer-col a,.footer-back{color:var(--text-2);display:inline-flex;align-items:center;min-height:36px;padding:0;font:inherit;text-decoration:none}
+.footer-col a:hover,.footer-back:hover{color:var(--text-1);background:none;text-decoration:underline}
 .footer-col a[aria-current="page"]{color:var(--text-1);text-decoration:underline}
 .footer-wordmark{margin:var(--s6) 0 0;color:var(--glass-line);font-size:clamp(72px,18vw,240px);font-weight:700;line-height:.78;letter-spacing:-.06em;white-space:nowrap;user-select:none}
