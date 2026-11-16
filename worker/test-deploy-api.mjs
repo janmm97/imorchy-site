@@ -57,7 +57,7 @@ if (!fs.existsSync(path.join(WORKER, "node_modules", "esbuild"))) {
       assert.equal(run.status, 0, run.stderr);
       assert.deepEqual(run.calls.map(route), FULL);
       const session = run.calls.find((c) => c.manifest);
-      assert.ok(session.manifest.includes("/index.html") && !session.manifest.some((f) => f.endsWith(".mp4")), "the manifest has the pages and no video");
+      assert.ok(session.manifest.includes("/index.html") && !session.manifest.some((f) => /^\/assets\/[^/]+\.mp4$/.test(f)), "the manifest has the pages and no R2 video");
       const { metadata } = run.calls.find((c) => c.metadata);
       assert.deepEqual(metadata.bindings, [{ type: "assets", name: "ASSETS" }, R2]);
       assert.equal(metadata.assets.jwt, "completion-jwt");
