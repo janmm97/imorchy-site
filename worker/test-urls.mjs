@@ -335,7 +335,7 @@ const outside = (text, allowed) =>
     .map((m) => new URL(m[1], ORIGIN).host)
     .filter((h) => h !== new URL(ORIGIN).host && !allowed.includes(h));
 for (const page of PAGES.filter((p) => p.profile && exists(p.path))) assert.deepEqual(outside(read(fileFor(page.path)), LOAD_HOSTS[page.path] || []), [], page.path);
-assert.deepEqual(outside(read("styles.css"), []), [], "styles.css");
+for (const css of ["styles.css", "home.css"]) assert.deepEqual(outside(read(css), []), [], css);
 assert.deepEqual(outside('<img src="https://example.com/x.png">', []), ["example.com"], "the scan sees an outside load");
 ok("no page or stylesheet loads from a host outside the allowlist (cdn.jsdelivr.net, on / only)");
 

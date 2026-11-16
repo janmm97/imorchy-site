@@ -55,7 +55,7 @@ ok("the homepage loops (media/*.mp4, *.webm) are uploaded as video/mp4 and video
 ok("build.mjs and content/ (the sources of the generated pages) are never uploaded");
 
 // Every local file a page, the stylesheet or a script names is uploaded too (the video comes from R2).
-const LOCAL = /(?:https:\/\/imorchy\.dev)?\/?((?:assets|fonts|js|media)\/[\w./-]+\.\w+|styles\.css|favicon\.svg)/g;
+const LOCAL = /(?:https:\/\/imorchy\.dev)?\/?((?:assets|fonts|js|media)\/[\w./-]+\.\w+|styles\.css|home\.css|favicon\.svg)/g;
 const sources = files.filter((f) => /\.(html|css|mjs)$/.test(f));
 let refs = 0;
 for (const src of sources) {
@@ -79,7 +79,7 @@ const LEGAL = ["/privacy", "/terms", "/security", "/data-privacy", "/dpa", "/.we
 for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/media/x.mp4", "/media/x.webm", "/googlec22430d134477d04.html", "/BingSiteAuth.xml"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
 assert.equal(TYPES[".txt"], "text/plain; charset=utf-8", "security.txt is served as text/plain (RFC 9116)");
-for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png", "/media/x-poster.jpg"])
+for (const p of ["/styles.css", "/home.css", "/js/main.mjs", "/js/home.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png", "/media/x-poster.jpg"])
   assert.ok(!workerFirst(p), `${p} should skip the Worker`);
 // Every file on disk: root pages (.html, .xml, .txt), blog posts (blog/*.html), .well-known files and videos reach the
 // Worker, every other file skips it.
