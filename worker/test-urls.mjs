@@ -8,10 +8,10 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { TYPES, siteFiles } from "./files.mjs";
-import { CSP, IMPORTMAP_SHA256, SCRIPT_HOST, securityHeaders, withSecurityHeaders } from "./headers.mjs";
+import { BEACON_HOST, BEACON_REPORT, CSP, securityHeaders, withSecurityHeaders } from "./headers.mjs";
 import worker from "./main.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
-import { EXPECT_HEADERS, LINKS, LOAD_HOSTS, ORIGIN, PAGES as LISTED, REDIRECTS, headerProblems, liveUrl, locProblem, robotsProblems } from "./urls.mjs";
+import { CTA, EXPECT_HEADERS, LOAD_HOSTS, ORIGIN, PAGES as LISTED, REDIRECTS, headerProblems, liveUrl, locProblem, robotsProblems } from "./urls.mjs";
 import { build, cli, fileFor, generatedProblems, markdown, parseSource, seoProblems, staleFiles } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
@@ -48,27 +48,27 @@ const env = {
 };
 const get = (url, headers = {}, method = "GET") => worker.fetch(new Request(url, { method, headers, redirect: "manual" }), env);
 
-// ── the CSP: one hash for the importmap, one outside script host, no inline scripts ──
-const importmaps = [...read("index.html").matchAll(/<script type="importmap">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-assert.equal(importmaps.length, 1, "index.html has one inline importmap");
-const hash = "sha256-" + createHash("sha256").update(importmaps[0]).digest("base64");
-assert.equal(IMPORTMAP_SHA256, hash, `the importmap in index.html changed: set IMPORTMAP_SHA256 in worker/headers.mjs to "${hash}"`);
+// ── the CSP: one profile; scripts from self and the analytics beacon only, no inline script, one beacon per page ──
 const directive = (csp, name) => csp.split("; ").find((d) => d.startsWith(name + " "));
-assert.equal(directive(CSP.hero, "script-src"), `script-src 'self' ${SCRIPT_HOST} '${hash}'`);
-assert.equal(directive(CSP.page, "script-src"), "script-src 'none'");
-for (const csp of Object.values(CSP)) {
-  assert.doesNotMatch(csp, /unsafe-eval|report-uri|report-to/);
-  for (const d of ["default-src 'self'", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'self'", "font-src 'self'", "img-src 'self' data:"])
-    assert.ok(csp.includes(d), d);
+assert.deepEqual(Object.keys(CSP), ["page"], "one CSP for every HTML page");
+assert.equal(directive(CSP.page, "script-src"), `script-src 'self' ${BEACON_HOST}`);
+assert.equal(directive(CSP.page, "connect-src"), `connect-src 'self' ${BEACON_REPORT}`);
+assert.doesNotMatch(directive(CSP.page, "script-src"), /unsafe|sha256-|nonce-/, "no inline or eval'd scripts");
+assert.doesNotMatch(CSP.page, /unsafe-eval|report-uri|report-to|jsdelivr/);
+for (const d of ["default-src 'self'", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'self'", "form-action 'self'", "font-src 'self'", "img-src 'self' data:"])
+  assert.ok(CSP.page.includes(d), d);
+assert.deepEqual(LOAD_HOSTS, [new URL(BEACON_HOST).host], "the CSP's outside script host and the load allowlist agree");
+for (const html of fs.readdirSync(SITE).filter((f) => f.endsWith(".html"))) {
+  const text = read(html);
+  assert.equal([...text.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>\s*[^<\s]/g)].length, 0, `${html}: no inline script besides JSON-LD`);
+  // Every page (not Google's plain-text verification file) has exactly one beacon.
+  if (/<html/i.test(text)) assert.equal(text.split(`src="${BEACON_HOST}/beacon.min.js"`).length - 1, 1, `${html}: exactly one analytics beacon`);
 }
-assert.deepEqual(LOAD_HOSTS, { "/": [new URL(SCRIPT_HOST).host] }, "the CSP's outside host and the load allowlist agree");
-for (const html of fs.readdirSync(SITE).filter((f) => f.endsWith(".html")))
-  assert.equal([...read(html).matchAll(/<script\b(?![^>]*type="(?:importmap|application\/ld\+json)")[^>]*>\s*[^<\s]/g)].length, 0, `${html}: no inline script besides the importmap and JSON-LD`);
 const preview = securityHeaders({ https: false, pathname: "/", contentType: "text/html; charset=utf-8" });
-assert.equal(preview["Content-Security-Policy"], CSP.hero.replace("; upgrade-insecure-requests", ""), "the http preview's CSP doesn't upgrade its own files to https");
+assert.equal(preview["Content-Security-Policy"], CSP.page.replace("; upgrade-insecure-requests", ""), "the http preview's CSP doesn't upgrade its own files to https");
 assert.equal(preview["Strict-Transport-Security"], undefined, "no HSTS over http");
-assert.ok(CSP.hero.endsWith("; upgrade-insecure-requests") && CSP.page.endsWith("; upgrade-insecure-requests"));
-ok("CSP: IMPORTMAP_SHA256 is the sha256 of index.html's importmap; / allows only self, cdn.jsdelivr.net and that hash; other pages run no script");
+assert.ok(CSP.page.endsWith("; upgrade-insecure-requests"));
+ok("CSP: one profile, script-src 'self' + the beacon host, connect-src 'self' + its report host, no inline script; every page has exactly one beacon");
 
 // ── every page in the list ──
 const worksFirst = (p) => {
@@ -329,30 +329,28 @@ for (const [query, want] of [
 assert.match(read("robots.txt"), /^Disallow: \/go\/$/m, "robots.txt keeps crawlers off /go/");
 ok("/go/early-access answers 302 to the app with a validated from=, never cached; robots.txt disallows /go/");
 
-// ── the calls to action on /: outbound, new tab, noopener, on their host ──
+// ── the calls to action on /: every early-access link is the /go/ hop with a section name; no direct app or booking link ──
 const home = read("index.html");
-for (const { text, host, sameTab } of LINKS) {
-  const anchors = [...home.matchAll(/<a\b([^>]*)>\s*([^<]*)/g)].filter((m) => m[2].trim().startsWith(text));
-  assert.ok(anchors.length, `/ links "${text}"`);
-  for (const [, attrs] of anchors) {
-    assert.equal(new URL(/href="([^"]+)"/.exec(attrs)[1]).host, host, text);
-    if (!sameTab) {
-      assert.match(attrs, /target="_blank"/, text);
-      assert.match(attrs, /rel="[^"]*noopener/, text);
-    }
-  }
+const ctas = [...home.matchAll(/href="([^"]*early-access[^"]*)"/g)].map((m) => m[1]);
+assert.ok(ctas.length >= 3, "/ has the nav, hero and final CTAs");
+for (const href of ctas) {
+  const u = new URL(href.replace(/&amp;/g, "&"), ORIGIN);
+  assert.equal(u.origin + u.pathname, ORIGIN + CTA.path, href);
+  assert.match(u.searchParams.get("from") || "", CTA.from, href);
 }
-ok("/ has Get Started (the app) and the booking link, each on its own host; booking opens in a new tab with rel=noopener");
+assert.ok(ctas.includes(`${CTA.path}?from=hero`), "the hero CTA says from=hero");
+assert.doesNotMatch(home, /href="https?:\/\/(?:app\.imorchy\.dev|calendly\.com)/, "no direct app or booking link on /");
+ok(`/: ${ctas.length} early-access CTAs, each ${CTA.path}?from=<section> (hero: from=hero); no direct app or calendly link`);
 
 // ── nothing loads from a host outside the allowlist (scripts, styles, images, fonts, frames, media, imports) ──
 const outside = (text, allowed) =>
   [...text.matchAll(/(?:\b(?:src|srcset|data|poster)="|<link\b[^>]*\bhref="|url\(\s*['"]?|@import\s+['"]|"imports"\s*:\s*\{[^}]*?")((?:https?:)?\/\/[^/"')\s]+)/g)]
     .map((m) => new URL(m[1], ORIGIN).host)
     .filter((h) => h !== new URL(ORIGIN).host && !allowed.includes(h));
-for (const page of PAGES.filter((p) => p.profile && exists(p.path))) assert.deepEqual(outside(read(fileFor(page.path)), LOAD_HOSTS[page.path] || []), [], page.path);
+for (const page of PAGES.filter((p) => p.profile && exists(p.path))) assert.deepEqual(outside(read(fileFor(page.path)), LOAD_HOSTS), [], page.path);
 assert.deepEqual(outside(read("styles.css"), []), [], "styles.css");
 assert.deepEqual(outside('<img src="https://example.com/x.png">', []), ["example.com"], "the scan sees an outside load");
-ok("no page or stylesheet loads from a host outside the allowlist (cdn.jsdelivr.net, on / only)");
+ok("no page or stylesheet loads from a host outside the allowlist (static.cloudflareinsights.com, the beacon)");
 
 // ── the wrapper keeps status, body and every header: 304, video 206/416, redirects ──
 const etag = (await get(ORIGIN + "/")).headers.get("ETag");

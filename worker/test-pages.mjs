@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { build, fileFor, footer, FOOTER_COLUMNS, header, FEATURES, NAV_JS_PAGES, STYLE_LINKS } from "../build.mjs";
+import { build, fileFor, footer, FOOTER_COLUMNS, header, FEATURES, SHELL_SCRIPTS, STYLE_LINKS } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
@@ -77,7 +77,8 @@ const contentPage = (slug) => {
   assert.ok(html.includes(`<meta property="og:url" content="${url}" />`), `${slug}: og:url`);
   assert.ok(html.includes('<meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />'), `${slug}: og:image`);
   const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map((m) => m[0]);
-  assert.ok(scripts.every((s) => s === '<script type="application/ld+json">'), `${slug}: no scripts but JSON-LD`);
+  const allowed = ['<script type="application/ld+json">', ...SHELL_SCRIPTS.map((t) => t.replace("</script>", ""))];
+  assert.ok(scripts.every((s) => allowed.includes(s)), `${slug}: no scripts but JSON-LD and the shell's (nav, beacon)`);
   const title = head(html, /<title>([^<]+)<\/title>/);
   const description = head(html, /name="description" content="([^"]+)"/);
   assert.ok(title && !titles.has(title), `${slug}: unique title`);
@@ -106,7 +107,7 @@ assert.ok(fs.readFileSync(SITE + "security.html", "utf8").includes('href="/.well
 // v4 retires /local and /claude-code-orchestrator: the Worker 301s them home (test-urls.mjs), so no file ships.
 for (const gone of ["local", "claude-code-orchestrator"]) assert.ok(!pages.includes(`${gone}.html`), `${gone}.html is retired`);
 assert.ok(pages.length >= 3, "home plus the answer pages are checked");
-ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts, in the sitemap, linked from home");
+ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts but the shell's, in the sitemap, linked from home");
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
 // markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
@@ -202,9 +203,9 @@ for (const page of pages) {
   assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
   for (const fallback of ['href="/#features"', 'href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
   const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
-  // v4 feature pages (lane B) are kit-only and don't link the v3 /styles.css; where a page does, it comes after the kit.
-  assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css before /styles.css`);
-  assert.equal(headers[0].includes('src="/js/nav.mjs"'), NAV_JS_PAGES.has(pathOf(page)), `${page}: /js/nav.mjs only where the CSP allows it`);
+  // v4 pages are kit-only; a v3 page still links /styles.css, after the kit.
+  assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css (before /styles.css, if any)`);
+  for (const tag of SHELL_SCRIPTS) assert.equal(html.split(tag).length - 1, 1, `${page}: ${tag.slice(0, 40)}… exactly once (in the header)`);
 }
 ok(`one header: all ${pages.length} pages share build.mjs's kit header, five Features items, no-JS fallbacks, kit stylesheets`);
 const org = [...fs.readFileSync(SITE + "index.html", "utf8").matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]

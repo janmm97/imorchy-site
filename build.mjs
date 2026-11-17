@@ -268,10 +268,11 @@ export function seoProblems(html, pagePath) {
 /** Every canonical href in a page (a page should have exactly one). */
 export const canonicals = (html) => [...html.matchAll(/<link\b[^>]*\brel="canonical"[^>]*>/g)].map((m) => /\bhref="([^"]*)"/.exec(m[0])?.[1]);
 
-/** ADR point 3: a generated page loads no WebGL, no hero bundle and no script file. */
+/** ADR point 3: a generated page loads no WebGL, no hero bundle and no script beyond the shell's (nav + beacon). */
 export function generatedProblems(html) {
   const problems = [];
-  if (/<script\b(?![^>]*type="application\/ld\+json")/.test(html)) problems.push("a <script> that isn't JSON-LD");
+  const rest = SHELL_SCRIPTS.reduce((h, s) => h.split(s).join(""), html);
+  if (/<script\b(?![^>]*type="application\/ld\+json")/.test(rest)) problems.push("a <script> that isn't JSON-LD or the shell's");
   if (/<canvas\b/.test(html)) problems.push("a <canvas>");
   for (const s of ["importmap", "three.module", "cdn.jsdelivr.net", "js/main.mjs"]) if (html.includes(s)) problems.push(`loads ${s}`);
   return problems;
@@ -307,9 +308,16 @@ export const FEATURES = [
   ["Apps (One)", "/apps", "apps"],
   ["Security", "/security", "lock"],
 ];
-// /js/nav.mjs is an external module, so it only loads where the page's CSP allows 'self' scripts ("hero" = /).
-// The homepage PR moves every page to script-src 'self'; until then other pages get the no-JS nav (option a).
-export const NAV_JS_PAGES = new Set(["/"]);
+// The only scripts a page runs, both external (the CSP is script-src 'self' + the beacon host, no inline): the nav
+// module and Cloudflare Web Analytics. header() puts both on every page, so each page has exactly one beacon.
+// The token is public (it's in every page's HTML by design).
+export const NAV_JS = '<script type="module" src="/js/nav.mjs"></script>';
+export const BEACON = `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"a91a867324344b789170a73bf940615f"}'></script>`;
+export const SHELL_SCRIPTS = [NAV_JS, BEACON];
+// The early-access cap (Jan): "a small first group, approved by hand" until he flips this. build() stamps it into
+// every <span data-cap> of the hand pages, so --check fails if one drifts.
+export const CAP_20 = false;
+export const CAP_COPY = CAP_20 ? "capped at 20" : "a small first group, approved by hand";
 const cur = (href, p) => (href === p ? ' aria-current="page"' : "");
 const HEADER_TAG = /[ \t]*<header class="nav"[\s\S]*?<\/header>/g;
 export function header(p, site = siteDir) {
@@ -337,7 +345,9 @@ ${items}              </ul>
           <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn">${icon("menu")}<span class="t">Menu</span><span class="sr"> (site menu)</span></button>
           <a class="menu nojs-only" href="#site-footer">Menu</a>
         </div>
-      </div>${NAV_JS_PAGES.has(p) ? '\n      <script type="module" src="/js/nav.mjs"></script>' : ""}
+      </div>
+      ${NAV_JS}
+      ${BEACON}
     </header>`;
 }
 
@@ -579,7 +589,7 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
       if ((html.match(FOOTER_TAG) || []).length !== 1) problems.push(`${fileFor(p)}: needs exactly one <footer> (build.mjs writes the shared footer there)`);
       else if ((html.match(HEADER_TAG) || []).length !== 1) problems.push(`${fileFor(p)}: needs exactly one <header class="nav"> (build.mjs writes the shared header there)`);
       else if (!html.includes(STYLE_LINKS.trim())) problems.push(`${fileFor(p)}: must link /css/tokens.css then /css/components.css`);
-      else files.set(fileFor(p), html.replace(HEADER_TAG, () => header(p)).replace(FOOTER_TAG, () => footer(p)));
+      else files.set(fileFor(p), html.replace(HEADER_TAG, () => header(p)).replace(FOOTER_TAG, () => footer(p)).replace(/<span data-cap>[^<]*<\/span>/g, `<span data-cap>${CAP_COPY}</span>`));
     }
     if (!realDate(lastmod) || lastmod > today) problems.push(`content/pages.json: ${p} lastmod ${lastmod} isn't a real date up to today`);
     sitemap.push({ path: p, lastmod });
