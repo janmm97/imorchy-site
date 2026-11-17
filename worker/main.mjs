@@ -63,6 +63,9 @@ export default {
   // Every answer gets the security headers (headers.mjs); its status, body and other headers are kept as they are.
   async fetch(request, env) {
     const url = new URL(request.url);
-    return withSecurityHeaders(await route(request, env, url), url);
+    const res = withSecurityHeaders(await route(request, env, url), url);
+    // The workers.dev preview (deploy.mjs --preview binds PREVIEW) must never be indexed next to imorchy.dev.
+    if (env.PREVIEW) res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return res;
   },
 };
