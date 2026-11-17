@@ -3,82 +3,133 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AI agents that ask before they act | Orchy AI</title>
-    <meta name="description" content="Orchy AI asks before your AI agents send, post or delete. Invite-only early access." />
+    <title>Approvals: AI agents that ask before they act | Orchy AI</title>
+    <meta name="description" content="Human-in-the-loop by default: Orchy asks before it sends, spends money, changes a calendar, deletes or shares. Read the request, then approve or deny." />
     <meta name="theme-color" content="#080a0d" />
     <link rel="canonical" href="https://imorchy.dev/approvals" />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Orchy AI" />
     <meta property="og:url" content="https://imorchy.dev/approvals" />
-    <meta property="og:title" content="AI agents that ask before they act | Orchy AI" />
-    <meta property="og:description" content="Orchy AI asks before your AI agents send, post or delete. Invite-only early access." />
+    <meta property="og:title" content="Nothing goes out without your OK | Orchy AI" />
+    <meta property="og:description" content="Orchy stops and asks before it sends, pays, books, deletes or shares. You see the request and decide." />
     <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Orchy AI: a command center for your AI agents" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AI agents that ask before they act | Orchy AI" />
-    <meta name="twitter:description" content="Orchy AI asks before your AI agents send, post or delete. Invite-only early access." />
+    <meta name="twitter:title" content="Nothing goes out without your OK | Orchy AI" />
+    <meta name="twitter:description" content="Orchy stops and asks before it sends, pays, books, deletes or shares. You see the request and decide." />
     <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta name="twitter:image:alt" content="Orchy AI: a command center for your AI agents" />
+    <link rel="icon" type="image/png" href="/assets/orchy-icon-64.png" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/components.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "@id": "https://imorchy.dev/approvals#faq",
-        "url": "https://imorchy.dev/approvals",
-        "mainEntity": [
+        "@graph": [
           {
-            "@type": "Question",
-            "name": "Can Orchy AI send an email without my approval?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. Orchy AI asks before it sends, posts or deletes. Your agents can read, sort and draft, but a send waits for your OK. Nothing goes out without it, so a drafted reply stays a draft until you approve it in Orchy AI."
+            "@type": "WebPage",
+            "@id": "https://imorchy.dev/approvals#webpage",
+            "url": "https://imorchy.dev/approvals",
+            "name": "Approvals: AI agents that ask before they act | Orchy AI",
+            "description": "Human-in-the-loop by default: Orchy asks before it sends, spends money, changes a calendar, deletes or shares. Read the request, then approve or deny.",
+            "isPartOf": {
+              "@id": "https://imorchy.dev/#website"
+            },
+            "about": {
+              "@id": "https://imorchy.dev/#org"
             }
           },
           {
-            "@type": "Question",
-            "name": "Which apps do Orchy AI's approvals cover?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Orchy AI's approvals cover actions, wherever they happen. Your agents connect to Gmail, Slack, Notion, Stripe and 1000+ apps through One. Whichever app an agent works in, sending, posting and deleting wait for your OK before Orchy AI lets them go out."
-            }
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://imorchy.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Approvals",
+                "item": "https://imorchy.dev/approvals"
+              }
+            ]
           },
           {
-            "@type": "Question",
-            "name": "Does Orchy AI ask about everything?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. Routine work moves along on its own, so your agents keep working while you do something else. Orchy AI pauses only for the actions that reach the outside world: sending, posting and deleting. You let go of the busywork and keep the controls."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Where does Orchy AI run?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Orchy AI comes as a desktop app that runs on your computer, and as hosted Orchy, which you open in your browser at app.imorchy.dev and which runs on our servers."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do I get access to Orchy AI?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Orchy AI is in invite-only early access. Select Get Started to open app.imorchy.dev, then sign in with Google or an email link to join the waiting list. We approve each sign-up by hand and let people in in small groups. During early access we run at most 20 customer Orchys at a time."
-            }
+            "@type": "FAQPage",
+            "@id": "https://imorchy.dev/approvals#faq",
+            "url": "https://imorchy.dev/approvals",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What does Orchy ask about?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "By default it asks before it sends or posts, spends money, changes a calendar, deletes or shares. Reading, drafting and taking notes run on their own."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What happens if I deny?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You turn it down and the action doesn't run."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I skip the question for tasks I trust?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, one action at a time. Choose \"Always allow\" for one agent or every agent in a workspace, or switch a type of approval off in Settings. Changes to Gmail forwarding and Gmail filters always ask."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Where can I see what was approved?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "In the task record: what ran, what it asked, and what you approved."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can an agent change things in an app I only gave it read access to?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Read access allows lookups only."
+                }
+              }
+            ]
           }
         ]
       }
     </script>
-    <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/components.css" />
-    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></symbol>
+  <symbol id="i-ask" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
+  <symbol id="i-ws" viewBox="0 0 16 16"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></symbol>
+  <symbol id="i-agent" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></symbol>
+  <symbol id="i-apps" viewBox="0 0 16 16"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 16 16"><path d="M4 1.8h5.2L12.5 5v9.2h-8.5z"/><path d="M9 2v3.2h3.3M6.3 8.5h3.6M6.3 11h3.6"/></symbol>
+  <symbol id="i-mem" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.6 3.6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M8 14.5s-4.5-4.4-4.5-8a4.5 4.5 0 0 1 9 0c0 3.6-4.5 8-4.5 8z"/><circle cx="8" cy="6.5" r="1.6"/></symbol>
+  <symbol id="i-key" viewBox="0 0 16 16"><circle cx="5" cy="8" r="2.8"/><path d="M7.8 8h6.2M12 8v2.4M10 8v1.8"/></symbol>
+  <symbol id="i-box" viewBox="0 0 16 16"><path d="M2.5 5L8 2.2 13.5 5v6L8 13.8 2.5 11z"/><path d="M2.5 5L8 7.8 13.5 5M8 7.8v6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.3 3.3"/></symbol>
+</svg>
     <header class="nav" id="top">
       <div class="bar-in">
         <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
@@ -90,6 +141,8 @@
               <ul class="fmenu glass" id="fmenu">
               <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
               <li><a href="/approvals" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
+              <li><a href="/agents"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span>Agents &amp; Agent Builder</a></li>
+              <li><a href="/apps"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></svg></span>Apps (One)</a></li>
               <li><a href="/security"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
               </ul>
             </li>
@@ -107,73 +160,118 @@
       <script type="module" src="/js/nav.mjs"></script>
       <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"a91a867324344b789170a73bf940615f"}'></script>
     </header>
-    <main id="main" class="answer wrap">
-      <article>
-        <h1>AI agents that ask before they act</h1>
-        <p class="answer-note">This page describes the desktop app. Hosted Orchy is at <a href="https://app.imorchy.dev">app.imorchy.dev</a>.</p>
-        <p class="answer-lede">Orchy AI is a command center for AI agents that asks before it sends, posts or deletes. Routine work moves along on its own, and nothing goes out without your OK. That's human-in-the-loop approval built in.</p>
-        <p>Orchy AI runs on your own computer as a local dashboard. Your agents can work in Gmail, Slack, Notion, Stripe and 1000+ apps through One, and every action that reaches the outside world waits for you first.</p>
+<main id="main">
+<section class="phero">
+  <div class="wrap">
+    <p class="crumb label"><a href="/#features">Features</a><span aria-hidden="true">/</span><span>Approvals</span></p>
+    <h1>Nothing goes out without <span class="hl">your OK.</span></h1>
+    <p class="lede">By default Orchy stops and asks before it sends or posts, spends money, changes a calendar, deletes or shares. Reading, drafting and taking notes run on their own.</p>
+    <div class="cta-stack"><a class="btn" href="/go/early-access?from=approvals-hero">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+  </div>
+</section>
 
-        <h2>How it works</h2>
-        <ol>
-          <li><strong>Tell Orchy what you need.</strong> Type it out, or say it out loud with optional voice. One conversation starts the work.</li>
-          <li><strong>The right squad gets to work.</strong> Orchy routes the task. Your agents work inside the right workspace, with the right account.</li>
-          <li><strong>Routine work moves along.</strong> Reading, sorting and drafting carry on without stopping you.</li>
-          <li><strong>Orchy asks before anything goes out.</strong> Sending, posting and deleting pause for your OK.</li>
-          <li><strong>You keep the final say.</strong> Approve it, or hold it for now. Nothing goes out without your OK.</li>
-        </ol>
-
-        <h2>Example</h2>
-        <p><em>Sample, as shown on imorchy.dev.</em> You ask Orchy for an agent that triages your inbox and drafts replies to the urgent emails. The agent sorts the new mail and drafts the urgent replies. Then it stops and asks: "Ready to send." You review the drafts and approve, or hold them for now. Only the replies you approved go out. Nothing else does.</p>
-
-        <h2>What needs your OK</h2>
-        <table>
-          <thead><tr><th scope="col">Action</th><th scope="col">What Orchy AI does</th></tr></thead>
-          <tbody>
-            <tr><td>Sending (email, messages)</td><td>Waits for your OK</td></tr>
-            <tr><td>Posting</td><td>Waits for your OK</td></tr>
-            <tr><td>Deleting</td><td>Waits for your OK</td></tr>
-            <tr><td>Routine work</td><td>Moves along</td></tr>
-          </tbody>
-        </table>
-        <section class="faq" aria-labelledby="faqTitle">
-          <h2 id="faqTitle">FAQ</h2>
-          <div class="faq-list">
-            <details class="faq-item">
-              <summary><h3>Can Orchy AI send an email without my approval?</h3></summary>
-              <p>No. Orchy AI asks before it sends, posts or deletes. Your agents can read, sort and draft, but a send waits for your OK. Nothing goes out without it, so a drafted reply stays a draft until you approve it in Orchy AI.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>Which apps do Orchy AI's approvals cover?</h3></summary>
-              <p>Orchy AI's approvals cover actions, wherever they happen. Your agents connect to Gmail, Slack, Notion, Stripe and 1000+ apps through One. Whichever app an agent works in, sending, posting and deleting wait for your OK before Orchy AI lets them go out.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>Does Orchy AI ask about everything?</h3></summary>
-              <p>No. Routine work moves along on its own, so your agents keep working while you do something else. Orchy AI pauses only for the actions that reach the outside world: sending, posting and deleting. You let go of the busywork and keep the controls.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>Where does Orchy AI run?</h3></summary>
-              <p>Orchy AI comes as a desktop app that runs on your computer, and as hosted Orchy, which you open in your browser at app.imorchy.dev and which runs on our servers.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>How do I get access to Orchy AI?</h3></summary>
-              <p>Orchy AI is in invite-only early access. Select Get Started to open app.imorchy.dev, then sign in with Google or an email link to join the waiting list. We approve each sign-up by hand and let people in in small groups. During early access we run at most 20 customer Orchys at a time.</p>
-            </details>
+<section class="sec" aria-label="Example: an approval from start to finish" style="padding-top:0">
+  <div class="wrap">
+    <div class="scene" data-scene id="demo-approvals">
+      <p class="sr">Example with a made-up client. Sending, money, calendar, deleting and sharing each switch to Asks first, while reading, drafting and notes run on their own. A pop-up asks: Send 2 messages for Larkspur Florist? It is approved. The task record then lists what ran, what it asked and that it was approved, with times.</p>
+      <div class="frame glass" aria-hidden="true">
+        <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Example</b><span>· made-up client</span></div>
+        <div class="fbody one">
+          <div class="wsp">
+            <div class="ws on">
+              <span class="label">What Orchy asks about</span>
+              <ul class="rules flip"><li>Sending<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Money<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Calendar<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Deleting<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Sharing<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li class="free">Reading · drafting · notes<span class="st">Runs</span></li></ul>
+            </div>
+            <div class="ws on">
+              <div class="pop ok">
+                <span class="label">Approval · Larkspur Florist</span>
+                <p class="q">Send 2 messages for Larkspur Florist?</p>
+                <ul class="rules"><li class="ask">Why it asks<span class="st">Sending</span></li></ul>
+                <div class="acts"><span class="mb">Deny</span><span class="mb pri">Approve</span><span class="badge"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></div>
+              </div>
+            </div>
+            <div class="ws">
+              <span class="label">Task record · Larkspur Florist</span>
+              <ul class="rules log"><li><span><time>09:12</time>Read 4 new messages</span><span class="st">Ran</span></li><li><span><time>09:13</time>Drafted 2 replies</span><span class="st">Ran</span></li><li class="ask"><span><time>09:13</time>Send 2 messages</span><span class="st">Asked</span></li><li class="ok"><span><time>09:15</time>You approved</span><span class="st"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></li><li><span><time>09:15</time>Sent 2 messages</span><span class="st">Ran</span></li></ul>
+            </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </div>
+    <p class="scene-cap">It stops, shows you what it wants to do, and waits for your answer.</p>
+  </div>
+</section>
 
-        <p class="answer-cta">
-          <a class="button button-mint" href="https://app.imorchy.dev"
-            >Get Started
-            <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
-              <path d="M2 10 9.5 2.5M3.5 2.5h6v6" /></svg></a
-          >
-        </p>
-        <nav class="answer-links" aria-label="Related pages">
-          <p><a href="/">Home</a> · <a href="/client-workspaces">Client workspaces</a></p>
-        </nav>
+<section class="sec sec-text" aria-labelledby="s1">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">01</span><h2 id="s1">Five things it asks about</h2></div>
+      <div><p class="lede"><strong>Sending. Money. Calendar. Deleting. Sharing.</strong> Before an agent does any of these, Orchy stops and asks you. Everything else, such as reading, drafting and taking notes, runs on its own.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-label="How approvals work">
+  <div class="wrap">
+    <div class="cards">
+      <article class="card glass" aria-labelledby="s2">
+        <div class="vis"><div class="pop mini ok"><span class="label">Approval · Larkspur Florist</span><p class="q">Send 2 messages for Larkspur Florist?</p><div class="acts"><span class="mb">Deny</span><span class="mb pri">Approve</span></div></div></div>
+        <div class="txt"><span class="label">02</span><h2 id="s2">You see it before it happens</h2><p>When an agent wants to send, post, spend money, change a calendar, delete or share, an approval pop-up shows what it wants to do and why it asks. Approve it, or deny it.</p></div>
       </article>
-    </main>
+      <article class="card glass" aria-labelledby="s3">
+        <div class="vis"><ul class="rules"><li>Approve once<span class="st">This action</span></li><li>Always allow<span class="st">One agent</span></li><li>Always allow<span class="st">Every agent here</span></li><li class="ask">Gmail forwarding or filter<span class="st">Every time</span></li></ul></div>
+        <div class="txt"><span class="label">03</span><h2 id="s3">Approve once, or always allow</h2><p>Some actions you will want to approve every time. Others you trust an agent with. Approve a single action, or choose "Always allow" for one agent or for every agent in the workspace, one action at a time. You can also switch each type of approval off in Settings.</p><p>Some asks always come back, and handed-over tasks never offer "Always allow". A change to Gmail forwarding or a Gmail filter asks every time, with no "always allow".</p></div>
+      </article>
+      <article class="card glass" aria-labelledby="s4">
+        <div class="vis"><ul class="rules"><li><span class="dot" aria-hidden="true"></span>&nbsp;Inbox agent · Gmail<span class="st">Read</span></li><li><span class="dot" aria-hidden="true"></span>&nbsp;Social agent · LinkedIn<span class="st">Full</span></li><li class="ask">App outside its list<span class="st">Asks first</span></li></ul></div>
+        <div class="txt"><span class="label">04</span><h2 id="s4">Give agents only the access they need</h2><p>Every app an agent can use is set to read or full access. An agent with read access can look things up and can't change anything. Orchy checks each app call against the workspace's and the agent's connections before it runs, and asks you if an agent reaches for an app outside its list.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s5">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">05</span><h2 id="s5">A record of every task</h2></div>
+      <div><p class="lede">See what an agent did, what it asked, and what you approved.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s6">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">06</span><h2 id="s6">Approvals work in every client workspace</h2></div>
+      <div><p class="lede">Each client's workspace asks on its own. An "Always allow" covers one action in one workspace, for one agent or all its agents. It never carries over to another workspace.</p><a class="more" href="/client-workspaces">Client workspaces<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="faq">
+  <div class="wrap">
+    <div class="sec-head center"><span class="label">Questions</span><h2 id="faq">FAQ</h2></div>
+    <div class="faq">
+      <details><summary>What does Orchy ask about?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>By default it asks before it sends or posts, spends money, changes a calendar, deletes or shares. Reading, drafting and taking notes run on their own.</p></div></details>
+      <details><summary>What happens if I deny?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>You turn it down and the action doesn't run.</p></div></details>
+      <details><summary>Can I skip the question for tasks I trust?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Yes, one action at a time. Choose "Always allow" for one agent or every agent in a workspace, or switch a type of approval off in Settings. Changes to Gmail forwarding and Gmail filters always ask.</p></div></details>
+      <details><summary>Where can I see what was approved?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>In the task record: what ran, what it asked, and what you approved.</p></div></details>
+      <details><summary>Can an agent change things in an app I only gave it read access to?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>No. Read access allows lookups only.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="cta">
+  <div class="wrap">
+    <div class="band glass">
+      <span class="label">Get early access</span>
+      <h2 id="cta">Hand it off. <span class="hl">Approve what goes out.</span></h2>
+      <p class="lede">By default, Orchy asks before it sends or posts, spends money, changes a calendar, deletes or shares.</p>
+      <div class="cta-stack"><a class="btn" href="/go/early-access?from=approvals-final">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+    </div>
+  </div>
+</section>
+</main>
     <footer class="site" id="site-footer">
       <div class="wrap">
         <div class="fcols">
@@ -185,6 +283,8 @@
             <li><a href="/#how">How it works</a></li>
             <li><a href="/client-workspaces">Client workspaces</a></li>
             <li><a href="/approvals" aria-current="page">Approvals</a></li>
+            <li><a href="/agents">Agents &amp; Builder</a></li>
+            <li><a href="/apps">Apps (One)</a></li>
           </ul></nav>
           <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
             <li><a href="/#use-cases">Inbox</a></li>

@@ -19,8 +19,10 @@ export const PAGES = [
       '"@type": "FAQPage"',
     ],
   },
-  { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>AI agents that ask before they act</h1>"] },
-  { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>Separate AI agents and logins for every client</h1>"] },
+  { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>Nothing goes out without <span class=\"hl\">your OK.</span></h1>"] },
+  { path: "/agents", type: "text/html", profile: "page", markers: ["<h1>Build your own <span class=\"hl\">team of agents.</span></h1>"] },
+  { path: "/apps", type: "text/html", profile: "page", markers: ["<h1>Agents that work in <span class=\"hl\">your clients' own apps.</span></h1>"] },
+  { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>A separate AI workspace for <span class=\"hl\">each client you work for.</span></h1>"] },
   { path: "/robots.txt", type: "text/plain", markers: ["Sitemap: https://imorchy.dev/sitemap.xml"] },
   { path: "/sitemap.xml", type: "application/xml", markers: ["<urlset"] },
   // llms.txt (Ruby): a plain-text summary for AI search; not in the sitemap.
@@ -28,7 +30,7 @@ export const PAGES = [
   // The legal pages and security.txt (RFC 9116): direct 200, no redirect.
   { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc."] },
   { path: "/terms", type: "text/html", profile: "page", markers: ["<h1>Terms of Use</h1>", "One Systems, Inc."] },
-  { path: "/security", type: "text/html", profile: "page", markers: ["<h1>Security</h1>", "/.well-known/security.txt"] },
+  { path: "/security", type: "text/html", profile: "page", markers: ["<h1>Where your clients' <span class=\"hl\">work lives.</span></h1>", "/.well-known/security.txt"] },
   { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1>Data Privacy: DPA and sub-processors</h1>", "href=\"/dpa\""] },
   { path: "/dpa", type: "text/html", profile: "page", markers: ["<h1>Data Processing Agreement (DPA)</h1>", "One Systems, Inc."] },
   { path: "/.well-known/security.txt", type: "text/plain", markers: ["Contact:", "Expires:", "Canonical: https://imorchy.dev/.well-known/security.txt"] },
