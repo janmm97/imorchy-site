@@ -124,9 +124,23 @@ for (const [slug, h1] of Object.entries(LEGAL)) {
   const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
   levels.forEach((l, i) => i && assert.ok(l <= levels[i - 1] + 1, `${slug}: heading h${l} skips a level after h${levels[i - 1]}`));
   const tables = html.match(/<table\b/g)?.length ?? 0;
-  const boxed = html.match(/<div class="table-scroll" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
-  assert.equal(boxed, tables, `${slug}: every table sits in a labelled .table-scroll box`);
+  const boxed = html.match(/<div class="(?:table-scroll|tbl)" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
+  assert.equal(boxed, tables, `${slug}: every table sits in a labelled scroll box`);
   if (slug === "privacy") assert.equal(tables, 3, "privacy.html has its three tables");
+  if (slug !== "security") {
+    // v4 legal (changes.md v6): Version 3.0, a "What changed" box, and no call, booking or desktop-app text outside it
+    assert.match(html, /Last updated: \d{1,2} [A-Z][a-z]+ 2026 · Version 3\.0/, `${slug}: Version 3.0 header line`);
+    const box = html.match(/<aside class="changed"[\s\S]*?<\/aside>/)?.[0];
+    assert.ok(box?.includes("What changed in Version 3.0"), `${slug}: "What changed" box`);
+    const rest = visibleText(html.replace(box, ""));
+    assert.doesNotMatch(rest, /access call|booking|Calendly|Granola|Google Meet|setup call|transcript|call audio|desktop app/i, `${slug}: no call, booking or desktop-app text outside the box (X-check)`);
+    assert.doesNotMatch(rest, /\bMIT\b/, `${slug}: no MIT licence text`);
+    // changes v7 addendum (2026-11-18): at most 3 bullets in the box, no OVH city (Jan never confirmed one)
+    assert.ok((box.match(/<li>/g)?.length ?? 0) <= 3, `${slug}: "What changed" box has at most 3 bullets`);
+    assert.doesNotMatch(html, /Beauharnois/, `${slug}: no OVH city`);
+    if (slug === "data-privacy") assert.ok(html.includes(`Last updated: ${html.match(/Last updated: (\d{1,2} [A-Z][a-z]+ 2026) · Version/)[1]}.</p>`), "data-privacy: the sub-processor date equals the header date");
+    if (slug === "terms") assert.doesNotMatch(html.match(/<h2 id="s17">[\s\S]*?<\/p>/)[0], /the app,/, "terms: §17 no longer says \"the app,\"");
+  }
   assert.ok(FOOTER_COLUMNS.some((c) => ["Legal", "Security"].includes(c.heading) && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal or Security group`);
 }
 assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Legal").links.map(([t]) => t), ["Privacy", "Terms"], "the footer's Legal column is exactly Privacy · Terms");

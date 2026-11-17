@@ -4,9 +4,9 @@
   { "path": "/client-workspaces", "lastmod": "2026-11-17" },
   { "path": "/agents", "lastmod": "2026-11-17" },
   { "path": "/apps", "lastmod": "2026-11-17" },
-  { "path": "/privacy", "lastmod": "2026-11-11" },
-  { "path": "/terms", "lastmod": "2026-11-11" },
+  { "path": "/privacy", "lastmod": "2026-11-17" },
+  { "path": "/terms", "lastmod": "2026-11-17" },
   { "path": "/security", "lastmod": "2026-11-17" },
-  { "path": "/data-privacy", "lastmod": "2026-11-11" },
-  { "path": "/dpa", "lastmod": "2026-11-11" }
+  { "path": "/data-privacy", "lastmod": "2026-11-17" },
+  { "path": "/dpa", "lastmod": "2026-11-17" }
 ]
