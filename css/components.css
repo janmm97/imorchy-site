@@ -148,7 +148,7 @@ a.card:focus-visible{outline-offset:4px;border-radius:var(--r-xl)}
 .faq .ans{padding:0 18px 18px;color:var(--c-muted);max-width:var(--measure)}
 
 /* ---------- prose: legal pages, blog posts, changelog bodies (no glass under long text) ---------- */
-.prose{max-width:var(--measure);font-size:var(--fs-prose);line-height:var(--lh-prose);color:var(--c-ivory)}
+.prose{max-width:var(--measure);font-size:var(--fs-prose);line-height:var(--lh-prose);color:var(--c-ivory);overflow-wrap:break-word}
 .prose>*+*{margin-top:1em}
 .prose>:first-child{margin-top:0}
 .prose h2{font-size:var(--fs-p-h2);margin-top:2.2em;scroll-margin-top:110px}
