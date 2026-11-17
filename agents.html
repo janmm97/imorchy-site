@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI agent builder: set up agents in plain words | Orchy AI</title>
+    <meta name="description" content="Describe a job in plain words and the Agent Builder sets up an agent with the apps it needs and the actions it must ask about first." />
+    <meta name="theme-color" content="#080a0d" />
+    <link rel="canonical" href="https://imorchy.dev/agents" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Orchy AI" />
+    <meta property="og:url" content="https://imorchy.dev/agents" />
+    <meta property="og:title" content="Build your own team of agents | Orchy AI" />
+    <meta property="og:description" content="Describe the job. The Agent Builder sets up the agent, its apps and what it must ask you about first." />
+    <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Orchy AI: a command center for your AI agents" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Build your own team of agents | Orchy AI" />
+    <meta name="twitter:description" content="Describe the job. The Agent Builder sets up the agent, its apps and what it must ask you about first." />
+    <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
+    <meta name="twitter:image:alt" content="Orchy AI: a command center for your AI agents" />
+    <link rel="icon" type="image/png" href="/assets/orchy-icon-64.png" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://imorchy.dev/agents#webpage",
+            "url": "https://imorchy.dev/agents",
+            "name": "AI agent builder: set up agents in plain words | Orchy AI",
+            "description": "Describe a job in plain words and the Agent Builder sets up an agent with the apps it needs and the actions it must ask about first.",
+            "isPartOf": {
+              "@id": "https://imorchy.dev/#website"
+            },
+            "about": {
+              "@id": "https://imorchy.dev/#org"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://imorchy.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Agents & Agent Builder",
+                "item": "https://imorchy.dev/agents"
+              }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://imorchy.dev/agents#faq",
+            "url": "https://imorchy.dev/agents",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Can I build my own agent?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Describe the job in plain words and the Agent Builder sets up the agent, with its apps and the actions it must ask about first."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to code?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. You describe the job in plain words."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which apps can an agent use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The apps you connect to its workspace through One. You give each agent its apps at read or full access."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can an agent act without asking me?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "By default, not on the five things Orchy asks about: sending, money, calendar changes, deleting and sharing. You can switch each off in Settings. Reading, drafting and taking notes run on their own."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can an agent work for more than one client?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Agents belong to one workspace, and a task runs in that workspace."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which AI provider does it use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You bring your own key from OpenRouter, Anthropic or OpenAI, and agents run on your account with that provider."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></symbol>
+  <symbol id="i-ask" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
+  <symbol id="i-ws" viewBox="0 0 16 16"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></symbol>
+  <symbol id="i-agent" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></symbol>
+  <symbol id="i-apps" viewBox="0 0 16 16"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 16 16"><path d="M4 1.8h5.2L12.5 5v9.2h-8.5z"/><path d="M9 2v3.2h3.3M6.3 8.5h3.6M6.3 11h3.6"/></symbol>
+  <symbol id="i-mem" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.6 3.6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M8 14.5s-4.5-4.4-4.5-8a4.5 4.5 0 0 1 9 0c0 3.6-4.5 8-4.5 8z"/><circle cx="8" cy="6.5" r="1.6"/></symbol>
+  <symbol id="i-key" viewBox="0 0 16 16"><circle cx="5" cy="8" r="2.8"/><path d="M7.8 8h6.2M12 8v2.4M10 8v1.8"/></symbol>
+  <symbol id="i-box" viewBox="0 0 16 16"><path d="M2.5 5L8 2.2 13.5 5v6L8 13.8 2.5 11z"/><path d="M2.5 5L8 7.8 13.5 5M8 7.8v6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.3 3.3"/></symbol>
+</svg>
+    <header class="nav" id="top">
+      <div class="bar-in">
+        <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+        <nav aria-label="Main">
+          <ul class="nav-list" id="navlist">
+            <li>
+              <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
+              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <ul class="fmenu glass" id="fmenu">
+              <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
+              <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
+              <li><a href="/agents" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span>Agents &amp; Agent Builder</a></li>
+              <li><a href="/apps"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></svg></span>Apps (One)</a></li>
+              <li><a href="/security"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
+              </ul>
+            </li>
+            <li><a class="nav-link" href="/#how">How it works</a></li>
+            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
+            <li><a class="nav-link" href="/blog">Blog</a></li>
+          </ul>
+        </nav>
+        <div class="nav-end">
+          <a class="btn btn-sm" href="/go/early-access?from=nav">Get early access</a>
+          <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5h11M2.5 11h11"/></svg><span class="t">Menu</span><span class="sr"> (site menu)</span></button>
+          <a class="menu nojs-only" href="#site-footer">Menu</a>
+        </div>
+      </div>
+    </header>
+<main id="main">
+<section class="phero">
+  <div class="wrap">
+    <p class="crumb label"><a href="/#features">Features</a><span aria-hidden="true">/</span><span>Agents &amp; Agent Builder</span></p>
+    <h1>Build your own <span class="hl">team of agents.</span></h1>
+    <p class="lede">Describe the job in plain words. The Agent Builder sets up the agent for you, with the apps it needs and the things it must ask about.</p>
+    <div class="cta-stack"><a class="btn" href="/go/early-access?from=agents-hero">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+  </div>
+</section>
+
+<section class="sec" aria-label="Example: the Agent Builder turns a brief into an agent" style="padding-top:0">
+  <div class="wrap">
+    <div class="scene" data-scene id="demo-agents">
+      <p class="sr">Example with a made-up client. A brief in plain words: Every Friday at 4pm, pull the week's updates from Larkspur's inbox and sheet into a draft report. Ask me before anything is shared. The Agent Builder turns it into an agent card: Gmail at read access, Google Sheets at read access, runs Fridays at 4:00 pm, asks first before sharing. The apps are confirmed and the agent is ready.</p>
+      <div class="frame glass" aria-hidden="true">
+        <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Example</b><span>· Agent Builder</span></div>
+        <div class="fbody split">
+          <div class="term">
+            <span class="label">Agent Builder</span>
+            <p class="msg">Every Friday at 4pm, pull the week's updates from Larkspur's inbox and sheet into a draft report. Ask me before anything is shared.</p>
+            <p class="sys done"><span class="dots3" aria-hidden="true"><i></i><i></i><i></i></span><span class="w">Setting up the agent</span><span class="d">Agent proposed</span></p>
+          </div>
+          <div class="acard">
+            <div class="ahead"><span class="label">Agent · Larkspur Florist</span><span class="badge"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Ready</span></div>
+            <p class="aname">Weekly report agent</p>
+            <ul class="rules"><li><span class="dot" aria-hidden="true"></span>&nbsp;Gmail<span class="st">Read</span></li><li><span class="dot" aria-hidden="true"></span>&nbsp;Google Sheets<span class="st">Read</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>&nbsp;Schedule<span class="st">Fri · 4:00 pm</span></li><li class="ask">Sharing<span class="st">Asks first</span></li><li class="ask">Apps<span class="st"><span class="a">Confirm</span><span class="b"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Confirmed</span></span></li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="scene-cap">One brief in plain words becomes an agent with its apps, its schedule and what it asks about.</p>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s1">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">01</span><h2 id="s1">An agent is a job in plain words</h2></div>
+      <div><p class="lede">You don't write code. An agent is a description of the job: what it does and which apps it may use. Say what you need done and Orchy picks the right agent for the task.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-label="How agents work">
+  <div class="wrap">
+    <div class="cards">
+      <article class="card glass" aria-labelledby="s2">
+        <div class="vis"><ul class="rules"><li><span class="dot" aria-hidden="true"></span>&nbsp;Gmail<span class="st">Read</span></li><li><span class="dot" aria-hidden="true"></span>&nbsp;Google Sheets<span class="st">Read</span></li><li class="ask">Connect apps<span class="st">You confirm</span></li></ul></div>
+        <div class="txt"><span class="label">02</span><h2 id="s2">The Agent Builder writes it for you</h2><p>Tell the Agent Builder what the agent should do. It proposes the agent and picks the apps it needs, each at read or full access. You confirm the apps in a pop-up before anything is connected.</p></div>
+      </article>
+      <a class="card glass" href="/apps">
+        <div class="vis"><ul class="rules"><li><span class="dot" aria-hidden="true"></span>&nbsp;Inbox agent · Gmail<span class="st">Full</span></li><li><span class="dot" aria-hidden="true"></span>&nbsp;Report agent<span class="st">Read</span></li><li class="ask">Another app<span class="st">Asks first</span></li></ul></div>
+        <div class="txt"><span class="label">03</span><h2 id="s3">You choose each agent's apps and access</h2><p>Every app an agent can use is set to read or full access. If an agent reaches for another app in the workspace, Orchy asks you first. Apps come through One, and you connect them per workspace.</p><span class="more">Apps through One<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></span></div>
+      </a>
+      <article class="card glass" aria-labelledby="s4">
+        <div class="vis"><ul class="rules"><li><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>&nbsp;Weekly client report<span class="st">Fri · 4:00 pm</span></li><li class="ask">Sending<span class="st">Asks first</span></li><li class="ask">Sharing<span class="st">Asks first</span></li></ul></div>
+        <div class="txt"><span class="label">04</span><h2 id="s4">Agents can run on a schedule</h2><p>Ask for a job that repeats, such as a weekly client report, and the agent runs at the time you set. Scheduled agents still ask before they send or post, spend money, change a calendar, delete or share, unless you've switched that off.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s5">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">05</span><h2 id="s5">Every agent asks first</h2></div>
+      <div><p class="lede">By default an agent asks before it sends or posts, spends money, changes a calendar, deletes or shares, whoever built it. Choose "Always allow" for one agent or every agent in a workspace, one action at a time. Handed-over tasks never offer it.</p><a class="more" href="/approvals">How approvals work<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s6">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">06</span><h2 id="s6">A team for each client</h2></div>
+      <div><p class="lede">Agents belong to a workspace. Each client gets the agents they need, and every workspace also has a generalist for tasks no specialist fits.</p><a class="more" href="/client-workspaces">Client workspaces<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="faq">
+  <div class="wrap">
+    <div class="sec-head center"><span class="label">Questions</span><h2 id="faq">FAQ</h2></div>
+    <div class="faq">
+      <details><summary>Can I build my own agent?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Yes. Describe the job in plain words and the Agent Builder sets up the agent, with its apps and the actions it must ask about first.</p></div></details>
+      <details><summary>Do I need to code?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>No. You describe the job in plain words.</p></div></details>
+      <details><summary>Which apps can an agent use?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>The apps you connect to its workspace through One. You give each agent its apps at read or full access.</p></div></details>
+      <details><summary>Can an agent act without asking me?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>By default, not on the five things Orchy asks about: sending, money, calendar changes, deleting and sharing. You can switch each off in Settings. Reading, drafting and taking notes run on their own.</p></div></details>
+      <details><summary>Can an agent work for more than one client?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Agents belong to one workspace, and a task runs in that workspace.</p></div></details>
+      <details><summary>Which AI provider does it use?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>You bring your own key from OpenRouter, Anthropic or OpenAI, and agents run on your account with that provider.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="cta">
+  <div class="wrap">
+    <div class="band glass">
+      <span class="label">Get early access</span>
+      <h2 id="cta">Describe the job. <span class="hl">Get the agent.</span></h2>
+      <p class="lede">One brief, one agent, and it asks before it shares.</p>
+      <div class="cta-stack"><a class="btn" href="/go/early-access?from=agents-final">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+    <footer class="site" id="site-footer">
+      <div class="wrap">
+        <div class="fcols">
+          <div class="fb">
+            <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+            <p class="tagline">AI workspaces for people who work for several clients.</p>
+          </div>
+          <nav aria-labelledby="f-prod"><h2 id="f-prod">Product</h2><ul>
+            <li><a href="/#how">How it works</a></li>
+            <li><a href="/client-workspaces">Client workspaces</a></li>
+            <li><a href="/approvals">Approvals</a></li>
+            <li><a href="/agents" aria-current="page">Agents &amp; Builder</a></li>
+            <li><a href="/apps">Apps (One)</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
+            <li><a href="/#use-cases">Inbox</a></li>
+            <li><a href="/#use-cases">Scheduling</a></li>
+            <li><a href="/#use-cases">Client reports</a></li>
+            <li><a href="/#use-cases">Social posts</a></li>
+            <li><a href="/#use-cases">Follow-ups</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
+            <li><a href="/security">Security</a></li>
+            <li><a href="/data-privacy">Data privacy</a></li>
+            <li><a href="/dpa">DPA</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-co"><h2 id="f-co">Company</h2><ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/changelog">Changelog</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-leg"><h2 id="f-leg">Legal</h2><ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-fol"><h2 id="f-fol">Follow</h2><ul>
+            <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube<span class="sr"> (opens in a new tab)</span></a></li>
+          </ul></nav>
+        </div>
+        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
+      </div>
+    </footer>
+  </body>
+</html>

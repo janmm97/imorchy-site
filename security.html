@@ -3,41 +3,149 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Security | Orchy AI</title>
-    <meta name="description" content="How Orchy protects the desktop app and hosted Orchy, where the limits are, and how to report a security problem." />
+    <title>AI agent security and client data privacy | Orchy AI</title>
+    <meta name="description" content="Where Orchy runs and how client data stays apart: hosted at OVHcloud in Canada, one isolated container per customer, your own AI key, and approvals." />
     <meta name="theme-color" content="#080a0d" />
     <link rel="canonical" href="https://imorchy.dev/security" />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Orchy AI" />
     <meta property="og:url" content="https://imorchy.dev/security" />
-    <meta property="og:title" content="Security | Orchy AI" />
-    <meta property="og:description" content="How Orchy protects the desktop app and hosted Orchy, where the limits are, and how to report a security problem." />
+    <meta property="og:title" content="Where your clients' work lives | Orchy AI" />
+    <meta property="og:description" content="Hosted at OVHcloud in Canada, one isolated container per customer, your own AI key, and approvals before anything goes out." />
     <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Orchy AI: a command center for your AI agents" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Security | Orchy AI" />
-    <meta name="twitter:description" content="How Orchy protects the desktop app and hosted Orchy, where the limits are, and how to report a security problem." />
+    <meta name="twitter:title" content="Where your clients' work lives | Orchy AI" />
+    <meta name="twitter:description" content="Hosted at OVHcloud in Canada, one isolated container per customer, your own AI key, and approvals before anything goes out." />
     <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta name="twitter:image:alt" content="Orchy AI: a command center for your AI agents" />
+    <link rel="icon" type="image/png" href="/assets/orchy-icon-64.png" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/components.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Security",
-        "dateModified": "2026-11-11",
-        "url": "https://imorchy.dev/security"
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://imorchy.dev/security#webpage",
+            "url": "https://imorchy.dev/security",
+            "name": "AI agent security and client data privacy | Orchy AI",
+            "description": "Where Orchy runs and how client data stays apart: hosted at OVHcloud in Canada, one isolated container per customer, your own AI key, and approvals.",
+            "isPartOf": {
+              "@id": "https://imorchy.dev/#website"
+            },
+            "about": {
+              "@id": "https://imorchy.dev/#org"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://imorchy.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Security",
+                "item": "https://imorchy.dev/security"
+              }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://imorchy.dev/security#faq",
+            "url": "https://imorchy.dev/security",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Where is my data stored?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Orchy is hosted in Canada, on a server at OVHcloud, with a daily OVHcloud server backup plus our own encrypted backups in Eastern North America. Each customer has an isolated container."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Who can see my clients' data?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We don't look at it except as needed to keep the service running, fix problems you ask us to fix, or meet the law."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does Orchy train AI models on my data?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. We never use your hosted content to train or improve AI models."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need my own AI key?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. You bring a key from OpenRouter, Anthropic or OpenAI. Orchy stores it sealed."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I delete my data?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Use \"Delete my Orchy\" in your account. Your files, published copies and email are deleted within 30 days, and the final encrypted backup is removed 14 days after it was made. OVHcloud's server backups are replaced within 7 days."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do you hold SOC 2 or ISO 27001?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. We hold no security certifications, and we list only the measures that are in place."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I report a security problem?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Email support@imorchy.dev. We aim to reply within 5 business days."
+                }
+              }
+            ]
+          }
+        ]
       }
     </script>
-    <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/components.css" />
-    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></symbol>
+  <symbol id="i-ask" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
+  <symbol id="i-ws" viewBox="0 0 16 16"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></symbol>
+  <symbol id="i-agent" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></symbol>
+  <symbol id="i-apps" viewBox="0 0 16 16"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 16 16"><path d="M4 1.8h5.2L12.5 5v9.2h-8.5z"/><path d="M9 2v3.2h3.3M6.3 8.5h3.6M6.3 11h3.6"/></symbol>
+  <symbol id="i-mem" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.6 3.6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M8 14.5s-4.5-4.4-4.5-8a4.5 4.5 0 0 1 9 0c0 3.6-4.5 8-4.5 8z"/><circle cx="8" cy="6.5" r="1.6"/></symbol>
+  <symbol id="i-key" viewBox="0 0 16 16"><circle cx="5" cy="8" r="2.8"/><path d="M7.8 8h6.2M12 8v2.4M10 8v1.8"/></symbol>
+  <symbol id="i-box" viewBox="0 0 16 16"><path d="M2.5 5L8 2.2 13.5 5v6L8 13.8 2.5 11z"/><path d="M2.5 5L8 7.8 13.5 5M8 7.8v6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.3 3.3"/></symbol>
+</svg>
     <header class="nav" id="top">
       <div class="bar-in">
         <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
@@ -49,6 +157,8 @@
               <ul class="fmenu glass" id="fmenu">
               <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
               <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
+              <li><a href="/agents"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span>Agents &amp; Agent Builder</a></li>
+              <li><a href="/apps"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></svg></span>Apps (One)</a></li>
               <li><a href="/security" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
               </ul>
             </li>
@@ -64,38 +174,114 @@
         </div>
       </div>
     </header>
-    <main id="main" class="answer legal wrap">
-      <article>
-        <h1>Security</h1>
-<p><strong>Last updated:</strong> 11 November 2026 · <strong>Version</strong> 1.0</p>
-<p>Orchy comes two ways: the <strong>desktop app</strong>, which runs on your own computer, and <strong>hosted Orchy</strong>, which runs on our server in Canada. This page explains what we protect in each, where the limits are, and how to report a security problem.</p>
-<p>We hold no security certifications (such as SOC 2 or ISO 27001). This page describes what the software and our server do, not an audit.</p>
-<h2>1. The desktop app</h2>
-<ul><li>The Orchy app runs on your computer. Its dashboard listens only on your own machine (127.0.0.1), so other devices on your network can't open it.</li><li>The app does not send your tasks, files, keys or logs to us. There is no telemetry.</li><li>Data leaves your computer only when you connect a service yourself (your AI engine, a routing provider, One, voice providers, Cloudflare). It goes straight from your computer to that service, under your own account. One (withone.ai) is run by our own company, One Systems, Inc.</li></ul>
-<p><strong>Who can control your desktop Orchy</strong></p>
-<ul><li><strong>Paired browsers only.</strong> A browser must be paired with a one-time code before it can change anything. Any change request must come from a paired browser and carry that browser's key.</li><li><strong>Approval gate.</strong> Orchy asks you to approve before an agent sends, posts or deletes something. Some actions in connected apps may not ask first, so check what your agents can reach.</li><li><strong>Separate accounts.</strong> Each workspace uses its own logins for connected apps. Accounts are never mixed between workspaces.</li></ul>
-<p><strong>Secrets on your computer</strong></p>
-<ul><li>The API keys you enter are stored in a settings file (<code>.env</code>) on your computer. They are <strong>not encrypted</strong> by Orchy. Protect your computer with a login password and disk encryption.</li><li>Login tokens for remote tool servers (MCP) are stored in a file only your user account can read.</li></ul>
-<p><strong>Client pages (optional).</strong> If you turn on client pages, they run on a separate port and are reached through Cloudflare Tunnel, with Cloudflare Access checking each visitor's identity first. The main dashboard is never exposed this way.</p>
-<h2>2. Hosted Orchy</h2>
-<p>Hosted Orchy runs on our server at OVHcloud in Beauharnois, Canada. We list only measures we can show are in place:</p>
-<ul><li>Each customer has its <strong>own container</strong> on our server; access passes an authentication check before it reaches the container.</li><li>Web traffic reaches our server only through a <strong>Cloudflare Tunnel</strong>. The server's firewall admits nothing else from the internet except administrative access, which is by <strong>key-only SSH</strong> with password and root login turned off.</li><li>Sign-in is by Google or a one-time email link. Sessions use a random value of which <strong>only a hash is stored</strong>; the cookie is HttpOnly and Secure and lasts 30 days.</li><li>Your own AI-provider key is <strong>sealed with AES-256-GCM</strong>, using a key derived from a server-side secret that is separate for each customer.</li><li><strong>Backups</strong> are encrypted (with the open-source tool age) before upload to Cloudflare R2; copies older than 14 days are removed.</li><li>Connections to the service use <strong>HTTPS</strong>. Encryption in transit ends at Cloudflare's edge, and traffic is carried to our server over the Cloudflare Tunnel.</li><li>The run log for connected apps keeps <strong>no message bodies</strong> and is kept for 90 days.</li><li>Each customer's agents run as a <strong>separate unprivileged user</strong> with no system privileges.</li><li>A customer's container <strong>cannot reach the server itself or private networks</strong>.</li><li>Each sign-in cookie is <strong>limited to its own address</strong> (our app and each customer's Orchy get separate host-only cookies), and every signed-in change needs an <strong>anti-forgery token</strong> and must come from Orchy's own page (the browser's Origin is checked).</li><li>A customer's Orchy <strong>won't open until the current Terms are accepted</strong>.</li></ul>
-<p>Our <a href="/dpa">Data Processing Agreement</a> (Annex 2) lists the same measures, and the <a href="/data-privacy">Data Privacy page</a> lists the companies that help us run the service.</p>
-<h2>3. Our website</h2>
-<ul><li>imorchy.dev is served over HTTPS only. Plain HTTP requests, and requests to www.imorchy.dev, are redirected to https://imorchy.dev, and browsers are told to use HTTPS for imorchy.dev for a year (HSTS).</li><li>A strict Content Security Policy lets pages load code only from imorchy.dev. The one exception is a 3D graphics library loaded from jsDelivr on the home page.</li><li>The website sets no cookies, shows no challenge page and runs no analytics. (Hosted Orchy uses the sign-in cookies described in section 2.)</li><li>Other protections: no framing by other sites, no MIME sniffing, a strict referrer policy, and camera, microphone and location access turned off.</li></ul>
-<h2>4. How we build Orchy</h2>
-<ul><li>Every change goes through a pull request.</li><li>Automated tests run on each pull request, on Windows, macOS and Linux.</li></ul>
-<h2>5. Known limits</h2>
-<p>We'd rather be clear about what Orchy can't protect against:</p>
-<ul><li>On the desktop, the approval gate is a filter, not a sandbox. Agents run with your user account's permissions, and other software running as your user can read Orchy's files.</li><li>If your AI engine account or your One account is compromised, an attacker could act through it.</li><li>In hosted Orchy, live data on our server is protected by the measures in section 2; we don't claim it is encrypted at rest.</li></ul>
-<h2>6. Report a vulnerability</h2>
-<p>Please report security problems privately, not in a public issue:</p>
-<ul><li><strong>Email:</strong> support@imorchy.dev</li></ul>
-<p>We aim to reply within 5 business days.</p>
-<p>We won't pursue good-faith research that follows this page. That means: test only your own account and Orchy; stop and tell us once you reach anyone else's data; no denial of service, spam or social engineering; give us 90 days before going public.</p>
-<p>Our machine-readable contact file is at <a href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
+<main id="main">
+<section class="phero">
+  <div class="wrap">
+    <p class="crumb label"><a href="/#features">Features</a><span aria-hidden="true">/</span><span>Security</span></p>
+    <h1>Where your clients' <span class="hl">work lives.</span></h1>
+    <p class="lede">Plain facts about hosting, who can reach your data, and how to delete it. We list what is in place and nothing more.</p>
+    <div class="cta-stack"><a class="btn" href="/go/early-access?from=security-hero">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+  </div>
+</section>
+
+<section class="sec" aria-label="Diagram: where Orchy runs" style="padding-top:0">
+  <div class="wrap">
+    <div class="scene" data-scene id="demo-security">
+      <p class="sr">Diagram. Web traffic reaches the server only through a Cloudflare Tunnel. The server is at OVHcloud in Canada. Your Orchy runs in its own isolated container, separate from other customers. Your AI key goes to the provider you chose: OpenRouter, Anthropic or OpenAI. Encrypted backups are stored in Eastern North America.</p>
+      <div class="frame glass" aria-hidden="true">
+        <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Diagram</b><span>· Where Orchy runs</span></div>
+        <div class="fbody dia">
+          <div class="col">
+            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Web traffic</b><small>Cloudflare Tunnel</small></span></div>
+            <div class="srv">
+              <div class="shead"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg><span><b>OVHcloud</b><small>Canada</small></span></div>
+              <div class="boxes"><div class="node mine"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Your Orchy</b><small>Isolated container</small></span></div><div class="node dim"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Another customer</b><small>Isolated container</small></span></div></div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><span><b>Your AI key</b><small>Sealed with AES-256-GCM</small></span></div>
+            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Your AI provider</b><small>OpenRouter · Anthropic · OpenAI</small></span></div>
+            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span><b>Encrypted backups</b><small>Eastern North America</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="scene-cap">Hosted in Canada, one container per customer, your own AI key.</p>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s1">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">01</span><h2 id="s1">Hosted in Canada</h2></div>
+      <div><p class="lede">Orchy runs on a server at OVHcloud in Canada. Encrypted backups are stored in Eastern North America.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s2">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">02</span><h2 id="s2">One isolated container per customer</h2></div>
+      <div><p class="lede">Your Orchy runs in its own container. Requests pass an authentication check before they reach it, and your agents run as a separate user with no system privileges. A customer's container can't reach the server itself or private networks. Web traffic reaches our server only through a Cloudflare Tunnel.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-text" aria-labelledby="s3">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">03</span><h2 id="s3">Your own AI key</h2></div>
+      <div><p class="lede">Bring a key from OpenRouter, Anthropic or OpenAI. Orchy stores your key sealed with AES-256-GCM and uses it only to make your agents' calls. Your agents send prompts and files to the provider you chose, under your terms with it. On hosted Orchy, the text of each request is also sent to TypeSafe, our routing provider, so it can pick how to handle the task.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-label="Approvals, deletion and who handles your data">
+  <div class="wrap">
+    <div class="cards">
+      <a class="card glass" href="/approvals">
+        <div class="vis"><ul class="rules"><li class="ask">Sending<span class="st">Asks first</span></li><li class="ask">Money<span class="st">Asks first</span></li><li class="ask">Calendar<span class="st">Asks first</span></li><li class="ask">Deleting<span class="st">Asks first</span></li><li class="ask">Sharing<span class="st">Asks first</span></li></ul></div>
+        <div class="txt"><span class="label">04</span><h2 id="s4">Approvals before anything goes out</h2><p>By default, Orchy asks before it sends or posts, spends money, changes a calendar, deletes or shares.</p><span class="more">How approvals work<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></span></div>
+      </a>
+      <article class="card glass" aria-labelledby="s5">
+        <div class="vis"><ul class="rules"><li>Files, published copies, email<span class="st">Within 30 days</span></li><li>Final encrypted backup<span class="st">14 days after it was made</span></li><li>Run log, no message bodies<span class="st">90 days</span></li></ul></div>
+        <div class="txt"><span class="label">05</span><h2 id="s5">Delete when you want</h2><p>Click "Delete my Orchy" and your files, published copies and email are deleted within 30 days. Your final encrypted backup is removed 14 days after it was made, as every backup is. OVHcloud's server backups are replaced within 7 days. The run log for connected apps keeps no message bodies and is kept for 90 days.</p></div>
       </article>
-    </main>
+      <article class="card glass" aria-labelledby="s6">
+        <div class="vis"><ul class="rules"><li>Training on your hosted content<span class="st">Never</span></li><li class="free">SOC 2<span class="st">Not held</span></li><li class="free">ISO 27001<span class="st">Not held</span></li></ul></div>
+        <div class="txt"><span class="label">06</span><h2 id="s6">Who handles your data</h2><p>We never use your hosted content to train AI models. One Connect, which connects your apps, is our own service. The companies that help us run hosted Orchy are listed on the Data Privacy page, with our data processing agreement. We hold no security certifications, such as SOC 2 or ISO 27001. This page describes what our software and server do, not an audit.</p><ul class="links"><li><a class="more" href="/.well-known/security.txt">Security contact (security.txt)<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></li><li><a class="more" href="/privacy">Privacy policy<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></li><li><a class="more" href="/data-privacy">Data Privacy and DPA<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></li></ul></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="faq">
+  <div class="wrap">
+    <div class="sec-head center"><span class="label">Questions</span><h2 id="faq">FAQ</h2></div>
+    <div class="faq">
+      <details><summary>Where is my data stored?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Orchy is hosted in Canada, on a server at OVHcloud, with a daily OVHcloud server backup plus our own encrypted backups in Eastern North America. Each customer has an isolated container.</p></div></details>
+      <details><summary>Who can see my clients' data?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>We don't look at it except as needed to keep the service running, fix problems you ask us to fix, or meet the law.</p></div></details>
+      <details><summary>Does Orchy train AI models on my data?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>No. We never use your hosted content to train or improve AI models.</p></div></details>
+      <details><summary>Do I need my own AI key?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Yes. You bring a key from OpenRouter, Anthropic or OpenAI. Orchy stores it sealed.</p></div></details>
+      <details><summary>How do I delete my data?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Use "Delete my Orchy" in your account. Your files, published copies and email are deleted within 30 days, and the final encrypted backup is removed 14 days after it was made. OVHcloud's server backups are replaced within 7 days.</p></div></details>
+      <details><summary>Do you hold SOC 2 or ISO 27001?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>No. We hold no security certifications, and we list only the measures that are in place.</p></div></details>
+      <details><summary>How do I report a security problem?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Email <a href="mailto:support@imorchy.dev">support@imorchy.dev</a>. We aim to reply within 5 business days.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="cta">
+  <div class="wrap">
+    <div class="band glass">
+      <span class="label">Get early access</span>
+      <h2 id="cta">Trust it with <span class="hl">client work.</span></h2>
+      <p class="lede">Hosted in Canada, one container per customer, your own AI key.</p>
+      <div class="cta-stack"><a class="btn" href="/go/early-access?from=security-final">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+    </div>
+  </div>
+</section>
+</main>
     <footer class="site" id="site-footer">
       <div class="wrap">
         <div class="fcols">
@@ -107,6 +293,8 @@
             <li><a href="/#how">How it works</a></li>
             <li><a href="/client-workspaces">Client workspaces</a></li>
             <li><a href="/approvals">Approvals</a></li>
+            <li><a href="/agents">Agents &amp; Builder</a></li>
+            <li><a href="/apps">Apps (One)</a></li>
           </ul></nav>
           <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
             <li><a href="/#use-cases">Inbox</a></li>
