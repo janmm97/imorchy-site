@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { build, fileFor, footer, FOOTER_COLUMNS } from "../build.mjs";
+import { build, fileFor, footer, FOOTER_COLUMNS, header, FEATURES, NAV_JS_PAGES, STYLE_LINKS } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
@@ -101,7 +101,8 @@ ok("answer pages: one H1, unique title and description, self-canonical, og image
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
 // markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
-// (2026-11-11) v2 texts add the DPA at /dpa: linked from Data Privacy, not a footer link (the Legal column stays four).
+// (2026-11-11) v2 texts add the DPA at /dpa, linked from Data Privacy. (2026-11-18, v4 kit footer) Legal is Privacy · Terms;
+// Security, Data privacy and DPA sit in the Security column.
 const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", security: "Security", "data-privacy": "Data Privacy: DPA and sub-processors", dpa: "Data Processing Agreement (DPA)" };
 for (const [slug, h1] of Object.entries(LEGAL)) {
   const html = contentPage(slug);
@@ -116,9 +117,10 @@ for (const [slug, h1] of Object.entries(LEGAL)) {
   const boxed = html.match(/<div class="table-scroll" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
   assert.equal(boxed, tables, `${slug}: every table sits in a labelled .table-scroll box`);
   if (slug === "privacy") assert.equal(tables, 3, "privacy.html has its three tables");
-  if (slug !== "dpa") assert.ok(FOOTER_COLUMNS.some((c) => c.heading === "Legal" && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal group`);
+  assert.ok(FOOTER_COLUMNS.some((c) => ["Legal", "Security"].includes(c.heading) && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal or Security group`);
 }
-assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Legal").links.map(([t]) => t), ["Privacy", "Terms", "Security", "Data Privacy"], "the footer's Legal column is exactly Privacy · Terms · Security · Data Privacy");
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Legal").links.map(([t]) => t), ["Privacy", "Terms"], "the footer's Legal column is exactly Privacy · Terms");
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Security").links.map(([t]) => t), ["Security", "Data privacy", "DPA"], "the footer's Security column is exactly Security · Data privacy · DPA");
 assert.ok(fs.readFileSync(SITE + "data-privacy.html", "utf8").includes('<a href="/dpa">'), "Data Privacy links the DPA at /dpa");
 ok(`legal pages: ${Object.keys(LEGAL).length} pages, one H1 each, indexable, no scripts or placeholders, tables in scroll boxes, in the sitemap and the footer`);
 
@@ -150,19 +152,21 @@ for (const page of pages) {
   const footers = html.match(/<footer\b[\s\S]*?<\/footer>/gi) || [];
   assert.equal(footers.length, 1, `${page}: exactly one footer`);
   assert.equal(footers[0], footer(pathOf(page)).trim(), `${page}: footer is build.mjs's shared one (run node build.mjs)`);
-  const nav = footers[0].match(/<nav class="footer-nav" aria-label="Footer">([\s\S]*?)<\/nav>/)?.[1] ?? "";
-  for (const [, href] of nav.matchAll(/<a href="([^"]+)"/g)) {
-    if (/^https:\/\//.test(href)) continue;
-    assert.match(href, /^\/[a-z0-9./-]*$/, `${page}: footer link ${href} is a site path`);
-    assert.ok(fs.existsSync(SITE + fileFor(href)) && (locs.includes(href) || built.has(fileFor(href))), `${page}: footer link ${href} resolves to a built page`);
+  const nav = footers[0];
+  for (const [, link] of nav.matchAll(/<a href="([^"]+)"/g)) {
+    if (/^https:\/\//.test(link)) continue;
+    const href = link.split("#")[0] || "/"; // /#how and /#use-cases are sections of the home page
+    assert.match(href, /^\/[a-z0-9./-]*$/, `${page}: footer link ${link} is a site path`);
+    assert.ok(fs.existsSync(SITE + fileFor(href)) && (locs.includes(href) || built.has(fileFor(href))), `${page}: footer link ${link} resolves to a built page`);
   }
   const current = [...nav.matchAll(/<a href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
-  // A page that isn't a footer link (/dpa, reached from Data Privacy) has no aria-current.
+  // Every page but home is a footer link, so it marks itself; home's links are #sections, not "/".
   const linked = FOOTER_COLUMNS.some((c) => c.links.some(([, h]) => h === pathOf(page)));
-  assert.deepEqual(current, pathOf(page) !== "/" && linked ? [pathOf(page)] : [], `${page}: aria-current marks this page only`);
-  same.add(footers[0].replace(/ aria-current="page"/g, "").replace(/href="(#top|\/)"/g, 'href="BACK"').replace(/aria-label="(Back to top|Orchy AI home)"|>Back to (the Top|Home)</g, "X"));
+  assert.deepEqual(current, linked ? [pathOf(page)] : [], `${page}: aria-current marks this page only`);
+  same.add(footers[0].replace(/ aria-current="page"/g, ""));
 }
-assert.equal(same.size, 1, "every page has the identical footer, apart from its back link and aria-current");
+assert.equal(same.size, 1, "every page has the identical footer, apart from aria-current");
+assert.ok(footer("/").includes('<footer class="site" id="site-footer">'), "the footer is the kit's footer.site, the no-JS Menu target");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Changelog" && h === "/changelog"), "the footer links /changelog");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Blog" && h === "/blog"), "the footer links /blog");
 // Orchy's social accounts, in this order (Jan, 2026-11-18: Facebook, X, Instagram, YouTube). The home page's Organization sameAs names the same four.
@@ -174,6 +178,25 @@ const SOCIAL = [
 ];
 assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Follow")?.links, SOCIAL, "the footer's Follow column links Facebook, X, Instagram and YouTube, in that order");
 for (const [, url] of SOCIAL) assert.ok(footer("/").includes(`<a href="${url}" target="_blank" rel="noopener noreferrer">`), `footer opens ${url} in a new tab, safely`);
+
+// ── one header (v4 shell, 2026-11-18): every shipped page has build.mjs's kit header and both kit stylesheets
+// before styles.css; aria-current marks only the page's own link; the Features menu is the five approved items;
+// without JS the nav still works (kit option a: Features → /#features, Menu → the footer) ──
+assert.deepEqual(FEATURES.map(([n]) => n), ["Client workspaces", "Approvals", "Agents & Agent Builder", "Apps (One)", "Security"], "Features menu: the five approved items, in order");
+for (const page of pages) {
+  const html = fs.readFileSync(SITE + page, "utf8");
+  const headers = html.match(/<header class="nav"[\s\S]*?<\/header>/g) || [];
+  assert.equal(headers.length, 1, `${page}: exactly one site header`);
+  assert.equal(headers[0], header(pathOf(page)).trim(), `${page}: header is build.mjs's shared one (run node build.mjs)`);
+  assert.doesNotMatch(headers[0], /Teams|huddle/i, `${page}: no Teams & huddles in the nav`);
+  const current = [...headers[0].matchAll(/<a [^>]*href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
+  assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
+  for (const fallback of ['href="/#features"', 'href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
+  const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
+  assert.ok(css > 0 && v3 > css, `${page}: links /css/tokens.css and /css/components.css before /styles.css`);
+  assert.equal(headers[0].includes('src="/js/nav.mjs"'), NAV_JS_PAGES.has(pathOf(page)), `${page}: /js/nav.mjs only where the CSP allows it`);
+}
+ok(`one header: all ${pages.length} pages share build.mjs's kit header, five Features items, no-JS fallbacks, kit stylesheets`);
 const org = [...fs.readFileSync(SITE + "index.html", "utf8").matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
   .flatMap((m) => [JSON.parse(m[1])]).flatMap((j) => j["@graph"] ?? [j]).find((n) => n["@type"] === "Organization");
 assert.deepEqual([...(org?.sameAs ?? [])].sort(), SOCIAL.map(([, u]) => u).sort(), "index.html's Organization sameAs lists the four social accounts");

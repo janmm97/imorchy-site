@@ -73,21 +73,35 @@
     </script>
     <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/components.css" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="nav">
-      <div class="nav-inner wrap">
-        <a class="brand" href="/" aria-label="Orchy AI home"
-          ><img class="brand-logo" src="/assets/orchy-main-128.webp" width="34" height="34" alt="" /><span>Orchy</span></a
-        >
-        <div class="nav-actions">
-          <a class="button button-small button-light" href="https://app.imorchy.dev"
-            >Get Started
-            <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
-              <path d="M2 10 9.5 2.5M3.5 2.5h6v6" /></svg></a
-          >
+    <header class="nav" id="top">
+      <div class="bar-in">
+        <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+        <nav aria-label="Main">
+          <ul class="nav-list" id="navlist">
+            <li>
+              <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
+              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <ul class="fmenu glass" id="fmenu">
+              <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
+              <li><a href="/approvals" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
+              <li><a href="/security"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
+              </ul>
+            </li>
+            <li><a class="nav-link" href="/#how">How it works</a></li>
+            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
+            <li><a class="nav-link" href="/blog">Blog</a></li>
+          </ul>
+        </nav>
+        <div class="nav-end">
+          <a class="btn btn-sm" href="/go/early-access?from=nav">Get early access</a>
+          <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5h11M2.5 11h11"/></svg><span class="t">Menu</span><span class="sr"> (site menu)</span></button>
+          <a class="menu nojs-only" href="#site-footer">Menu</a>
         </div>
       </div>
     </header>
@@ -158,50 +172,47 @@
         </nav>
       </article>
     </main>
-    <footer class="footer wrap">
-      <div class="footer-top" data-perch>
-        <div class="footer-brand">
-          <a class="brand" href="/" aria-label="Orchy AI home"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="42" height="42" alt="" /><span>Orchy</span></a>
-          <p class="footer-tagline">A command center for your AI agents.</p>
-          <a class="footer-back" href="/">Back to Home</a>
+    <footer class="site" id="site-footer">
+      <div class="wrap">
+        <div class="fcols">
+          <div class="fb">
+            <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+            <p class="tagline">AI workspaces for people who work for several clients.</p>
+          </div>
+          <nav aria-labelledby="f-prod"><h2 id="f-prod">Product</h2><ul>
+            <li><a href="/#how">How it works</a></li>
+            <li><a href="/client-workspaces">Client workspaces</a></li>
+            <li><a href="/approvals" aria-current="page">Approvals</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
+            <li><a href="/#use-cases">Inbox</a></li>
+            <li><a href="/#use-cases">Scheduling</a></li>
+            <li><a href="/#use-cases">Client reports</a></li>
+            <li><a href="/#use-cases">Social posts</a></li>
+            <li><a href="/#use-cases">Follow-ups</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
+            <li><a href="/security">Security</a></li>
+            <li><a href="/data-privacy">Data privacy</a></li>
+            <li><a href="/dpa">DPA</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-co"><h2 id="f-co">Company</h2><ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/changelog">Changelog</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-leg"><h2 id="f-leg">Legal</h2><ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-fol"><h2 id="f-fol">Follow</h2><ul>
+            <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube<span class="sr"> (opens in a new tab)</span></a></li>
+          </ul></nav>
         </div>
-        <nav class="footer-nav" aria-label="Footer">
-          <div class="footer-col">
-            <h2 class="footer-heading">Product</h2>
-            <ul>
-              <li><a href="/approvals" aria-current="page">Approvals</a></li>
-              <li><a href="/client-workspaces">Client workspaces</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h2 class="footer-heading">Resources</h2>
-            <ul>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/changelog">Changelog</a></li>
-              <li><a href="/feed.xml">RSS feed</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h2 class="footer-heading">Legal</h2>
-            <ul>
-              <li><a href="/privacy">Privacy</a></li>
-              <li><a href="/terms">Terms</a></li>
-              <li><a href="/security">Security</a></li>
-              <li><a href="/data-privacy">Data Privacy</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h2 class="footer-heading">Follow</h2>
-            <ul>
-              <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-              <li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X</a></li>
-              <li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-              <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-            </ul>
-          </div>
-        </nav>
+        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
       </div>
-      <p class="footer-wordmark" aria-hidden="true">Orchy</p>
     </footer>
   </body>
 </html>
