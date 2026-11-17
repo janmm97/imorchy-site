@@ -3,82 +3,133 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Separate AI agents and logins for every client | Orchy AI</title>
-    <meta name="description" content="Orchy AI gives each client its own workspace, logins, agents and instructions. Join the early-access list." />
+    <title>Client workspaces for VAs and agencies | Orchy AI</title>
+    <meta name="description" content="Give each client an AI workspace of their own, with their own apps, agents and files. A task runs in one workspace, so clients stay apart." />
     <meta name="theme-color" content="#080a0d" />
     <link rel="canonical" href="https://imorchy.dev/client-workspaces" />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Orchy AI" />
     <meta property="og:url" content="https://imorchy.dev/client-workspaces" />
-    <meta property="og:title" content="Separate AI agents and logins for every client | Orchy AI" />
-    <meta property="og:description" content="Orchy AI gives each client its own workspace, logins, agents and instructions. Join the early-access list." />
+    <meta property="og:title" content="One AI workspace per client | Orchy AI" />
+    <meta property="og:description" content="Each client gets their own apps, agents and files. A task runs in one client's workspace, so work never mixes." />
     <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Orchy AI: a command center for your AI agents" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Separate AI agents and logins for every client | Orchy AI" />
-    <meta name="twitter:description" content="Orchy AI gives each client its own workspace, logins, agents and instructions. Join the early-access list." />
+    <meta name="twitter:title" content="One AI workspace per client | Orchy AI" />
+    <meta name="twitter:description" content="Each client gets their own apps, agents and files. A task runs in one client's workspace, so work never mixes." />
     <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta name="twitter:image:alt" content="Orchy AI: a command center for your AI agents" />
+    <link rel="icon" type="image/png" href="/assets/orchy-icon-64.png" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/components.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "@id": "https://imorchy.dev/client-workspaces#faq",
-        "url": "https://imorchy.dev/client-workspaces",
-        "mainEntity": [
+        "@graph": [
           {
-            "@type": "Question",
-            "name": "Can I keep each client's logins separate in Orchy AI?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. In Orchy AI, each client gets its own workspace, logins, agents and instructions. Different worlds, no crossed wires, all managed from one local dashboard on your computer."
+            "@type": "WebPage",
+            "@id": "https://imorchy.dev/client-workspaces#webpage",
+            "url": "https://imorchy.dev/client-workspaces",
+            "name": "Client workspaces for VAs and agencies | Orchy AI",
+            "description": "Give each client an AI workspace of their own, with their own apps, agents and files. A task runs in one workspace, so clients stay apart.",
+            "isPartOf": {
+              "@id": "https://imorchy.dev/#website"
+            },
+            "about": {
+              "@id": "https://imorchy.dev/#org"
             }
           },
           {
-            "@type": "Question",
-            "name": "Is Orchy AI a fit for a VA with several clients?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Orchy AI is built for virtual assistants who handle several clients. Each client has its own workspace, so its logins, agents and instructions stay apart. Routine work moves along, and anything that sends, posts or deletes waits for your OK first."
-            }
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://imorchy.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Client workspaces",
+                "item": "https://imorchy.dev/client-workspaces"
+              }
+            ]
           },
           {
-            "@type": "Question",
-            "name": "Can a small AI agency run client agents in Orchy AI?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. A small AI agency can give every client a workspace in Orchy AI, with its own agents, logins and instructions. You choose the brain that works for each workspace and connect the client's apps through One, which reaches 1000+ apps."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can different clients use different AI agents?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Orchy AI works with 7 harnesses: Claude Code, Codex, Hermes, Cursor, Antigravity, Aider and a custom CLI. You choose what works for each workspace, so one client's workspace can use a different brain from another's. Each keeps its own logins and instructions."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do I set up client workspaces in Orchy AI?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Orchy AI is in invite-only early access. Select Get Started to open app.imorchy.dev, then sign in with Google or an email link to join the waiting list. We approve each sign-up by hand and let people in in small groups. During early access we run at most 20 customer Orchys at a time."
-            }
+            "@type": "FAQPage",
+            "@id": "https://imorchy.dev/client-workspaces#faq",
+            "url": "https://imorchy.dev/client-workspaces",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Will Orchy mix up my clients?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Each client has a workspace with its own apps, agents and files, and a task runs in one workspace. Accounts are never mixed between workspaces."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can one task touch two clients?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. A task runs in one workspace, and a mission with several steps stays inside one workspace too."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What happens when I switch a workspace off?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It gets no new tasks and no scheduled runs until you switch it back on."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which apps can I connect to a workspace?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Through One, Orchy can connect to 1,000+ apps. You connect the apps each client uses to that client's workspace."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do approvals work the same in each workspace?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. By default Orchy asks before it sends or posts, spends money, changes a calendar, deletes or shares, in every workspace."
+                }
+              }
+            ]
           }
         ]
       }
     </script>
-    <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/components.css" />
-    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></symbol>
+  <symbol id="i-ask" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
+  <symbol id="i-ws" viewBox="0 0 16 16"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></symbol>
+  <symbol id="i-agent" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></symbol>
+  <symbol id="i-apps" viewBox="0 0 16 16"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 16 16"><path d="M4 1.8h5.2L12.5 5v9.2h-8.5z"/><path d="M9 2v3.2h3.3M6.3 8.5h3.6M6.3 11h3.6"/></symbol>
+  <symbol id="i-mem" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.6 3.6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M8 14.5s-4.5-4.4-4.5-8a4.5 4.5 0 0 1 9 0c0 3.6-4.5 8-4.5 8z"/><circle cx="8" cy="6.5" r="1.6"/></symbol>
+  <symbol id="i-key" viewBox="0 0 16 16"><circle cx="5" cy="8" r="2.8"/><path d="M7.8 8h6.2M12 8v2.4M10 8v1.8"/></symbol>
+  <symbol id="i-box" viewBox="0 0 16 16"><path d="M2.5 5L8 2.2 13.5 5v6L8 13.8 2.5 11z"/><path d="M2.5 5L8 7.8 13.5 5M8 7.8v6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.3 3.3"/></symbol>
+</svg>
     <header class="nav" id="top">
       <div class="bar-in">
         <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
@@ -90,6 +141,8 @@
               <ul class="fmenu glass" id="fmenu">
               <li><a href="/client-workspaces" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
               <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
+              <li><a href="/agents"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span>Agents &amp; Agent Builder</a></li>
+              <li><a href="/apps"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></svg></span>Apps (One)</a></li>
               <li><a href="/security"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
               </ul>
             </li>
@@ -104,63 +157,123 @@
           <a class="menu nojs-only" href="#site-footer">Menu</a>
         </div>
       </div>
+      <script type="module" src="/js/nav.mjs"></script>
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"a91a867324344b789170a73bf940615f"}'></script>
     </header>
-    <main id="main" class="answer wrap">
-      <article>
-        <h1>Separate AI agents and logins for every client</h1>
-        <p class="answer-note">This page describes the desktop app. Hosted Orchy is at <a href="https://app.imorchy.dev">app.imorchy.dev</a>.</p>
-        <p class="answer-lede">Orchy AI gives each client its own workspace, logins, agents and instructions, all on your own computer.</p>
-        <p>Orchy AI is built for people who juggle several clients: virtual assistants, small AI agencies and business owners with more than one project. Different worlds. No crossed wires.</p>
+<main id="main">
+<section class="phero cw">
+  <div class="wrap">
+    <p class="crumb label"><a href="/#features">Features</a><span aria-hidden="true">/</span><span>Client workspaces</span></p>
+    <p class="eyebrow">One workspace for every client.</p>
+    <h1>A separate AI workspace for <span class="hl">each client you work for.</span></h1>
+    <p class="lede">Each client gets their own apps, agents and files. A task runs in one workspace, so six clients in one day stay apart.</p>
+    <div class="cta-stack"><a class="btn" href="/go/early-access?from=client-workspaces-hero">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+  </div>
+</section>
 
-        <h2>How it works</h2>
-        <ol>
-          <li><strong>One workspace per client.</strong> Each client gets its own workspace, with its own logins, agents and instructions.</li>
-          <li><strong>Choose the tools per workspace.</strong> Pick the brain that works for each workspace (Claude Code, Codex, Hermes, Cursor, Antigravity, Aider or a custom CLI) and connect that client's apps through One.</li>
-          <li><strong>Tell Orchy what you need.</strong> Orchy finds the right workspace, teammate and model, and routes the task there.</li>
-          <li><strong>You keep the final say.</strong> Sending, posting and deleting wait for your OK, in every workspace.</li>
-        </ol>
-
-        <h2>Example</h2>
-        <p><em>Sample, as shown on imorchy.dev.</em> Your dashboard lists three workspaces: "Your studio" with 3 agents, "Client project" with 2 agents and "Personal projects" with 4 agents. Each one runs on its own account. When you ask for an inbox agent in the client's workspace, it uses that client's login and that client's instructions, and its replies still wait for your OK before they go out.</p>
-
-        <section class="faq" aria-labelledby="faqTitle">
-          <h2 id="faqTitle">FAQ</h2>
-          <div class="faq-list">
-            <details class="faq-item">
-              <summary><h3>Can I keep each client's logins separate in Orchy AI?</h3></summary>
-              <p>Yes. In Orchy AI, each client gets its own workspace, logins, agents and instructions. Different worlds, no crossed wires, all managed from one local dashboard on your computer.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>Is Orchy AI a fit for a VA with several clients?</h3></summary>
-              <p>Orchy AI is built for virtual assistants who handle several clients. Each client has its own workspace, so its logins, agents and instructions stay apart. Routine work moves along, and anything that sends, posts or deletes waits for your OK first.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>Can a small AI agency run client agents in Orchy AI?</h3></summary>
-              <p>Yes. A small AI agency can give every client a workspace in Orchy AI, with its own agents, logins and instructions. You choose the brain that works for each workspace and connect the client's apps through One, which reaches 1000+ apps.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>Can different clients use different AI agents?</h3></summary>
-              <p>Yes. Orchy AI works with 7 harnesses: Claude Code, Codex, Hermes, Cursor, Antigravity, Aider and a custom CLI. You choose what works for each workspace, so one client's workspace can use a different brain from another's. Each keeps its own logins and instructions.</p>
-            </details>
-            <details class="faq-item">
-              <summary><h3>How do I set up client workspaces in Orchy AI?</h3></summary>
-              <p>Orchy AI is in invite-only early access. Select Get Started to open app.imorchy.dev, then sign in with Google or an email link to join the waiting list. We approve each sign-up by hand and let people in in small groups. During early access we run at most 20 customer Orchys at a time.</p>
-            </details>
+<section class="sec" aria-label="Example: switching client workspaces" style="padding-top:0">
+  <div class="wrap">
+    <div class="scene" data-scene id="demo-client-workspaces">
+      <p class="sr">Example with made-up clients. A workspace switcher lists three clients. Acme Dental has Gmail and LinkedIn, an Inbox agent and a Social agent, and Brand notes and an Enquiry log; its task uses only Gmail and LinkedIn. Birch Bookkeeping has Gmail and Google Calendar, an Inbox agent and a Scheduling agent, and a Client list and Meeting notes. Larkspur Florist has LinkedIn and Google Sheets, a Social agent and a Report agent, and a Price list and a Weekly sheet.</p>
+      <div class="frame glass" aria-hidden="true">
+        <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Example</b><span>· made-up clients</span></div>
+        <div class="fbody split">
+          <ul class="switcher">
+            <li class="cur cur">Acme Dental</li>
+            <li>Birch Bookkeeping</li>
+            <li>Larkspur Florist</li>
+          </ul>
+          <div class="wsp">
+            <div class="ws on on">
+              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use use"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use use"><span class="dot" aria-hidden="true"></span>LinkedIn</span></div></div>
+              <div class="grp"><span class="label">Agents</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Inbox agent</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Social agent</span></div></div>
+              <div class="grp"><span class="label">Files</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Brand notes</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Enquiry log</span></div></div>
+              <div class="logline on"><span><small>Task · Acme Dental</small>Reply to this week's new patient enquiries and draft Friday's LinkedIn post.</span></div>
+            </div>
+            <div class="ws">
+              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use"><span class="dot" aria-hidden="true"></span>Google Calendar</span></div></div>
+              <div class="grp"><span class="label">Agents</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Inbox agent</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Scheduling agent</span></div></div>
+              <div class="grp"><span class="label">Files</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Client list</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Meeting notes</span></div></div>
+              <div class="logline"><span><small>Task · Birch Bookkeeping</small>Check next week's calendar and reply to this morning's client emails.</span></div>
+            </div>
+            <div class="ws">
+              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use"><span class="dot" aria-hidden="true"></span>LinkedIn</span><span class="chip use"><span class="dot" aria-hidden="true"></span>Google Sheets</span></div></div>
+              <div class="grp"><span class="label">Agents</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Social agent</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Report agent</span></div></div>
+              <div class="grp"><span class="label">Files</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Price list</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Weekly sheet</span></div></div>
+              <div class="logline"><span><small>Task · Larkspur Florist</small>Draft this week's LinkedIn post and summarise the Weekly sheet for the owner.</span></div>
+            </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </div>
+    <p class="scene-cap">Apps, agents and files switch with the client. They never mix.</p>
+  </div>
+</section>
 
-        <p class="answer-cta">
-          <a class="button button-mint" href="https://app.imorchy.dev"
-            >Get Started
-            <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true">
-              <path d="M2 10 9.5 2.5M3.5 2.5h6v6" /></svg></a
-          >
-        </p>
-        <nav class="answer-links" aria-label="Related pages">
-          <p><a href="/">Home</a> · <a href="/approvals">Approvals</a></p>
-        </nav>
+<section class="sec sec-text" aria-labelledby="s1">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="label">01</span><h2 id="s1">Clients don't share a pile</h2></div>
+      <div><p class="lede">A single AI chat treats every client as one pile of tasks, accounts and files. Orchy gives each client a workspace of their own, so the work you do for one client stays with that client.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="s2">
+  <div class="wrap">
+    <div class="sec-head center"><span class="label">02</span><h2 id="s2">What sits inside a workspace</h2></div>
+    <ul class="points">
+      <li><span class="mk"><svg class="ic" aria-hidden="true"><use href="#i-apps"/></svg></span><h3>Their apps.</h3><p>Connect each client's accounts to that client's workspace only.</p></li>
+      <li><span class="mk"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg></span><h3>Their agents.</h3><p>Set up the agents each client needs, or ask the Agent Builder to write one. Every workspace also has a generalist for tasks no specialist fits.</p></li>
+      <li><span class="mk"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span><h3>Their files.</h3><p>Notes and files stay in the workspace they belong to.</p></li>
+      <li><span class="mk"><svg class="ic" aria-hidden="true"><use href="#i-mem"/></svg></span><h3>Their memory.</h3><p>What Orchy remembers is looked up one workspace at a time.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec" aria-label="How a workspace works">
+  <div class="wrap">
+    <div class="cards">
+      <article class="card glass" aria-labelledby="s3">
+        <div class="vis"><div class="ws" style="gap:12px;display:flex;flex-direction:column"><div class="grp"><span class="label">Acme Dental</span><div class="chips"><span class="chip use"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use"><span class="dot" aria-hidden="true"></span>LinkedIn</span></div></div><ul class="rules"><li class="ask">App outside its list<span class="st"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-ask"/></svg>Asks first</span></li></ul></div></div>
+        <div class="txt"><span class="label">03</span><h2 id="s3">A task runs in one workspace</h2><p>Say the task inside the client's workspace. Orchy checks every app call against that workspace's connections. If an agent reaches for an app outside its list, Orchy asks you first, and accounts are never mixed between workspaces.</p><p>A job that takes several steps runs as a mission inside that one workspace. A mission never spans two clients.</p></div>
       </article>
-    </main>
+      <article class="card glass" aria-labelledby="s4">
+        <div class="vis"><ul class="rules"><li>Acme Dental<span class="st">On</span></li><li>Birch Bookkeeping<span class="st">On</span></li><li class="free">Larkspur Florist<span class="st">Off</span></li></ul></div>
+        <div class="txt"><span class="label">04</span><h2 id="s4">Add a client. Switch one off.</h2><p>Add a workspace when you take on a client. Switch it off when the work pauses: a switched-off workspace gets no tasks and no scheduled runs. Retire it when the work ends.</p></div>
+      </article>
+      <a class="card glass" href="/approvals">
+        <div class="vis"><ul class="rules"><li class="ask">Sending<span class="st">Asks first</span></li><li class="ask">Money<span class="st">Asks first</span></li><li class="ask">Calendar<span class="st">Asks first</span></li><li class="ask">Deleting<span class="st">Asks first</span></li><li class="ask">Sharing<span class="st">Asks first</span></li></ul></div>
+        <div class="txt"><span class="label">05</span><h2 id="s5">Approvals apply in every workspace</h2><p>By default, each workspace asks before it sends or posts, spends money, changes a calendar, deletes or shares. You read what the agent wants to do and approve it or turn it down.</p><span class="more">How approvals work<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="faq">
+  <div class="wrap">
+    <div class="sec-head center"><span class="label">Questions</span><h2 id="faq">FAQ</h2></div>
+    <div class="faq">
+      <details><summary>Will Orchy mix up my clients?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Each client has a workspace with its own apps, agents and files, and a task runs in one workspace. Accounts are never mixed between workspaces.</p></div></details>
+      <details><summary>Can one task touch two clients?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>No. A task runs in one workspace, and a mission with several steps stays inside one workspace too.</p></div></details>
+      <details><summary>What happens when I switch a workspace off?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>It gets no new tasks and no scheduled runs until you switch it back on.</p></div></details>
+      <details><summary>Which apps can I connect to a workspace?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Through One, Orchy can connect to 1,000+ apps. You connect the apps each client uses to that client's workspace.</p></div></details>
+      <details><summary>Do approvals work the same in each workspace?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Yes. By default Orchy asks before it sends or posts, spends money, changes a calendar, deletes or shares, in every workspace.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="cta">
+  <div class="wrap">
+    <div class="band glass">
+      <span class="label">Get early access</span>
+      <h2 id="cta">Give every client <span class="hl">their own workspace.</span></h2>
+      <p class="lede">Ask once in plain words. Approve what goes out.</p>
+      <div class="cta-stack"><a class="btn" href="/go/early-access?from=client-workspaces-final">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
+    </div>
+  </div>
+</section>
+</main>
     <footer class="site" id="site-footer">
       <div class="wrap">
         <div class="fcols">
@@ -172,6 +285,8 @@
             <li><a href="/#how">How it works</a></li>
             <li><a href="/client-workspaces" aria-current="page">Client workspaces</a></li>
             <li><a href="/approvals">Approvals</a></li>
+            <li><a href="/agents">Agents &amp; Builder</a></li>
+            <li><a href="/apps">Apps (One)</a></li>
           </ul></nav>
           <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
             <li><a href="/#use-cases">Inbox</a></li>

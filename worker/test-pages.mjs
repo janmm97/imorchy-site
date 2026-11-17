@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { build, fileFor, footer, FOOTER_COLUMNS, header, FEATURES, NAV_JS_PAGES, STYLE_LINKS } from "../build.mjs";
+import { build, fileFor, footer, FOOTER_COLUMNS, header, FEATURES, SHELL_SCRIPTS, STYLE_LINKS } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
@@ -18,7 +18,8 @@ const squash = (s) => s.replace(/\s+/g, " ").trim();
 /** The text a reader sees: no scripts, styles or tags, entities decoded, whitespace collapsed. */
 export function visibleText(html) {
   const body = html.replace(/<(script|style|template)\b[\s\S]*?<\/\1>/gi, " ").replace(/<!--[\s\S]*?-->/g, " ");
-  return squash(decode(body.replace(/<[^>]+>/g, " ")));
+  // Inline tags join their text ("Email <a>x</a>." reads "Email x."); every other tag breaks words.
+  return squash(decode(body.replace(/<\/?(a|span|strong|em|b|i|code)\b[^>]*>/gi, "").replace(/<[^>]+>/g, " ")));
 }
 
 /** Every schema.org node in the page's JSON-LD blocks, @graph flattened. */
@@ -57,7 +58,9 @@ ok("no offers in structured data, no GitHub links and no open-licence claim on a
 
 // ── the answer pages: plain HTML with no scripts but JSON-LD, one H1, a unique title, a self-canonical at the
 // extensionless path Cloudflare serves, the shared og image, links home and to the form, in the sitemap, linked from home ──
-const ANSWER = ["approvals", "client-workspaces"];
+// v4 (2026-11-18): the five feature pages. agents and apps are new; security moved from the legal set to here.
+const ANSWER = ["approvals", "client-workspaces", "agents", "apps", "security"];
+const LINKED_FROM_HOME = ["approvals", "client-workspaces"]; // agents and apps join the nav with the v4 shell
 const home = fs.readFileSync(SITE + "index.html", "utf8");
 const sitemap = fs.readFileSync(SITE + "sitemap.xml", "utf8");
 const head = (html, re) => html.match(re)?.[1];
@@ -74,7 +77,8 @@ const contentPage = (slug) => {
   assert.ok(html.includes(`<meta property="og:url" content="${url}" />`), `${slug}: og:url`);
   assert.ok(html.includes('<meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />'), `${slug}: og:image`);
   const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map((m) => m[0]);
-  assert.ok(scripts.every((s) => s === '<script type="application/ld+json">'), `${slug}: no scripts but JSON-LD`);
+  const allowed = ['<script type="application/ld+json">', ...SHELL_SCRIPTS.map((t) => t.replace("</script>", ""))];
+  assert.ok(scripts.every((s) => allowed.includes(s)), `${slug}: no scripts but JSON-LD and the shell's (nav, beacon)`);
   const title = head(html, /<title>([^<]+)<\/title>/);
   const description = head(html, /name="description" content="([^"]+)"/);
   assert.ok(title && !titles.has(title), `${slug}: unique title`);
@@ -89,21 +93,27 @@ for (const slug of ANSWER) {
   assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), `${slug}: FAQPage JSON-LD`);
   assert.ok(!/<canvas|importmap|three\.module/i.test(html), `${slug}: no canvas or Three.js`);
   assert.ok(html.includes('href="/"'), `${slug}: links home`);
-  assert.ok(html.includes('href="https://app.imorchy.dev"') && !html.includes("notion.site"), `${slug}: Get Started links to the app, no Notion form`);
-  assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
+  const ctas = [...html.matchAll(/href="\/go\/early-access\?from=([a-z0-9-]+)"/g)].map((m) => m[1]);
+  assert.ok(ctas.includes(`${slug}-hero`) && ctas.includes(`${slug}-final`), `${slug}: hero and final CTAs go through /go/early-access`);
+  assert.ok(!html.includes("app.imorchy.dev") && !html.includes("notion.site"), `${slug}: no direct app link, no Notion form`);
+  assert.ok(/<div class="scene" data-scene id="demo-[a-z-]+">/.test(html), `${slug}: the demo frame has a stable id`);
+  assert.doesNotMatch(html.match(/<main\b[\s\S]*<\/main>/)[0], /\b(Facebook|Instagram|Shopify)\b/,`${slug}: no Facebook, Instagram or Shopify in the page body`);
+  if (LINKED_FROM_HOME.includes(slug)) assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
 }
-const approvals = visibleText(fs.readFileSync(SITE + "approvals.html", "utf8"));
-assert.equal(approvals.match(/human-in-the-loop/g)?.length, 1, "/approvals says human-in-the-loop once");
+// v4 copy: "human-in-the-loop" is in the approved meta description (Ruby), not in the body text.
+assert.match(fs.readFileSync(SITE + "approvals.html", "utf8"), /name="description" content="Human-in-the-loop by default/, "/approvals meta says human-in-the-loop");
+assert.ok(fs.readFileSync(SITE + "apps.html", "utf8").includes("Inbox agent · Gmail<span"), "/apps: the last Inbox agent row names Gmail");
+assert.ok(fs.readFileSync(SITE + "security.html", "utf8").includes('href="/.well-known/security.txt"'), "/security links security.txt");
 // v4 retires /local and /claude-code-orchestrator: the Worker 301s them home (test-urls.mjs), so no file ships.
 for (const gone of ["local", "claude-code-orchestrator"]) assert.ok(!pages.includes(`${gone}.html`), `${gone}.html is retired`);
 assert.ok(pages.length >= 3, "home plus the answer pages are checked");
-ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts, in the sitemap, linked from home");
+ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts but the shell's, in the sitemap, linked from home");
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
 // markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
 // (2026-11-11) v2 texts add the DPA at /dpa, linked from Data Privacy. (2026-11-18, v4 kit footer) Legal is Privacy · Terms;
-// Security, Data privacy and DPA sit in the Security column.
-const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", security: "Security", "data-privacy": "Data Privacy: DPA and sub-processors", dpa: "Data Processing Agreement (DPA)" };
+// Security, Data privacy and DPA sit in the Security column. /security is a v4 feature page now (lane B), tested with them.
+const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", "data-privacy": "Data Privacy: DPA and sub-processors", dpa: "Data Processing Agreement (DPA)" };
 for (const [slug, h1] of Object.entries(LEGAL)) {
   const html = contentPage(slug);
   assert.ok(html.includes(`<h1>${h1}</h1>`), `${slug}: the H1 is "${h1}"`);
@@ -155,7 +165,7 @@ ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab 
 
 // ── one footer (Jan, 2026-11-03): every shipped page has build.mjs's shared footer, the same on all of them except
 // the back link and aria-current, and every site link in it resolves to a page in the sitemap or a built file ──
-const SHIPPED = ["index", "approvals", "client-workspaces", "changelog", ...Object.keys(LEGAL)];
+const SHIPPED = ["index", ...ANSWER, "changelog", ...Object.keys(LEGAL)];
 for (const slug of SHIPPED) assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
 const pathOf = (page) => (page === "index.html" ? "/" : "/" + page.replace(/\.html$/, ""));
 const locs = [...fs.readFileSync(SITE + "sitemap.xml", "utf8").matchAll(/<loc>https:\/\/imorchy\.dev([^<]*)<\/loc>/g)].map((m) => m[1]);
@@ -207,8 +217,9 @@ for (const page of pages) {
   assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
   for (const fallback of ['href="/#features"', 'href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
   const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
-  assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css before /styles.css`);
-  assert.equal(headers[0].includes('src="/js/nav.mjs"'), NAV_JS_PAGES.has(pathOf(page)), `${page}: /js/nav.mjs only where the CSP allows it`);
+  // v4 pages are kit-only; a v3 page still links /styles.css, after the kit.
+  assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css (before /styles.css, if any)`);
+  for (const tag of SHELL_SCRIPTS) assert.equal(html.split(tag).length - 1, 1, `${page}: ${tag.slice(0, 40)}… exactly once (in the header)`);
 }
 ok(`one header: all ${pages.length} pages share build.mjs's kit header, five Features items, no-JS fallbacks, kit stylesheets`);
 const org = [...fs.readFileSync(SITE + "index.html", "utf8").matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]

@@ -1,0 +1,29 @@
+# Orchy AI
+
+> Orchy AI is a hosted AI workspace for virtual assistants, freelancers and small agencies who work for several clients. Each client gets a separate workspace with its own apps, agents and files. You describe a task in plain words, the right agent does it in that client's apps, and Orchy asks for your approval before anything is sent, posted, paid, changed on a calendar, deleted or shared.
+
+Key facts:
+- Hosted only, at OVHcloud in Canada, with one isolated container per customer.
+- Through One, Orchy can connect to 1,000+ apps (for example Gmail, Google Calendar and LinkedIn).
+- You bring your own AI key from OpenRouter, Anthropic or OpenAI.
+- Orchy is in early access; sign-ups are approved by hand, a small first group at a time.
+- Orchy holds no security certifications such as SOC 2 or ISO 27001.
+- Orchy is a product of One Systems, Inc.
+
+## Product
+- [Client workspaces](https://imorchy.dev/client-workspaces): one workspace per client, with its own apps, agents and files
+- [Approvals](https://imorchy.dev/approvals): what Orchy asks about before it acts, and how you approve or deny
+- [Agents and the Agent Builder](https://imorchy.dev/agents): set up agents for a job in plain words
+- [Apps through One](https://imorchy.dev/apps): connect each client's apps and choose what each agent may use
+- [Security](https://imorchy.dev/security): hosting, isolation, your AI key, deletion and sub-processors
+
+## Legal
+- [Privacy Policy](https://imorchy.dev/privacy)
+- [Terms of Use](https://imorchy.dev/terms)
+- [Data Processing Agreement](https://imorchy.dev/dpa)
+- [Data Privacy and sub-processors](https://imorchy.dev/data-privacy)
+
+## Optional
+- [Blog](https://imorchy.dev/blog)
+- [Changelog](https://imorchy.dev/changelog)
+- [Get early access](https://imorchy.dev/go/early-access?from=llms)
