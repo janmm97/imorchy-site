@@ -125,6 +125,11 @@ for (const [slug, h1] of Object.entries(LEGAL)) {
     const rest = visibleText(html.replace(box, ""));
     assert.doesNotMatch(rest, /access call|booking|Calendly|Granola|Google Meet|setup call|transcript|call audio|desktop app/i, `${slug}: no call, booking or desktop-app text outside the box (X-check)`);
     assert.doesNotMatch(rest, /\bMIT\b/, `${slug}: no MIT licence text`);
+    // changes v7 addendum (2026-11-18): at most 3 bullets in the box, no OVH city (Jan never confirmed one)
+    assert.ok((box.match(/<li>/g)?.length ?? 0) <= 3, `${slug}: "What changed" box has at most 3 bullets`);
+    assert.doesNotMatch(html, /Beauharnois/, `${slug}: no OVH city`);
+    if (slug === "data-privacy") assert.ok(html.includes(`Last updated: ${html.match(/Last updated: (\d{1,2} [A-Z][a-z]+ 2026) · Version/)[1]}.</p>`), "data-privacy: the sub-processor date equals the header date");
+    if (slug === "terms") assert.doesNotMatch(html.match(/<h2 id="s17">[\s\S]*?<\/p>/)[0], /the app,/, "terms: §17 no longer says \"the app,\"");
   }
   assert.ok(FOOTER_COLUMNS.some((c) => ["Legal", "Security"].includes(c.heading) && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal or Security group`);
 }
