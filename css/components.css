@@ -373,3 +373,15 @@ html.solid .band::before{display:none}
 .phero.article h1{max-width:14.65em}
 .post p{max-width:42.6em}
 .fcols .tagline{max-width:17.3em}
+
+/* v4 shell (Sadie, 2026-11-18): no-JS nav = kit README option (a), Nora's call. /js/nav.mjs adds html.js;
+   without it the Features link goes to /#features and, below 900px, "Menu" goes to the footer. No sheet animation at launch. */
+.nav-end{display:flex;gap:8px;justify-self:end;align-items:center}
+.site .brand{margin-left:0}
+a.menu{text-decoration:none}
+html:not(.js) .js-only,html.js .nojs-only{display:none}
+/* The kit's .post rules are for blog-list rows (li.post); the v3 blog article is main.post, so undo the row styling there. */
+main.post{border-bottom:0}
+main.post a:not(.button){display:inline;padding:0;border-radius:0}
+main.post a.button{display:inline-flex;gap:14px;padding:14px 24px;border-radius:999px}
+main.post a:hover{background:none}

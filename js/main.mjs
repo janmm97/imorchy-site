@@ -95,6 +95,8 @@ function setMenu(open) {
     open ? "Close navigation" : "Open navigation",
   );
 }
+// v4 shell: the kit header has no .menu-toggle (/js/nav.mjs drives it), so this v3 block is skipped.
+if (menuButton && nav) {
 menuButton.addEventListener("click", () =>
   setMenu(menuButton.getAttribute("aria-expanded") !== "true"),
 );
@@ -116,6 +118,7 @@ document.addEventListener("click", (e) => {
 matchMedia("(min-width:651px)").addEventListener("change", (e) => {
   if (e.matches) setMenu(false);
 });
+}
 
 function highlightStep(step) {
   $$("[data-step]").forEach((el) =>

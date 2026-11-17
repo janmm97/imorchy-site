@@ -282,11 +282,81 @@ export function generatedProblems(html) {
  * stamps it over the one <footer> of each hand-written page in pages.json, so --check fails if any page drifts.
  * Columns are data: a new group is one more row.
  */
+// v4 shell (kit v1.4, Miles): one header and one footer for every page. Links to pages that aren't built yet
+// The logo is orchy-main-128.webp (2.5 KB, cut from assets/orchy-main.svg): the 533 KB SVG breaks the 64 KB image budget (test-speed.mjs).
+// (SOON: /agents, /apps until lane B lands) are left out, so adding the page file turns its link on.
+let siteDir = SITE; // the folder build() is building, so header()/footer() see the same files
+export const STYLE_LINKS = '    <link rel="stylesheet" href="/css/tokens.css" />\n    <link rel="stylesheet" href="/css/components.css" />';
+const SOON = new Set(["/agents", "/apps"]); // hand pages lane B adds; never generated, so this is stable within a build
+const built = (href, site) => !SOON.has(href) || fs.existsSync(path.join(site, fileFor(href)));
+const ICONS = {
+  ws: '<rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/>',
+  ask: '<circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/>',
+  agent: '<circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/>',
+  apps: '<circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/>',
+  lock: '<rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/>',
+  chev: '<path d="M4 6l4 4 4-4"/>',
+  menu: '<path d="M2.5 5h11M2.5 11h11"/>',
+};
+const icon = (name, cls = "ic") => `<svg class="${cls}" viewBox="0 0 16 16" aria-hidden="true">${ICONS[name]}</svg>`;
+// The Features menu: exactly these five (Jan/Claire, 2026-11-17; no Teams & huddles).
+export const FEATURES = [
+  ["Client workspaces", "/client-workspaces", "ws"],
+  ["Approvals", "/approvals", "ask"],
+  ["Agents & Agent Builder", "/agents", "agent"],
+  ["Apps (One)", "/apps", "apps"],
+  ["Security", "/security", "lock"],
+];
+// /js/nav.mjs is an external module, so it only loads where the page's CSP allows 'self' scripts ("hero" = /).
+// The homepage PR moves every page to script-src 'self'; until then other pages get the no-JS nav (option a).
+export const NAV_JS_PAGES = new Set(["/"]);
+const cur = (href, p) => (href === p ? ' aria-current="page"' : "");
+const HEADER_TAG = /[ \t]*<header class="nav"[\s\S]*?<\/header>/g;
+export function header(p, site = siteDir) {
+  const items = FEATURES.filter(([, href]) => built(href, site))
+    .map(([name, href, ic]) => `              <li><a href="${href}"${cur(href, p)}><span class="mk">${icon(ic)}</span>${esc(name)}</a></li>\n`)
+    .join("");
+  return `    <header class="nav" id="top">
+      <div class="bar-in">
+        <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+        <nav aria-label="Main">
+          <ul class="nav-list" id="navlist">
+            <li>
+              <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features${icon("chev", "ic chev")}</button>
+              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <ul class="fmenu glass" id="fmenu">
+${items}              </ul>
+            </li>
+            <li><a class="nav-link" href="/#how">How it works</a></li>
+            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
+            <li><a class="nav-link" href="/blog"${cur("/blog", p)}>Blog</a></li>
+          </ul>
+        </nav>
+        <div class="nav-end">
+          <a class="btn btn-sm" href="/go/early-access?from=nav">Get early access</a>
+          <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn">${icon("menu")}<span class="t">Menu</span><span class="sr"> (site menu)</span></button>
+          <a class="menu nojs-only" href="#site-footer">Menu</a>
+        </div>
+      </div>${NAV_JS_PAGES.has(p) ? '\n      <script type="module" src="/js/nav.mjs"></script>' : ""}
+    </header>`;
+}
+
 export const FOOTER_COLUMNS = [
-  { heading: "Product", links: [["Approvals", "/approvals"], ["Client workspaces", "/client-workspaces"]] },
-  { heading: "Resources", links: [["Blog", "/blog"], ["Changelog", "/changelog"], ["RSS feed", "/feed.xml"]] },
-  { heading: "Legal", links: [["Privacy", "/privacy"], ["Terms", "/terms"], ["Security", "/security"], ["Data Privacy", "/data-privacy"]] },
   {
+    id: "f-prod",
+    heading: "Product",
+    links: [["How it works", "/#how"], ["Client workspaces", "/client-workspaces"], ["Approvals", "/approvals"], ["Agents & Builder", "/agents"], ["Apps (One)", "/apps"]],
+  },
+  {
+    id: "f-use",
+    heading: "Use cases",
+    links: ["Inbox", "Scheduling", "Client reports", "Social posts", "Follow-ups"].map((t) => [t, "/#use-cases"]),
+  },
+  { id: "f-sec", heading: "Security", links: [["Security", "/security"], ["Data privacy", "/data-privacy"], ["DPA", "/dpa"]] },
+  { id: "f-co", heading: "Company", links: [["Blog", "/blog"], ["Changelog", "/changelog"]] },
+  { id: "f-leg", heading: "Legal", links: [["Privacy", "/privacy"], ["Terms", "/terms"]] },
+  {
+    id: "f-fol",
     heading: "Follow",
     links: [
       ["Facebook", "https://www.facebook.com/OrchyAI/"],
@@ -297,24 +367,28 @@ export const FOOTER_COLUMNS = [
   },
 ];
 const FOOTER_TAG = /[ \t]*<footer\b[\s\S]*?<\/footer>/g;
-export function footer(p) {
-  const top = p === "/" ? "#top" : "/";
-  const attrs = (href) => (/^https:/.test(href) ? ' target="_blank" rel="noopener noreferrer"' : href === p ? ' aria-current="page"' : "");
+export function footer(p, site = siteDir) {
+  const a = (text, href) =>
+    /^https:/.test(href)
+      ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${esc(text)}<span class="sr"> (opens in a new tab)</span></a>`
+      : `<a href="${href}"${cur(href, p)}>${esc(text)}</a>`;
   const cols = FOOTER_COLUMNS.map(
-    ({ heading, links }) =>
-      `          <div class="footer-col">\n            <h2 class="footer-heading">${esc(heading)}</h2>\n            <ul>\n${links.map(([text, href]) => `              <li><a href="${href}"${attrs(href)}>${esc(text)}</a></li>\n`).join("")}            </ul>\n          </div>\n`,
+    ({ id, heading, links }) =>
+      `          <nav aria-labelledby="${id}"><h2 id="${id}">${esc(heading)}</h2><ul>\n${links
+        .filter(([, href]) => built(href, site))
+        .map(([text, href]) => `            <li>${a(text, href)}</li>\n`)
+        .join("")}          </ul></nav>\n`,
   );
-  return `    <footer class="footer wrap">
-      <div class="footer-top" data-perch>
-        <div class="footer-brand">
-          <a class="brand" href="${top}" aria-label="${p === "/" ? "Back to top" : "Orchy AI home"}"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="42" height="42" alt="" /><span>Orchy</span></a>
-          <p class="footer-tagline">A command center for your AI agents.</p>
-          <a class="footer-back" href="${top}">${p === "/" ? "Back to the Top" : "Back to Home"}</a>
-        </div>
-        <nav class="footer-nav" aria-label="Footer">
-${cols.join("")}        </nav>
+  return `    <footer class="site" id="site-footer">
+      <div class="wrap">
+        <div class="fcols">
+          <div class="fb">
+            <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+            <p class="tagline">AI workspaces for people who work for several clients.</p>
+          </div>
+${cols.join("")}        </div>
+        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
       </div>
-      <p class="footer-wordmark" aria-hidden="true">Orchy</p>
     </footer>`;
 }
 
@@ -343,18 +417,12 @@ ${ld({ "@context": "https://schema.org", ...data, url: ORIGIN + p })}
     </script>
     <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+${STYLE_LINKS}
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="nav">
-      <div class="nav-inner wrap">
-        <a class="brand" href="/" aria-label="Orchy AI home"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="34" height="34" alt="" /><span>Orchy</span></a>
-        <div class="nav-actions">
-          <a class="button button-small button-light" href="https://app.imorchy.dev">Get Started <svg class="button-icon" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10 9.5 2.5M3.5 2.5h6v6" /></svg></a>
-        </div>
-      </div>
-    </header>
+${header(p)}
 ${
   main ||
   `    <main id="main" class="answer wrap">
@@ -489,6 +557,7 @@ function entries(site, kind, today, problems) {
  */
 // "today" (only for the not-after-today check) is the UTC date, like CI's clock; a post dated tomorrow in UTC waits a day.
 export function build(site = SITE, { today = new Date().toISOString().slice(0, 10) } = {}) {
+  siteDir = site;
   const problems = [];
   const files = new Map();
   const pages = [];
@@ -508,7 +577,9 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
       const html = lf(fs.readFileSync(file, "utf8"));
       seoProblems(html, p).forEach((m) => problems.push(`${fileFor(p)}: ${m}`));
       if ((html.match(FOOTER_TAG) || []).length !== 1) problems.push(`${fileFor(p)}: needs exactly one <footer> (build.mjs writes the shared footer there)`);
-      else files.set(fileFor(p), html.replace(FOOTER_TAG, () => footer(p)));
+      else if ((html.match(HEADER_TAG) || []).length !== 1) problems.push(`${fileFor(p)}: needs exactly one <header class="nav"> (build.mjs writes the shared header there)`);
+      else if (!html.includes(STYLE_LINKS.trim())) problems.push(`${fileFor(p)}: must link /css/tokens.css then /css/components.css`);
+      else files.set(fileFor(p), html.replace(HEADER_TAG, () => header(p)).replace(FOOTER_TAG, () => footer(p)));
     }
     if (!realDate(lastmod) || lastmod > today) problems.push(`content/pages.json: ${p} lastmod ${lastmod} isn't a real date up to today`);
     sitemap.push({ path: p, lastmod });
