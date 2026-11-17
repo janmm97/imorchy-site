@@ -202,7 +202,8 @@ for (const page of pages) {
   assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
   for (const fallback of ['href="/#features"', 'href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
   const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
-  assert.ok(css > 0 && v3 > css, `${page}: links /css/tokens.css and /css/components.css before /styles.css`);
+  // v4 feature pages (lane B) are kit-only and don't link the v3 /styles.css; where a page does, it comes after the kit.
+  assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css before /styles.css`);
   assert.equal(headers[0].includes('src="/js/nav.mjs"'), NAV_JS_PAGES.has(pathOf(page)), `${page}: /js/nav.mjs only where the CSP allows it`);
 }
 ok(`one header: all ${pages.length} pages share build.mjs's kit header, five Features items, no-JS fallbacks, kit stylesheets`);
