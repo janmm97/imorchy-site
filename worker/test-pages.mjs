@@ -114,9 +114,18 @@ for (const [slug, h1] of Object.entries(LEGAL)) {
   const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
   levels.forEach((l, i) => i && assert.ok(l <= levels[i - 1] + 1, `${slug}: heading h${l} skips a level after h${levels[i - 1]}`));
   const tables = html.match(/<table\b/g)?.length ?? 0;
-  const boxed = html.match(/<div class="table-scroll" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
-  assert.equal(boxed, tables, `${slug}: every table sits in a labelled .table-scroll box`);
+  const boxed = html.match(/<div class="(?:table-scroll|tbl)" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
+  assert.equal(boxed, tables, `${slug}: every table sits in a labelled scroll box`);
   if (slug === "privacy") assert.equal(tables, 3, "privacy.html has its three tables");
+  if (slug !== "security") {
+    // v4 legal (changes.md v6): Version 3.0, a "What changed" box, and no call, booking or desktop-app text outside it
+    assert.match(html, /Last updated: \d{1,2} [A-Z][a-z]+ 2026 · Version 3\.0/, `${slug}: Version 3.0 header line`);
+    const box = html.match(/<aside class="changed"[\s\S]*?<\/aside>/)?.[0];
+    assert.ok(box?.includes("What changed in Version 3.0"), `${slug}: "What changed" box`);
+    const rest = visibleText(html.replace(box, ""));
+    assert.doesNotMatch(rest, /access call|booking|Calendly|Granola|Google Meet|setup call|transcript|call audio|desktop app/i, `${slug}: no call, booking or desktop-app text outside the box (X-check)`);
+    assert.doesNotMatch(rest, /\bMIT\b/, `${slug}: no MIT licence text`);
+  }
   assert.ok(FOOTER_COLUMNS.some((c) => ["Legal", "Security"].includes(c.heading) && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal or Security group`);
 }
 assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Legal").links.map(([t]) => t), ["Privacy", "Terms"], "the footer's Legal column is exactly Privacy · Terms");
@@ -193,7 +202,7 @@ for (const page of pages) {
   assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
   for (const fallback of ['href="/#features"', 'href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
   const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
-  assert.ok(css > 0 && v3 > css, `${page}: links /css/tokens.css and /css/components.css before /styles.css`);
+  assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css before /styles.css`);
   assert.equal(headers[0].includes('src="/js/nav.mjs"'), NAV_JS_PAGES.has(pathOf(page)), `${page}: /js/nav.mjs only where the CSP allows it`);
 }
 ok(`one header: all ${pages.length} pages share build.mjs's kit header, five Features items, no-JS fallbacks, kit stylesheets`);

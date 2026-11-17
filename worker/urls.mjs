@@ -24,11 +24,11 @@ export const PAGES = [
   { path: "/robots.txt", type: "text/plain", markers: ["Sitemap: https://imorchy.dev/sitemap.xml"] },
   { path: "/sitemap.xml", type: "application/xml", markers: ["<urlset"] },
   // The legal pages and security.txt (RFC 9116): direct 200, no redirect.
-  { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc."] },
-  { path: "/terms", type: "text/html", profile: "page", markers: ["<h1>Terms of Use</h1>", "One Systems, Inc."] },
+  { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc.", "Version 3.0"] },
+  { path: "/terms", type: "text/html", profile: "page", markers: ["<h1>Terms of Use</h1>", "One Systems, Inc.", "Version 3.0"] },
   { path: "/security", type: "text/html", profile: "page", markers: ["<h1>Security</h1>", "/.well-known/security.txt"] },
-  { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1>Data Privacy: DPA and sub-processors</h1>", "href=\"/dpa\""] },
-  { path: "/dpa", type: "text/html", profile: "page", markers: ["<h1>Data Processing Agreement (DPA)</h1>", "One Systems, Inc."] },
+  { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1>Data Privacy: DPA and sub-processors</h1>", "href=\"/dpa\"", "Version 3.0"] },
+  { path: "/dpa", type: "text/html", profile: "page", markers: ["<h1>Data Processing Agreement (DPA)</h1>", "One Systems, Inc.", "Version 3.0"] },
   { path: "/.well-known/security.txt", type: "text/plain", markers: ["Contact:", "Expires:", "Canonical: https://imorchy.dev/.well-known/security.txt"] },
 ];
 
