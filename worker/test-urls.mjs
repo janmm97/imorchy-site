@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { TYPES, siteFiles } from "./files.mjs";
+import { BEACON, TYPES, siteFiles, withBeacon } from "./files.mjs";
 import { BEACON_HOST, BEACON_REPORT, CSP, securityHeaders, withSecurityHeaders } from "./headers.mjs";
 import worker from "./main.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
@@ -68,6 +68,9 @@ const preview = securityHeaders({ https: false, pathname: "/", contentType: "tex
 assert.equal(preview["Content-Security-Policy"], CSP.page.replace("; upgrade-insecure-requests", ""), "the http preview's CSP doesn't upgrade its own files to https");
 assert.equal(preview["Strict-Transport-Security"], undefined, "no HSTS over http");
 assert.ok(CSP.page.endsWith("; upgrade-insecure-requests"));
+assert.equal(withBeacon(BEACON, "0".repeat(32)), BEACON.replace("></script>", ` data-cf-beacon='{"token":"${"0".repeat(32)}"}'></script>`));
+assert.equal(withBeacon(`<p>${BEACON}</p>`, undefined), "<p></p>", "no token, no beacon tag");
+assert.throws(() => withBeacon(BEACON, "x\"><script>"), "only a 32-hex token is stamped");
 ok("CSP: one profile, script-src 'self' + the beacon host, connect-src 'self' + its report host, no inline script; every page has exactly one beacon");
 
 // ── every page in the list ──

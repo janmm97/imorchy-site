@@ -14,7 +14,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { skipDir } from "./worker/files.mjs";
+import { BEACON, skipDir } from "./worker/files.mjs";
 import { ORIGIN } from "./worker/urls.mjs";
 
 const SITE = path.dirname(fileURLToPath(import.meta.url));
@@ -310,9 +310,10 @@ export const FEATURES = [
 ];
 // The only scripts a page runs, both external (the CSP is script-src 'self' + the beacon host, no inline): the nav
 // module and Cloudflare Web Analytics. header() puts both on every page, so each page has exactly one beacon.
-// The token is public (it's in every page's HTML by design).
+// The site token is not in git (Jan, 2026-11-18: no scanner allowlist): deploy.mjs adds it to this tag from the
+// CF_BEACON_TOKEN secret at deploy time (worker/files.mjs withBeacon).
 export const NAV_JS = '<script type="module" src="/js/nav.mjs"></script>';
-export const BEACON = `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"a91a867324344b789170a73bf940615f"}'></script>`;
+export { BEACON };
 export const SHELL_SCRIPTS = [NAV_JS, BEACON];
 // The early-access cap (Jan): "a small first group, approved by hand" until he flips this. build() stamps it into
 // every <span data-cap> of the hand pages, so --check fails if one drifts.

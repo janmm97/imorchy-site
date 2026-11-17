@@ -19,7 +19,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { MEDIA_BUCKET, siteFiles } from "./worker/files.mjs";
+import { MEDIA_BUCKET, siteFiles, withBeacon } from "./worker/files.mjs";
 import { RUN_WORKER_FIRST } from "./worker/routes.mjs";
 
 const SITE = fileURLToPath(new URL(".", import.meta.url));
@@ -122,6 +122,10 @@ async function cf(action, method, apiPath, { query, json, form, headers = {} } =
 }
 
 const files = siteFiles(SITE);
+// The analytics token comes from the CF_BEACON_TOKEN secret, never from git; without it the pages go up with no beacon.
+const beacon = process.env.CF_BEACON_TOKEN?.trim();
+if (!beacon && !preview) console.log("::warning title=No analytics::CF_BEACON_TOKEN is not set, so the pages deploy without Cloudflare Web Analytics.");
+for (const f of files) if (f.rel.endsWith(".html")) f.data = Buffer.from(withBeacon(f.data.toString("utf8"), beacon));
 const tooBig = files.filter((f) => f.data.length > MAX_FILE);
 if (tooBig.length) {
   for (const f of tooBig) console.error(`${f.rel} is ${(f.data.length / 1048576).toFixed(1)} MB; Cloudflare takes 25 MiB per file. Make it smaller, or serve it from R2 like the video (IN_R2 in worker/files.mjs).`);
