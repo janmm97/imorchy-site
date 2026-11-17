@@ -165,14 +165,14 @@ for (const page of pages) {
 assert.equal(same.size, 1, "every page has the identical footer, apart from its back link and aria-current");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Changelog" && h === "/changelog"), "the footer links /changelog");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Blog" && h === "/blog"), "the footer links /blog");
-// Orchy's social accounts, in this order (Jan, 2026-11-04). The home page's Organization sameAs names the same four.
+// Orchy's social accounts, in this order (Jan, 2026-11-18: Facebook, X, Instagram, YouTube). The home page's Organization sameAs names the same four.
 const SOCIAL = [
   ["Facebook", "https://www.facebook.com/OrchyAI/"],
-  ["Instagram", "https://www.instagram.com/orchyai/"],
   ["X", "https://x.com/OrchyAI"],
+  ["Instagram", "https://www.instagram.com/orchyai/"],
   ["YouTube", "https://www.youtube.com/@orchy-ai"],
 ];
-assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Follow")?.links, SOCIAL, "the footer's Follow column links Facebook, Instagram, X and YouTube, in that order");
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Follow")?.links, SOCIAL, "the footer's Follow column links Facebook, X, Instagram and YouTube, in that order");
 for (const [, url] of SOCIAL) assert.ok(footer("/").includes(`<a href="${url}" target="_blank" rel="noopener noreferrer">`), `footer opens ${url} in a new tab, safely`);
 const org = [...fs.readFileSync(SITE + "index.html", "utf8").matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
   .flatMap((m) => [JSON.parse(m[1])]).flatMap((j) => j["@graph"] ?? [j]).find((n) => n["@type"] === "Organization");

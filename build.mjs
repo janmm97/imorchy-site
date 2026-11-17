@@ -290,8 +290,8 @@ export const FOOTER_COLUMNS = [
     heading: "Follow",
     links: [
       ["Facebook", "https://www.facebook.com/OrchyAI/"],
-      ["Instagram", "https://www.instagram.com/orchyai/"],
       ["X", "https://x.com/OrchyAI"],
+      ["Instagram", "https://www.instagram.com/orchyai/"],
       ["YouTube", "https://www.youtube.com/@orchy-ai"],
     ],
   },

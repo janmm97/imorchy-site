@@ -1,0 +1,375 @@
+/* =====================================================================
+   imorchy.dev v4 · components (kit v1.4, 2026-11-17). Needs tokens.css first.
+   Rule from the live "iOS glass" system, kept: only OUTER surfaces blur
+   (class .glass, the nav, the Features menu). Inner items are tinted glass
+   with no blur. Cap: 5 blurring surfaces on screen at once.
+   ===================================================================== */
+
+/* ---------- base ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:100px;background:var(--c-ink);scrollbar-color:#4a4642 var(--c-ink)}
+body{background:transparent;color:var(--c-ivory);font:400 var(--fs-body)/var(--lh-body) var(--font-sans);-webkit-font-smoothing:antialiased;position:relative;isolation:isolate}
+/* the colour field the glass picks up as the page scrolls beneath it */
+body::before{content:"";position:fixed;inset:-12vmax;z-index:-1;pointer-events:none;opacity:var(--field-opacity);
+  background:radial-gradient(34vmax 26vmax at 14% 20%,var(--f1),transparent 70%),radial-gradient(40vmax 30vmax at 86% 28%,var(--f2),transparent 70%),
+    radial-gradient(36vmax 28vmax at 60% 88%,var(--f3),transparent 70%),radial-gradient(24vmax 20vmax at 4% 94%,var(--f4),transparent 70%);
+  animation:drift var(--t-drift) ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(3vmax,-2.5vmax,0) rotate(6deg) scale(1.06)}}
+.page-read{--field-opacity:.55}            /* legal + blog post + changelog: a calmer field under long text */
+::selection{background:var(--c-hl);color:var(--c-ink)}
+a{color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--c-ivory);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gutter)}
+.label{font:500 var(--fs-label)/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:var(--ls-label);color:var(--c-muted)}
+.note{font:400 var(--fs-note)/1.5 var(--font-mono);color:var(--c-muted);letter-spacing:.02em}
+.hl{color:var(--c-hl)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;top:-60px;z-index:50;padding:12px 16px;border-radius:var(--r-sm);background:var(--c-ivory);color:var(--c-ink);font:500 var(--fs-btn-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;text-decoration:none}
+.skip:focus{top:16px}
+.ic{width:14px;height:14px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.lg{width:16px;height:16px;object-fit:contain;flex:none}
+
+/* ---------- type ---------- */
+h1,h2,h3{font-family:var(--font-sans);font-weight:500;letter-spacing:var(--ls-head);line-height:var(--lh-head);text-wrap:balance}
+h1{font-size:var(--fs-h1)}
+h2{font-size:var(--fs-h2)}
+h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
+.lede{font-size:var(--fs-lede);color:var(--c-muted);max-width:56ch}
+
+/* ---------- the one glass recipe for blurring surfaces ---------- */
+.glass{position:relative;border:1px solid var(--c-edge);background:var(--glass-sheen),var(--tint);box-shadow:var(--glass-shine),var(--glass-shadow);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+
+/* ---------- button (one CTA everywhere: "Get early access") ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:0 22px;border:1px solid var(--c-ivory);background:var(--c-ivory);color:var(--c-ink);text-decoration:none;font:500 var(--fs-btn)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;border-radius:var(--r-sm);cursor:pointer;
+  box-shadow:0 10px 30px -12px #000c,inset 0 -1px 0 #0000001a;transition:background var(--t-fast),color var(--t-fast),border-color var(--t-fast),transform var(--t-press)}
+.btn:hover,.btn.is-hover{background:#ffffff14;color:var(--c-ivory);border-color:var(--c-edge-hi)}
+.btn:active,.btn.is-active{transform:scale(.97)}
+.btn .arr{width:13px;height:13px;stroke-width:1.8;transition:transform var(--t-fast) var(--ease)}
+.btn:hover .arr,.btn.is-hover .arr{transform:translateX(3px)}
+.btn-sm{min-height:40px;padding:0 16px;font-size:var(--fs-btn-sm)}
+.cta-stack{display:flex;flex-direction:column;align-items:inherit;gap:14px}
+
+/* ---------- header / nav: floating glass bar (blur lives on ::before, as live) ---------- */
+.nav{position:sticky;top:12px;z-index:20;max-width:var(--wrap);margin:12px auto 0;width:calc(100% - 32px);border:1px solid var(--c-edge);border-radius:var(--r-lg);box-shadow:var(--glass-shadow)}
+.nav::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-sheen),var(--tint-nav);box-shadow:var(--glass-shine);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+.nav .bar-in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;height:var(--nav-h);padding:0 10px}
+.nav .bar-in>.btn{justify-self:end}
+.brand{justify-self:start;margin-left:8px;display:flex;align-items:center;gap:10px;min-height:44px;text-decoration:none;font:700 15px/1 var(--font-mono);letter-spacing:.04em}
+.brand img{width:28px;height:28px}
+.nav-list{display:flex;gap:2px;list-style:none;align-items:center}
+.nav-list>li{position:relative}
+.nav-link{display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border:0;border-radius:10px;background:none;text-decoration:none;cursor:pointer;color:var(--c-muted);font:500 var(--fs-label)/1 var(--font-mono);text-transform:uppercase;letter-spacing:var(--ls-label);transition:color var(--t-fast),background var(--t-fast)}
+.nav-link:hover,.nav-link.is-hover,.nav-link[aria-expanded="true"]{color:var(--c-ivory);background:var(--in)}
+.nav-link[aria-current="page"]{color:var(--c-ivory);box-shadow:inset 0 -1px 0 var(--c-hl)}
+.nav-link .chev{width:10px;height:10px;stroke-width:2;transition:transform var(--t-fast) var(--ease)}
+.nav-link[aria-expanded="true"] .chev{transform:rotate(180deg)}
+/* Features menu: a disclosure (button + list of links), not an ARIA menu. Outer surface, so it may blur. */
+.fmenu{position:absolute;top:calc(100% + 14px);left:50%;translate:-50% 0;width:520px;padding:10px;border-radius:var(--r-lg);display:none;grid-template-columns:1fr 1fr;gap:4px;list-style:none;z-index:30}
+.fmenu.open{display:grid}
+.fmenu a{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 12px;border-radius:var(--r-sm);border:1px solid transparent;text-decoration:none;font-size:15px;transition:background var(--t-fast),border-color var(--t-fast)}
+.fmenu a:hover,.fmenu a.is-hover{background:var(--in-2);border-color:var(--c-edge-soft)}
+.fmenu a[aria-current="page"]{background:var(--in-2);border-color:var(--c-edge-hi)}
+.fmenu .mk{width:30px;height:30px;border-radius:var(--r-xs);display:grid;place-items:center;background:var(--in-2);border:1px solid var(--c-edge-soft);flex:none;color:var(--c-hl)}
+.fmenu .mk .ic{width:15px;height:15px}
+.menu{display:none;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 12px;border:1px solid var(--c-edge);border-radius:var(--r-sm);background:var(--in);color:var(--c-ivory);font:500 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;cursor:pointer}
+
+/* ---------- page hero (feature page: centred like the homepage; article: left, with meta) ---------- */
+.phero{padding:clamp(72px,12vw,136px) 0 clamp(56px,8vw,96px);text-align:center}
+.phero .crumb{display:inline-flex;gap:8px;align-items:center;margin-bottom:22px}
+.phero .crumb a{text-decoration:none;color:var(--c-muted);padding:6px 0}
+.phero .crumb a:hover{color:var(--c-ivory);text-decoration:underline;text-underline-offset:4px}
+.phero h1{max-width:16ch;margin:0 auto}
+.phero .lede{margin:24px auto 30px}
+.phero .cta-stack{align-items:center}
+.phero.article{text-align:left;padding-bottom:40px}
+.phero.article h1{margin:0;max-width:22ch;font-size:clamp(36px,4.6vw,56px)}
+.phero.article .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px 20px}
+
+/* ---------- section + section heading ---------- */
+.sec{padding:var(--section-y) 0}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-bottom:var(--head-gap)}
+.sec-head .label{display:block;margin-bottom:18px}
+.sec-head.center{display:block;text-align:center;max-width:880px;margin-left:auto;margin-right:auto}
+.sec-head.center .lede{margin:20px auto 0}
+
+/* ---------- feature card (outer glass; the visual well is inner tint) ---------- */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{border-radius:var(--r-xl);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:border-color var(--t-fast),transform var(--t) var(--ease)}
+.card .vis{min-height:220px;border-bottom:1px solid var(--c-edge-soft);background:#00000024;padding:18px;display:flex;flex-direction:column;justify-content:center}
+.card .txt{padding:20px 22px 24px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h2,.card h3{font-size:20px;overflow-wrap:anywhere}
+.card p{color:var(--c-muted);font-size:var(--fs-small)}
+.card .more{margin-top:auto;padding-top:14px;display:inline-flex;align-items:center;gap:8px;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-ivory)}
+a.card:hover,a.card.is-hover{border-color:var(--c-edge-hi);transform:translateY(-2px)}
+a.card:hover .more .ic,a.card.is-hover .more .ic{transform:translateX(3px)}
+.card .more .ic{transition:transform var(--t-fast) var(--ease)}
+a.card:focus-visible{outline-offset:4px;border-radius:var(--r-xl)}
+/* inner rows used inside card visuals and demos (tint, no blur) */
+.rules{list-style:none;display:flex;flex-direction:column;gap:5px}
+.rules li{display:flex;justify-content:space-between;align-items:center;background:var(--in);border:1px solid var(--c-edge-soft);border-radius:10px;height:36px;padding:0 10px;font-size:13px;transition:border-color var(--t),background var(--t)}
+.rules li.free{color:var(--c-muted)}
+.rules .st{font:500 10px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;height:22px;padding:0 7px;border-radius:6px;border:1px solid var(--c-edge);color:var(--c-muted);display:flex;gap:5px;align-items:center;transition:color var(--t),border-color var(--t)}
+.rules li.ask .st{border-color:var(--c-hl);color:var(--c-hl)}
+.rules li.scan{border-color:var(--c-edge-hi);background:var(--in-2)}
+.badge{display:inline-flex;align-items:center;gap:5px;height:22px;font:500 10px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;background:var(--c-hl);color:var(--c-on-hl);padding:0 8px;border-radius:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:7px;height:28px;border:1px solid var(--c-edge-soft);border-radius:var(--r-xs);padding:0 9px 0 7px;font:400 11.5px/1 var(--font-mono);background:var(--in);white-space:nowrap}
+
+/* ---------- glass demo frame + pause control + poster fallback ---------- */
+.frame{border-radius:var(--r-xl);overflow:hidden}
+.frame .fbar{display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-bottom:1px solid var(--c-edge-soft);font:500 11px var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted)}
+.frame .fbar .dots{display:flex;gap:5px}.frame .fbar .dots i{width:8px;height:8px;border-radius:50%;background:#ffffff26}
+.frame .fbar b{color:var(--c-ivory);font-weight:500}
+.frame .fbody{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;min-height:300px}
+.scene{position:relative;padding-bottom:46px}   /* room for the pause control under the frame */
+.pause{position:absolute;right:0;bottom:0;width:36px;height:36px;border-radius:50%;border:1px solid var(--c-edge-hi);background:var(--c-control);color:var(--c-ivory);display:grid;place-items:center;cursor:pointer;z-index:5;transition:border-color var(--t-fast)}
+.pause::after{content:"";position:absolute;inset:-4px}             /* 44 px hit area around the 36 px disc */
+.pause:hover,.pause.is-hover{border-color:var(--c-ivory)}
+.pause svg{width:12px;height:12px}
+.pause .i-play{display:none}.pause[aria-pressed="true"] .i-play{display:block}.pause[aria-pressed="true"] .i-pause{display:none}
+.no-js .pause,.rm .pause{display:none}                               /* poster = static: nothing to pause */
+.anim .fx{transition:opacity var(--t) var(--ease),transform var(--t) var(--ease)}
+.anim .scene .hide{opacity:0;transform:translateY(6px)}
+.anim .scene .on.hide{opacity:1;transform:none}
+.scene.paused *{animation-play-state:paused!important}
+.logline{background:var(--in-2);border:1px solid var(--c-edge);border-radius:var(--r-sm);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px}
+.logline small{display:block;color:var(--c-muted);font:400 11px var(--font-mono)}
+.scene-cap{font:400 var(--fs-note)/1.5 var(--font-mono);color:var(--c-muted);margin-top:12px;padding-right:52px}
+
+/* ---------- FAQ accordion: native <details>, no JS ---------- */
+.faq{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.faq details{border:1px solid var(--c-edge-soft);border-radius:var(--r-sm);background:var(--in);transition:border-color var(--t-fast),background var(--t-fast)}
+.faq details[open]{background:var(--in-2);border-color:var(--c-edge)}
+.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:60px;padding:14px 18px;cursor:pointer;font-size:18px;font-weight:500;border-radius:inherit}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover,.faq summary.is-hover{color:var(--c-ivory);background:#ffffff06}
+.faq summary .pm{width:16px;height:16px;flex:none;stroke-width:1.7;transition:transform var(--t-fast) var(--ease)}
+.faq details[open] summary .pm{transform:rotate(45deg)}
+.faq .ans{padding:0 18px 18px;color:var(--c-muted);max-width:var(--measure)}
+
+/* ---------- prose: legal pages, blog posts, changelog bodies (no glass under long text) ---------- */
+.prose{max-width:var(--measure);font-size:var(--fs-prose);line-height:var(--lh-prose);color:var(--c-ivory)}
+.prose>*+*{margin-top:1em}
+.prose>:first-child{margin-top:0}
+.prose h2{font-size:var(--fs-p-h2);margin-top:2.2em;scroll-margin-top:110px}
+.prose h3{font-size:var(--fs-p-h3);margin-top:1.8em}
+.prose h4{font:500 13px/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-ivory);margin-top:1.8em}
+.prose h2+*,.prose h3+*,.prose h4+*{margin-top:.6em}
+.prose p,.prose li{color:#EDE8E0}
+.prose a{color:var(--c-hl);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;transition:text-decoration-thickness var(--t-fast)}
+.prose a:hover{text-decoration-thickness:2px}
+.prose ul,.prose ol{padding-left:1.3em}
+.prose li+li{margin-top:.4em}
+.prose li::marker{color:var(--c-muted);font-family:var(--font-mono);font-size:.85em}
+.prose strong{font-weight:600;color:var(--c-ivory)}
+.prose code{font:400 .86em/1 var(--font-mono);background:var(--in-2);border:1px solid var(--c-edge-soft);border-radius:6px;padding:.15em .4em}
+.prose pre{background:#0d0c0bd9;border:1px solid var(--c-edge-soft);border-radius:var(--r-sm);padding:16px 18px;overflow-x:auto;font:400 14px/1.6 var(--font-mono)}
+.prose pre code{background:none;border:0;padding:0;font-size:inherit}
+.prose blockquote{border-left:1px solid var(--c-hl);padding-left:18px;color:var(--c-muted)}
+.prose hr{border:0;border-top:1px solid var(--c-edge);margin:2.4em 0}
+.prose .tbl{overflow-x:auto;border:1px solid var(--c-edge-soft);border-radius:var(--r-sm)}
+.prose table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums}
+.prose th{text-align:left;font:500 11px/1.3 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted);background:var(--in-2)}
+.prose th,.prose td{padding:11px 14px;border-bottom:1px solid var(--c-edge-soft);vertical-align:top}
+.prose tr:last-child td{border-bottom:0}
+.toc{position:sticky;top:100px;align-self:start;font:500 var(--fs-label-sm)/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
+.toc ol{list-style:none;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--c-edge)}
+.toc a{display:block;padding:8px 0 8px 14px;margin-left:-1px;border-left:1px solid transparent;text-decoration:none;color:var(--c-muted)}
+.toc a:hover{color:var(--c-ivory)}
+.toc a[aria-current="true"]{color:var(--c-ivory);border-left-color:var(--c-hl)}
+.article-grid{display:grid;grid-template-columns:200px minmax(0,1fr);gap:64px}
+
+/* ---------- blog list item + changelog entry (inner rows on the page, no blur) ---------- */
+.posts{list-style:none;border-top:1px solid var(--c-edge)}
+.post{border-bottom:1px solid var(--c-edge)}
+.post a{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:24px;align-items:baseline;padding:26px 8px;text-decoration:none;border-radius:var(--r-sm);transition:background var(--t-fast)}
+.post a:hover,.post a.is-hover{background:var(--in)}
+.post time,.post .tag{font:500 var(--fs-label-sm)/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted)}
+.post h3{font-size:clamp(20px,2vw,24px);transition:color var(--t-fast)}
+.post p{color:var(--c-muted);font-size:var(--fs-small);margin-top:6px;max-width:64ch}
+.post .go{display:inline-flex;align-items:center;gap:8px;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em}
+.post a:hover .go .ic,.post a.is-hover .go .ic{transform:translateX(3px)}
+.post .go .ic{transition:transform var(--t-fast) var(--ease)}
+.empty{border:1px dashed var(--c-edge-hi);border-radius:var(--r-md);padding:40px 24px;text-align:center;color:var(--c-muted)}
+.release{display:grid;grid-template-columns:150px minmax(0,1fr);gap:24px;padding:32px 0;border-bottom:1px solid var(--c-edge)}
+.release .when{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.release .when time{font:500 var(--fs-label-sm)/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted)}
+.release h3{font-size:22px;margin-bottom:10px}
+
+/* ---------- CTA band (outer glass) ---------- */
+.final{padding:40px 0 var(--section-y)}
+.band{border-radius:var(--r-xl);padding:88px 32px;text-align:center;overflow:hidden}
+.band::before{content:"";position:absolute;inset:auto 20% -60% 20%;height:120%;background:radial-gradient(closest-side,var(--f1),transparent);opacity:.7;pointer-events:none;z-index:-1}
+.band h2{margin-top:18px}
+.band .lede{margin:18px auto 30px}
+.band .cta-stack{align-items:center}
+
+/* ---------- footer ---------- */
+footer.site{border-top:1px solid var(--c-edge-soft);padding:56px 0 36px;background:#14131266}
+.fcols{display:grid;grid-template-columns:1.3fr repeat(6,1fr);gap:24px}
+@media (max-width:1100px) and (min-width:901px){.fcols{grid-template-columns:repeat(3,1fr)}.fcols .fb{grid-column:1/-1}}
+.fcols .tagline{font-size:14px;color:var(--c-muted);max-width:26ch;margin-top:14px}
+.fcols h2{font:500 var(--fs-label-sm)/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);margin-bottom:10px;padding-top:12px;border-top:1px solid var(--c-edge)}
+.fcols ul{list-style:none;display:flex;flex-direction:column}
+.fcols ul a{display:inline-flex;align-items:center;min-height:32px;text-decoration:none;font:500 var(--fs-label)/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;text-underline-offset:4px}
+.fcols ul a:hover,.fcols ul a[aria-current="page"]{text-decoration:underline}
+.fbot{display:flex;justify-content:space-between;align-items:center;margin-top:56px;font:400 11px var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){ .fmenu{width:460px} }
+@media (max-width:900px){
+  body::before{animation:none}                   /* no drift on phones: glass never re-blurs per frame */
+  .nav{width:calc(100% - 20px);top:8px;margin-top:8px}
+  .nav .bar-in{grid-template-columns:1fr auto auto;gap:8px}
+  .menu{display:inline-flex}
+  .nav nav{position:absolute;left:0;right:0;top:calc(100% + 8px)}
+  .nav-list{display:none;flex-direction:column;align-items:stretch;gap:2px;padding:8px;border:1px solid var(--c-edge);border-radius:var(--r-lg);background:var(--glass-sheen),var(--tint-nav);box-shadow:var(--glass-shine),var(--glass-shadow);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);max-height:calc(100svh - 100px);overflow:auto}
+  .nav.open .nav-list{display:flex}
+  .nav-link{height:44px;padding:0 14px;width:100%;justify-content:space-between}
+  /* inside the sheet the Features list is inline, not a second blurring layer */
+  .fmenu{position:static;translate:none;width:auto;padding:2px 0 6px 8px;grid-template-columns:1fr;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .fmenu a{min-height:44px;font-size:15px}
+  .sec-head{grid-template-columns:1fr;gap:20px}
+  .cards{grid-template-columns:1fr}
+  .card,.frame{border-radius:var(--r-lg)}
+  .frame .fbody{grid-template-columns:1fr;padding:16px;min-height:0}
+  .band{padding:56px 20px;border-radius:var(--r-lg)}
+  .article-grid{grid-template-columns:minmax(0,1fr);gap:24px}
+  .toc{position:static}
+  .post a{grid-template-columns:1fr;gap:6px;padding:22px 4px}
+  .release{grid-template-columns:1fr;gap:12px}
+  .fcols{grid-template-columns:1fr 1fr}
+  .fcols .fb{grid-column:1/-1}
+  .fbot{flex-direction:column;gap:14px;align-items:flex-start}
+}
+@media (max-width:420px){
+  .nav .bar-in{padding:0 6px 0 12px}
+  .nav .btn{padding:0 12px;font-size:11px;letter-spacing:.06em}
+  .brand span{display:none}
+  .menu{width:44px;padding:0}.menu .t{display:none}
+}
+@media (prefers-reduced-motion:reduce){ body::before{animation:none!important} html{scroll-behavior:auto} .anim .fx{transition:none} a.card:hover{transform:none} }
+@media (prefers-reduced-transparency:reduce){ .band::before{display:none} }
+html.solid .band::before{display:none}
+
+/* ---------- v1.1 (2026-11-17): blocks added for the Client workspaces template ---------- */
+/* .points: 2-6 short points on the page (no glass, so it costs no blur). 4 across >= 1100, 2 >= 600, 1 below. */
+.points{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.points li{border-top:1px solid var(--c-edge);padding-top:22px;display:flex;flex-direction:column;gap:10px}
+.points .mk{width:36px;height:36px;border-radius:10px;border:1px solid var(--c-edge-soft);background:var(--in);display:grid;place-items:center;color:var(--c-hl);margin-bottom:6px}
+.points h3{font-size:20px}
+.points p{color:var(--c-muted);font-size:var(--fs-small)}
+/* .switcher + .wsp: workspace switcher demo. Panels share one grid cell and swap by opacity/visibility (no layout shift). */
+.frame .fbody.split{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:start}
+.switcher{list-style:none;display:flex;flex-direction:column;gap:6px}
+.switcher li{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px;border:1px solid var(--c-edge-soft);border-radius:10px;background:var(--in);font-size:14px;color:var(--c-muted);transition:color var(--t),border-color var(--t),background var(--t)}
+.switcher li::before{content:"";width:8px;height:8px;border-radius:50%;border:1px solid var(--c-edge-hi);flex:none;transition:background var(--t),border-color var(--t)}
+.switcher li.cur{color:var(--c-ivory);background:var(--in-2);border-color:var(--c-edge-hi)}
+.switcher li.cur::before{background:var(--c-hl);border-color:var(--c-hl)}
+.wsp{display:grid}
+.wsp>.ws{grid-area:1/1;display:flex;flex-direction:column;gap:14px;opacity:0;visibility:hidden;transition:opacity var(--t-swap) var(--ease),visibility 0s linear var(--t-swap)}
+.wsp>.ws.on{opacity:1;visibility:visible;transition:opacity var(--t-swap) var(--ease)}
+.ws .grp{display:flex;flex-direction:column;gap:8px}
+.ws .chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{transition:border-color var(--t),background var(--t)}
+.chip.use{border-color:var(--c-hl);background:var(--in-2)}
+.chip .dot{width:8px;height:8px;border-radius:2px;background:var(--c-muted);flex:none}
+@media (max-width:1100px){.points{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 24px}}
+@media (max-width:900px){.frame .fbody.split{grid-template-columns:1fr}}
+@media (max-width:600px){.points{grid-template-columns:1fr}}
+
+/* ================= v1.2 (2026-11-17): feature-page demo bodies. Tokens only, no new colours. ================= */
+.phero .eyebrow{font:500 var(--fs-label)/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:var(--ls-label);color:var(--c-hl);margin-bottom:16px}
+.phero.cw h1{max-width:18ch}
+/* rows may wrap on phones instead of overflowing; status badge never shrinks */
+.rules li{gap:10px;height:auto;min-height:36px;padding-block:6px}
+.rules .st{flex:none;white-space:nowrap}
+.rules li .ic,.rules li .lg{width:14px;height:14px;flex:none;vertical-align:-2px}
+.rules li>span:first-child:not(.st){display:inline-flex;align-items:center;gap:8px}
+/* .st with two labels (.a before, .b after): fixed width so the swap never moves anything */
+.st .b{display:none}.ask .st .a{display:none}.ask .st .b{display:inline-flex;gap:5px;align-items:center}
+.st:has(.a){min-width:96px;justify-content:center}
+.fbody .label{display:block;margin-bottom:10px}
+.frame .fbody.one{grid-template-columns:minmax(0,1fr);align-items:start}
+/* approval pop-up mock (uses --sheet, the approval-card token) */
+.pop{background:var(--sheet);border:1px solid var(--c-edge-hi);border-radius:var(--r-md);padding:18px;display:flex;flex-direction:column;gap:12px;max-width:520px}
+.pop .q{font-size:18px;font-weight:500;color:var(--c-ivory)}
+.pop .acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mb{height:32px;padding:0 14px;border-radius:999px;border:1px solid var(--c-edge-hi);display:inline-flex;align-items:center;font-size:13px;transition:transform var(--t-fast) var(--ease),background var(--t-fast)}
+.mb.pri{background:var(--c-ivory);color:var(--c-ink);border-color:var(--c-ivory)}
+.mb.press{transform:scale(.95)}
+.pop .badge{opacity:0;transition:opacity var(--t)}
+.pop.ok .badge{opacity:1}
+.pop.mini{padding:14px;gap:10px}.pop.mini .q{font-size:15px}
+.rules.log time{font:400 11px var(--font-mono);color:var(--c-muted);margin-right:10px}
+/* Agent Builder brief + agent card */
+.term{display:flex;flex-direction:column;gap:10px}
+.term .msg{background:var(--in-2);border:1px solid var(--c-edge);border-radius:var(--r-sm) var(--r-sm) 4px var(--r-sm);padding:12px 14px;font-size:14px;line-height:1.5}
+.term .sys{font:400 12px/1.4 var(--font-mono);color:var(--c-muted);display:flex;align-items:center;gap:8px}
+.sys .d{display:none}.sys.done .w,.sys.done .dots3{display:none}.sys.done .d{display:inline;color:var(--c-hl)}
+.dots3{display:inline-flex;gap:3px}.dots3 i{width:4px;height:4px;border-radius:50%;background:var(--c-muted)}
+.anim .dots3 i{animation:dot 1s var(--ease) infinite}.anim .dots3 i:nth-child(2){animation-delay:.15s}.anim .dots3 i:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{opacity:.25}}
+.acard{display:flex;flex-direction:column;gap:10px}
+.acard .ahead{display:flex;justify-content:space-between;align-items:center;min-height:22px}
+.acard .ahead .label{margin:0}
+.acard .aname{font-size:18px;font-weight:500}
+/* Connections window */
+.conn,.access{display:flex;flex-direction:column;gap:10px}
+.search{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--c-edge);border-radius:10px;background:var(--in-2);font:400 13px var(--font-mono)}
+.search .ic{width:14px;height:14px;color:var(--c-muted)}
+.search>span{grid-area:1/2}
+.search .ph{color:var(--c-muted);transition:opacity var(--t-fast)}.search .ph.gone{opacity:0}
+.access .rules li{flex-wrap:wrap;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--c-edge);border-radius:6px;overflow:hidden;flex:none;font:500 10px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
+.seg span{padding:6px 8px;color:var(--c-muted);transition:background var(--t),color var(--t)}
+.seg span.cur{background:var(--c-hl);color:var(--c-on-hl)}
+.chips.start{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+/* Security diagram (no lock or shield icons by brief) */
+.frame .fbody.dia{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start}
+.dia .col{display:flex;flex-direction:column;gap:10px}
+.node{display:flex;align-items:center;gap:10px;border:1px solid var(--c-edge-soft);background:var(--in);border-radius:10px;padding:9px 12px;font-size:13px}
+.node>.ic{width:16px;height:16px;flex:none;color:var(--c-hl)}
+.node b{display:block;font-weight:500}.node small{display:block;color:var(--c-muted);font:400 11px/1.4 var(--font-mono)}
+.node.mine{border-color:var(--c-hl);background:var(--in-2)}
+.node.dim{border-style:dashed}.node.dim>.ic{color:var(--c-muted)}
+.srv{border:1px solid var(--c-edge);border-radius:var(--r-sm);padding:12px;display:flex;flex-direction:column;gap:10px}
+.srv .shead{display:flex;gap:10px;align-items:center;font-size:13px}.srv .shead .ic{width:16px;height:16px;color:var(--c-hl)}
+.srv .shead b{display:block;font-weight:500}.srv .shead small{display:block;color:var(--c-muted);font:400 11px var(--font-mono)}
+.srv .boxes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* text links under split sections and inside cards (>= 24 px targets) */
+.sec-head .more,.card .links .more{display:inline-flex;align-items:center;gap:8px;min-height:32px;margin-top:14px;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-ivory);text-underline-offset:4px}
+.sec-head .more:hover,.card .links .more:hover{text-decoration:underline}
+.card .links{list-style:none;display:flex;flex-direction:column;margin-top:6px}
+.card .links .more{margin-top:0}
+.sec-head .lede+.lede{margin-top:14px}
+@media (max-width:900px){.frame .fbody.dia{grid-template-columns:1fr}}
+@media (max-width:420px){.srv .boxes{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.dots3 i{animation:none!important}}
+/* v1.2 CLS fix: `ch` is 0.67em in Instrument Sans but 0.57em in the Arial fallback, so ch widths re-wrap on font swap
+   (measured CLS 0.16 on /client-workspaces at 1440). Same widths, in em, which don't change with the font. */
+.lede{max-width:37.3em}
+.phero h1{max-width:10.75em}
+.phero.cw h1{max-width:12.1em}
+
+/* v1.2 QA: icon rows keep the label left; the status sits right; neutral logo stand-in is visible */
+.rules li{justify-content:flex-start}
+.rules li>.st,.rules li>.seg{margin-left:auto}
+.rules li>.dot{width:14px;height:14px;border-radius:4px;background:var(--c-edge-hi);flex:none}
+.access .rules li{justify-content:flex-start}
+
+/* v1.3 (2026-11-17, Jan's review): split .sec-head rows are top-aligned (was align-items:end, so the two columns
+   started and ended at different heights). The right column drops by the label's line + its 18 px gap, so the
+   lede's first line starts level with the H2's first line. Text-only rows are section.sec.sec-text: 3/4 of the
+   section padding, and two text rows in a row share one gap. Replaces the inline style="margin-bottom:0". */
+.sec-head:not(.center)>:nth-child(2){padding-top:calc(var(--fs-label)*1.2 + 18px)}
+.sec-text{padding-block:calc(var(--section-y)*.75)}
+.sec-text .sec-head{margin-bottom:0}
+.sec-text+.sec-text{padding-top:0}
+@media (max-width:900px){.sec-head:not(.center)>:nth-child(2){padding-top:0}}
+
+/* v1.4 CLS fix (legal round 2): the remaining ch widths, in em (1ch = 0.666em in Instrument Sans).
+   --measure moved to em in tokens.css; the prose column was 689 px on Arial and 815 px on Instrument Sans (CLS 0.105 on /privacy at 1440). */
+.phero.article h1{max-width:14.65em}
+.post p{max-width:42.6em}
+.fcols .tagline{max-width:17.3em}
