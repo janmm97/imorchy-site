@@ -310,7 +310,24 @@ for (const { from, to } of REDIRECTS) {
   const next = await get(to);
   assert.equal(next.status, 200, `${to} answers 200, no second hop`);
 }
-ok("http:// and www. answer 301 with Location kept, then 200 on https://imorchy.dev; HSTS only on the https answers");
+ok("http:// and www. answer 301 with Location kept, then 200 on https://imorchy.dev; HSTS only on the https answers; /local and /claude-code-orchestrator (any spelling) 301 home");
+
+// ── the early-access CTA hop (PRD v4): 302 to the app, `from` passed on only when it's a plain section name ──
+for (const [query, want] of [
+  ["?from=hero", "https://app.imorchy.dev/?from=hero"],
+  ["?from=final-cta&x=1", "https://app.imorchy.dev/?from=final-cta"],
+  ["", "https://app.imorchy.dev/"],
+  ["?from=" + encodeURIComponent("https://evil.example/"), "https://app.imorchy.dev/"],
+  ["?from=" + "a".repeat(41), "https://app.imorchy.dev/"],
+]) {
+  const res = await get("https://imorchy.dev/go/early-access" + query);
+  assert.equal(res.status, 302, query);
+  assert.equal(res.headers.get("Location"), want, query);
+  assert.equal(res.headers.get("Cache-Control"), "no-store", query);
+  assert.equal(res.headers.get("Strict-Transport-Security"), "max-age=31536000", query);
+}
+assert.match(read("robots.txt"), /^Disallow: \/go\/$/m, "robots.txt keeps crawlers off /go/");
+ok("/go/early-access answers 302 to the app with a validated from=, never cached; robots.txt disallows /go/");
 
 // ── the calls to action on /: outbound, new tab, noopener, on their host ──
 const home = read("index.html");

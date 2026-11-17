@@ -283,7 +283,7 @@ export function generatedProblems(html) {
  * Columns are data: a new group is one more row.
  */
 export const FOOTER_COLUMNS = [
-  { heading: "Product", links: [["Approvals", "/approvals"], ["Client workspaces", "/client-workspaces"], ["Claude Code orchestrator", "/claude-code-orchestrator"], ["Local command center", "/local"]] },
+  { heading: "Product", links: [["Approvals", "/approvals"], ["Client workspaces", "/client-workspaces"]] },
   { heading: "Resources", links: [["Blog", "/blog"], ["Changelog", "/changelog"], ["RSS feed", "/feed.xml"]] },
   { heading: "Legal", links: [["Privacy", "/privacy"], ["Terms", "/terms"], ["Security", "/security"], ["Data Privacy", "/data-privacy"]] },
   {

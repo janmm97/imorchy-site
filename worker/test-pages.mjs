@@ -57,7 +57,7 @@ ok("no offers in structured data, no GitHub links and no open-licence claim on a
 
 // ── the answer pages: plain HTML with no scripts but JSON-LD, one H1, a unique title, a self-canonical at the
 // extensionless path Cloudflare serves, the shared og image, links home and to the form, in the sitemap, linked from home ──
-const ANSWER = ["approvals", "client-workspaces", "claude-code-orchestrator", "local"];
+const ANSWER = ["approvals", "client-workspaces"];
 const home = fs.readFileSync(SITE + "index.html", "utf8");
 const sitemap = fs.readFileSync(SITE + "sitemap.xml", "utf8");
 const head = (html, re) => html.match(re)?.[1];
@@ -94,11 +94,9 @@ for (const slug of ANSWER) {
 }
 const approvals = visibleText(fs.readFileSync(SITE + "approvals.html", "utf8"));
 assert.equal(approvals.match(/human-in-the-loop/g)?.length, 1, "/approvals says human-in-the-loop once");
-assert.equal(
-  head(fs.readFileSync(SITE + "claude-code-orchestrator.html", "utf8"), /<title>([^<]+)<\/title>/),
-  "Claude Code orchestrator for Codex and Cursor | Orchy AI",
-);
-assert.ok(pages.length >= 5, "home plus the four answer pages are checked");
+// v4 retires /local and /claude-code-orchestrator: the Worker 301s them home (test-urls.mjs), so no file ships.
+for (const gone of ["local", "claude-code-orchestrator"]) assert.ok(!pages.includes(`${gone}.html`), `${gone}.html is retired`);
+assert.ok(pages.length >= 3, "home plus the answer pages are checked");
 ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts, in the sitemap, linked from home");
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
@@ -141,7 +139,7 @@ ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab 
 
 // ── one footer (Jan, 2026-11-03): every shipped page has build.mjs's shared footer, the same on all of them except
 // the back link and aria-current, and every site link in it resolves to a page in the sitemap or a built file ──
-const SHIPPED = ["index", "approvals", "local", "client-workspaces", "claude-code-orchestrator", "changelog", ...Object.keys(LEGAL)];
+const SHIPPED = ["index", "approvals", "client-workspaces", "changelog", ...Object.keys(LEGAL)];
 for (const slug of SHIPPED) assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
 const pathOf = (page) => (page === "index.html" ? "/" : "/" + page.replace(/\.html$/, ""));
 const locs = [...fs.readFileSync(SITE + "sitemap.xml", "utf8").matchAll(/<loc>https:\/\/imorchy\.dev([^<]*)<\/loc>/g)].map((m) => m[1]);

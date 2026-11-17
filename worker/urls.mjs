@@ -21,8 +21,6 @@ export const PAGES = [
   },
   { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>AI agents that ask before they act</h1>"] },
   { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>Separate AI agents and logins for every client</h1>"] },
-  { path: "/claude-code-orchestrator", type: "text/html", profile: "page", markers: ["<h1>Run Claude Code, Codex and Cursor as one team</h1>"] },
-  { path: "/local", type: "text/html", profile: "page", markers: ["<h1>A command center for AI agents on your own computer</h1>"] },
   { path: "/robots.txt", type: "text/plain", markers: ["Sitemap: https://imorchy.dev/sitemap.xml"] },
   { path: "/sitemap.xml", type: "application/xml", markers: ["<urlset"] },
   // The legal pages and security.txt (RFC 9116): direct 200, no redirect.
@@ -41,6 +39,13 @@ export const REDIRECTS = [
   { from: "http://www.imorchy.dev/approvals?ref=x", to: "https://imorchy.dev/approvals?ref=x" },
   { from: "https://www.imorchy.dev/approvals?ref=x", to: "https://imorchy.dev/approvals?ref=x" },
   { from: "https://www.imorchy.dev/", to: "https://imorchy.dev/" },
+  // v4 retires these pages (Ruby's redirect map, L2): every spelling goes straight home, query dropped.
+  { from: "https://imorchy.dev/local", to: "https://imorchy.dev/" },
+  { from: "https://imorchy.dev/local.html", to: "https://imorchy.dev/" },
+  { from: "https://imorchy.dev/local/", to: "https://imorchy.dev/" },
+  { from: "https://imorchy.dev/claude-code-orchestrator", to: "https://imorchy.dev/" },
+  { from: "https://imorchy.dev/claude-code-orchestrator.html?x=1", to: "https://imorchy.dev/" },
+  { from: "https://imorchy.dev/claude-code-orchestrator/", to: "https://imorchy.dev/" },
 ];
 
 /**
