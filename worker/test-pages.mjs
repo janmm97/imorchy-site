@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { build, fileFor, footer, FOOTER_COLUMNS } from "../build.mjs";
+import { build, fileFor, footer, FOOTER_COLUMNS, header, FEATURES, SHELL_SCRIPTS, STYLE_LINKS } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
@@ -18,7 +18,8 @@ const squash = (s) => s.replace(/\s+/g, " ").trim();
 /** The text a reader sees: no scripts, styles or tags, entities decoded, whitespace collapsed. */
 export function visibleText(html) {
   const body = html.replace(/<(script|style|template)\b[\s\S]*?<\/\1>/gi, " ").replace(/<!--[\s\S]*?-->/g, " ");
-  return squash(decode(body.replace(/<[^>]+>/g, " ")));
+  // Inline tags join their text ("Email <a>x</a>." reads "Email x."); every other tag breaks words.
+  return squash(decode(body.replace(/<\/?(a|span|strong|em|b|i|code)\b[^>]*>/gi, "").replace(/<[^>]+>/g, " ")));
 }
 
 /** Every schema.org node in the page's JSON-LD blocks, @graph flattened. */
@@ -57,7 +58,9 @@ ok("no offers in structured data, no GitHub links and no open-licence claim on a
 
 // ── the answer pages: plain HTML with no scripts but JSON-LD, one H1, a unique title, a self-canonical at the
 // extensionless path Cloudflare serves, the shared og image, links home and to the form, in the sitemap, linked from home ──
-const ANSWER = ["approvals", "client-workspaces", "claude-code-orchestrator", "local"];
+// v4 (2026-11-18): the five feature pages. agents and apps are new; security moved from the legal set to here.
+const ANSWER = ["approvals", "client-workspaces", "agents", "apps", "security"];
+const LINKED_FROM_HOME = ["approvals", "client-workspaces"]; // agents and apps join the nav with the v4 shell
 const home = fs.readFileSync(SITE + "index.html", "utf8");
 const sitemap = fs.readFileSync(SITE + "sitemap.xml", "utf8");
 const head = (html, re) => html.match(re)?.[1];
@@ -74,7 +77,8 @@ const contentPage = (slug) => {
   assert.ok(html.includes(`<meta property="og:url" content="${url}" />`), `${slug}: og:url`);
   assert.ok(html.includes('<meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />'), `${slug}: og:image`);
   const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map((m) => m[0]);
-  assert.ok(scripts.every((s) => s === '<script type="application/ld+json">'), `${slug}: no scripts but JSON-LD`);
+  const allowed = ['<script type="application/ld+json">', ...SHELL_SCRIPTS.map((t) => t.replace("</script>", ""))];
+  assert.ok(scripts.every((s) => allowed.includes(s)), `${slug}: no scripts but JSON-LD and the shell's (nav, beacon)`);
   const title = head(html, /<title>([^<]+)<\/title>/);
   const description = head(html, /name="description" content="([^"]+)"/);
   assert.ok(title && !titles.has(title), `${slug}: unique title`);
@@ -89,22 +93,27 @@ for (const slug of ANSWER) {
   assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), `${slug}: FAQPage JSON-LD`);
   assert.ok(!/<canvas|importmap|three\.module/i.test(html), `${slug}: no canvas or Three.js`);
   assert.ok(html.includes('href="/"'), `${slug}: links home`);
-  assert.ok(html.includes('href="https://app.imorchy.dev"') && !html.includes("notion.site"), `${slug}: Get Started links to the app, no Notion form`);
-  assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
+  const ctas = [...html.matchAll(/href="\/go\/early-access\?from=([a-z0-9-]+)"/g)].map((m) => m[1]);
+  assert.ok(ctas.includes(`${slug}-hero`) && ctas.includes(`${slug}-final`), `${slug}: hero and final CTAs go through /go/early-access`);
+  assert.ok(!html.includes("app.imorchy.dev") && !html.includes("notion.site"), `${slug}: no direct app link, no Notion form`);
+  assert.ok(/<div class="scene" data-scene id="demo-[a-z-]+">/.test(html), `${slug}: the demo frame has a stable id`);
+  assert.doesNotMatch(html.match(/<main\b[\s\S]*<\/main>/)[0], /\b(Facebook|Instagram|Shopify)\b/,`${slug}: no Facebook, Instagram or Shopify in the page body`);
+  if (LINKED_FROM_HOME.includes(slug)) assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
 }
-const approvals = visibleText(fs.readFileSync(SITE + "approvals.html", "utf8"));
-assert.equal(approvals.match(/human-in-the-loop/g)?.length, 1, "/approvals says human-in-the-loop once");
-assert.equal(
-  head(fs.readFileSync(SITE + "claude-code-orchestrator.html", "utf8"), /<title>([^<]+)<\/title>/),
-  "Claude Code orchestrator for Codex and Cursor | Orchy AI",
-);
-assert.ok(pages.length >= 5, "home plus the four answer pages are checked");
-ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts, in the sitemap, linked from home");
+// v4 copy: "human-in-the-loop" is in the approved meta description (Ruby), not in the body text.
+assert.match(fs.readFileSync(SITE + "approvals.html", "utf8"), /name="description" content="Human-in-the-loop by default/, "/approvals meta says human-in-the-loop");
+assert.ok(fs.readFileSync(SITE + "apps.html", "utf8").includes("Inbox agent · Gmail<span"), "/apps: the last Inbox agent row names Gmail");
+assert.ok(fs.readFileSync(SITE + "security.html", "utf8").includes('href="/.well-known/security.txt"'), "/security links security.txt");
+// v4 retires /local and /claude-code-orchestrator: the Worker 301s them home (test-urls.mjs), so no file ships.
+for (const gone of ["local", "claude-code-orchestrator"]) assert.ok(!pages.includes(`${gone}.html`), `${gone}.html is retired`);
+assert.ok(pages.length >= 3, "home plus the answer pages are checked");
+ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts but the shell's, in the sitemap, linked from home");
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
 // markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
-// (2026-11-11) v2 texts add the DPA at /dpa: linked from Data Privacy, not a footer link (the Legal column stays four).
-const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", security: "Security", "data-privacy": "Data Privacy: DPA and sub-processors", dpa: "Data Processing Agreement (DPA)" };
+// (2026-11-11) v2 texts add the DPA at /dpa, linked from Data Privacy. (2026-11-18, v4 kit footer) Legal is Privacy · Terms;
+// Security, Data privacy and DPA sit in the Security column. /security is a v4 feature page now (lane B), tested with them.
+const LEGAL = { privacy: "Privacy Policy", terms: "Terms of Use", "data-privacy": "Data Privacy: DPA and sub-processors", dpa: "Data Processing Agreement (DPA)" };
 for (const [slug, h1] of Object.entries(LEGAL)) {
   const html = contentPage(slug);
   assert.ok(html.includes(`<h1>${h1}</h1>`), `${slug}: the H1 is "${h1}"`);
@@ -115,12 +124,27 @@ for (const [slug, h1] of Object.entries(LEGAL)) {
   const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
   levels.forEach((l, i) => i && assert.ok(l <= levels[i - 1] + 1, `${slug}: heading h${l} skips a level after h${levels[i - 1]}`));
   const tables = html.match(/<table\b/g)?.length ?? 0;
-  const boxed = html.match(/<div class="table-scroll" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
-  assert.equal(boxed, tables, `${slug}: every table sits in a labelled .table-scroll box`);
+  const boxed = html.match(/<div class="(?:table-scroll|tbl)" role="region" tabindex="0" aria-label="Table: [^"]+"><table>/g)?.length ?? 0;
+  assert.equal(boxed, tables, `${slug}: every table sits in a labelled scroll box`);
   if (slug === "privacy") assert.equal(tables, 3, "privacy.html has its three tables");
-  if (slug !== "dpa") assert.ok(FOOTER_COLUMNS.some((c) => c.heading === "Legal" && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal group`);
+  if (slug !== "security") {
+    // v4 legal (changes.md v6): Version 3.0, a "What changed" box, and no call, booking or desktop-app text outside it
+    assert.match(html, /Last updated: \d{1,2} [A-Z][a-z]+ 2026 · Version 3\.0/, `${slug}: Version 3.0 header line`);
+    const box = html.match(/<aside class="changed"[\s\S]*?<\/aside>/)?.[0];
+    assert.ok(box?.includes("What changed in Version 3.0"), `${slug}: "What changed" box`);
+    const rest = visibleText(html.replace(box, ""));
+    assert.doesNotMatch(rest, /access call|booking|Calendly|Granola|Google Meet|setup call|transcript|call audio|desktop app/i, `${slug}: no call, booking or desktop-app text outside the box (X-check)`);
+    assert.doesNotMatch(rest, /\bMIT\b/, `${slug}: no MIT licence text`);
+    // changes v7 addendum (2026-11-18): at most 3 bullets in the box, no OVH city (Jan never confirmed one)
+    assert.ok((box.match(/<li>/g)?.length ?? 0) <= 3, `${slug}: "What changed" box has at most 3 bullets`);
+    assert.doesNotMatch(html, /Beauharnois/, `${slug}: no OVH city`);
+    if (slug === "data-privacy") assert.ok(html.includes(`Last updated: ${html.match(/Last updated: (\d{1,2} [A-Z][a-z]+ 2026) · Version/)[1]}.</p>`), "data-privacy: the sub-processor date equals the header date");
+    if (slug === "terms") assert.doesNotMatch(html.match(/<h2 id="s17">[\s\S]*?<\/p>/)[0], /the app,/, "terms: §17 no longer says \"the app,\"");
+  }
+  assert.ok(FOOTER_COLUMNS.some((c) => ["Legal", "Security"].includes(c.heading) && c.links.some(([, h]) => h === `/${slug}`)), `${slug}: in the footer's Legal or Security group`);
 }
-assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Legal").links.map(([t]) => t), ["Privacy", "Terms", "Security", "Data Privacy"], "the footer's Legal column is exactly Privacy · Terms · Security · Data Privacy");
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Legal").links.map(([t]) => t), ["Privacy", "Terms"], "the footer's Legal column is exactly Privacy · Terms");
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Security").links.map(([t]) => t), ["Security", "Data privacy", "DPA"], "the footer's Security column is exactly Security · Data privacy · DPA");
 assert.ok(fs.readFileSync(SITE + "data-privacy.html", "utf8").includes('<a href="/dpa">'), "Data Privacy links the DPA at /dpa");
 ok(`legal pages: ${Object.keys(LEGAL).length} pages, one H1 each, indexable, no scripts or placeholders, tables in scroll boxes, in the sitemap and the footer`);
 
@@ -141,7 +165,7 @@ ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab 
 
 // ── one footer (Jan, 2026-11-03): every shipped page has build.mjs's shared footer, the same on all of them except
 // the back link and aria-current, and every site link in it resolves to a page in the sitemap or a built file ──
-const SHIPPED = ["index", "approvals", "local", "client-workspaces", "claude-code-orchestrator", "changelog", ...Object.keys(LEGAL)];
+const SHIPPED = ["index", ...ANSWER, "changelog", ...Object.keys(LEGAL)];
 for (const slug of SHIPPED) assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
 const pathOf = (page) => (page === "index.html" ? "/" : "/" + page.replace(/\.html$/, ""));
 const locs = [...fs.readFileSync(SITE + "sitemap.xml", "utf8").matchAll(/<loc>https:\/\/imorchy\.dev([^<]*)<\/loc>/g)].map((m) => m[1]);
@@ -152,30 +176,52 @@ for (const page of pages) {
   const footers = html.match(/<footer\b[\s\S]*?<\/footer>/gi) || [];
   assert.equal(footers.length, 1, `${page}: exactly one footer`);
   assert.equal(footers[0], footer(pathOf(page)).trim(), `${page}: footer is build.mjs's shared one (run node build.mjs)`);
-  const nav = footers[0].match(/<nav class="footer-nav" aria-label="Footer">([\s\S]*?)<\/nav>/)?.[1] ?? "";
-  for (const [, href] of nav.matchAll(/<a href="([^"]+)"/g)) {
-    if (/^https:\/\//.test(href)) continue;
-    assert.match(href, /^\/[a-z0-9./-]*$/, `${page}: footer link ${href} is a site path`);
-    assert.ok(fs.existsSync(SITE + fileFor(href)) && (locs.includes(href) || built.has(fileFor(href))), `${page}: footer link ${href} resolves to a built page`);
+  const nav = footers[0];
+  for (const [, link] of nav.matchAll(/<a href="([^"]+)"/g)) {
+    if (/^https:\/\//.test(link)) continue;
+    const href = link.split("#")[0] || "/"; // /#how and /#use-cases are sections of the home page
+    assert.match(href, /^\/[a-z0-9./-]*$/, `${page}: footer link ${link} is a site path`);
+    assert.ok(fs.existsSync(SITE + fileFor(href)) && (locs.includes(href) || built.has(fileFor(href))), `${page}: footer link ${link} resolves to a built page`);
   }
   const current = [...nav.matchAll(/<a href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
-  // A page that isn't a footer link (/dpa, reached from Data Privacy) has no aria-current.
+  // Every page but home is a footer link, so it marks itself; home's links are #sections, not "/".
   const linked = FOOTER_COLUMNS.some((c) => c.links.some(([, h]) => h === pathOf(page)));
-  assert.deepEqual(current, pathOf(page) !== "/" && linked ? [pathOf(page)] : [], `${page}: aria-current marks this page only`);
-  same.add(footers[0].replace(/ aria-current="page"/g, "").replace(/href="(#top|\/)"/g, 'href="BACK"').replace(/aria-label="(Back to top|Orchy AI home)"|>Back to (the Top|Home)</g, "X"));
+  assert.deepEqual(current, linked ? [pathOf(page)] : [], `${page}: aria-current marks this page only`);
+  same.add(footers[0].replace(/ aria-current="page"/g, ""));
 }
-assert.equal(same.size, 1, "every page has the identical footer, apart from its back link and aria-current");
+assert.equal(same.size, 1, "every page has the identical footer, apart from aria-current");
+assert.ok(footer("/").includes('<footer class="site" id="site-footer">'), "the footer is the kit's footer.site, the no-JS Menu target");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Changelog" && h === "/changelog"), "the footer links /changelog");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Blog" && h === "/blog"), "the footer links /blog");
-// Orchy's social accounts, in this order (Jan, 2026-11-04). The home page's Organization sameAs names the same four.
+// Orchy's social accounts, in this order (Jan, 2026-11-18: Facebook, X, Instagram, YouTube). The home page's Organization sameAs names the same four.
 const SOCIAL = [
   ["Facebook", "https://www.facebook.com/OrchyAI/"],
-  ["Instagram", "https://www.instagram.com/orchyai/"],
   ["X", "https://x.com/OrchyAI"],
+  ["Instagram", "https://www.instagram.com/orchyai/"],
   ["YouTube", "https://www.youtube.com/@orchy-ai"],
 ];
-assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Follow")?.links, SOCIAL, "the footer's Follow column links Facebook, Instagram, X and YouTube, in that order");
+assert.deepEqual(FOOTER_COLUMNS.find((c) => c.heading === "Follow")?.links, SOCIAL, "the footer's Follow column links Facebook, X, Instagram and YouTube, in that order");
 for (const [, url] of SOCIAL) assert.ok(footer("/").includes(`<a href="${url}" target="_blank" rel="noopener noreferrer">`), `footer opens ${url} in a new tab, safely`);
+
+// ── one header (v4 shell, 2026-11-18): every shipped page has build.mjs's kit header and both kit stylesheets
+// before styles.css; aria-current marks only the page's own link; the Features menu is the five approved items;
+// without JS the nav still works (kit option a: Features → /#features, Menu → the footer) ──
+assert.deepEqual(FEATURES.map(([n]) => n), ["Client workspaces", "Approvals", "Agents & Agent Builder", "Apps (One)", "Security"], "Features menu: the five approved items, in order");
+for (const page of pages) {
+  const html = fs.readFileSync(SITE + page, "utf8");
+  const headers = html.match(/<header class="nav"[\s\S]*?<\/header>/g) || [];
+  assert.equal(headers.length, 1, `${page}: exactly one site header`);
+  assert.equal(headers[0], header(pathOf(page)).trim(), `${page}: header is build.mjs's shared one (run node build.mjs)`);
+  assert.doesNotMatch(headers[0], /Teams|huddle/i, `${page}: no Teams & huddles in the nav`);
+  const current = [...headers[0].matchAll(/<a [^>]*href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
+  assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
+  for (const fallback of ['href="/#features"', 'href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
+  const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
+  // v4 pages are kit-only; a v3 page still links /styles.css, after the kit.
+  assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css (before /styles.css, if any)`);
+  for (const tag of SHELL_SCRIPTS) assert.equal(html.split(tag).length - 1, 1, `${page}: ${tag.slice(0, 40)}… exactly once (in the header)`);
+}
+ok(`one header: all ${pages.length} pages share build.mjs's kit header, five Features items, no-JS fallbacks, kit stylesheets`);
 const org = [...fs.readFileSync(SITE + "index.html", "utf8").matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
   .flatMap((m) => [JSON.parse(m[1])]).flatMap((j) => j["@graph"] ?? [j]).find((n) => n["@type"] === "Organization");
 assert.deepEqual([...(org?.sameAs ?? [])].sort(), SOCIAL.map(([, u]) => u).sort(), "index.html's Organization sameAs lists the four social accounts");

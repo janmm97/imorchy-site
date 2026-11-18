@@ -10,13 +10,16 @@
 // old live playground. Videos aren't uploaded: the Worker serves them from the R2 bucket bound as MEDIA.
 //
 //   node deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]
+//   node deploy.mjs --preview [--dry-run]   (CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID; the Deploy preview workflow)
+// --preview only ever writes the Worker imorchy-site-preview on workers.dev: no zone, DNS or custom-domain calls, a
+// PREVIEW binding so every answer says noindex, and it refuses a domain or any other --name.
 import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { MEDIA_BUCKET, siteFiles } from "./worker/files.mjs";
+import { MEDIA_BUCKET, siteFiles, withBeacon } from "./worker/files.mjs";
 import { RUN_WORKER_FIRST } from "./worker/routes.mjs";
 
 const SITE = fileURLToPath(new URL(".", import.meta.url));
@@ -40,14 +43,26 @@ const opt = (name) => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const domain = args.find((a, i) => !a.startsWith("--") && args[i - 1] !== "--name");
-const name = opt("--name") || "orchy-site";
+const preview = flag("--preview");
+const PREVIEW_NAME = "imorchy-site-preview";
+const name = preview ? PREVIEW_NAME : opt("--name") || "orchy-site";
 const dryRun = flag("--dry-run");
-const hosts = flag("--no-www") ? [domain] : [domain, `www.${domain}`];
+const hosts = preview ? [] : flag("--no-www") ? [domain] : [domain, `www.${domain}`];
 if (flag("--file")) {
   console.error("--file is gone: videos are served from the R2 bucket, never uploaded. See README.md.");
   process.exit(1);
 }
-if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
+if (preview) {
+  // The preview token can write any Worker in the account, so this mode must never point at production.
+  if (domain || (opt("--name") && opt("--name") !== PREVIEW_NAME)) {
+    console.error(`--preview deploys only the Worker ${PREVIEW_NAME} on workers.dev: no domain, no other --name.`);
+    process.exit(1);
+  }
+  if (!process.env.CLOUDFLARE_API_TOKEN?.trim() || !/^[0-9a-f]{32}$/.test(process.env.CLOUDFLARE_ACCOUNT_ID || "")) {
+    console.error("--preview needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.");
+    process.exit(1);
+  }
+} else if (!domain || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
   console.error("Usage: node deploy.mjs <domain> [--dry-run] [--name orchy-site] [--no-www]");
   process.exit(1);
 }
@@ -107,6 +122,10 @@ async function cf(action, method, apiPath, { query, json, form, headers = {} } =
 }
 
 const files = siteFiles(SITE);
+// The analytics token comes from the CF_BEACON_TOKEN secret, never from git; without it the pages go up with no beacon.
+const beacon = process.env.CF_BEACON_TOKEN?.trim();
+if (!beacon && !preview) console.log("::warning title=No analytics::CF_BEACON_TOKEN is not set, so the pages deploy without Cloudflare Web Analytics.");
+for (const f of files) if (f.rel.endsWith(".html")) f.data = Buffer.from(withBeacon(f.data.toString("utf8"), beacon));
 const tooBig = files.filter((f) => f.data.length > MAX_FILE);
 if (tooBig.length) {
   for (const f of tooBig) console.error(`${f.rel} is ${(f.data.length / 1048576).toFixed(1)} MB; Cloudflare takes 25 MiB per file. Make it smaller, or serve it from R2 like the video (IN_R2 in worker/files.mjs).`);
@@ -120,11 +139,16 @@ for (const f of files) {
   byHash.set(f.hash, f);
 }
 
-const [zone] = await cf("zones", "GET", "/zones", { query: { name: domain.split(".").slice(-2).join(".") } });
-if (!zone) throw new Error(`${domain} isn't a zone in this Cloudflare account.`);
-const account = zone.account.id;
-const records = await cf("dns", "GET", `/zones/${zone.id}/dns_records`, { query: { per_page: "500" } });
-const attached = await cf("domains", "GET", `/accounts/${account}/workers/domains`);
+// The preview token has no zone rights: its account comes from CLOUDFLARE_ACCOUNT_ID and it touches no domain.
+let zone, account, records = [], attached = [];
+if (preview) account = process.env.CLOUDFLARE_ACCOUNT_ID;
+else {
+  [zone] = await cf("zones", "GET", "/zones", { query: { name: domain.split(".").slice(-2).join(".") } });
+  if (!zone) throw new Error(`${domain} isn't a zone in this Cloudflare account.`);
+  account = zone.account.id;
+  records = await cf("dns", "GET", `/zones/${zone.id}/dns_records`, { query: { per_page: "500" } });
+  attached = await cf("domains", "GET", `/accounts/${account}/workers/domains`);
+}
 
 console.log(`Worker:  ${name}`);
 console.log(`Domains: ${hosts.join(", ")}`);
@@ -201,6 +225,8 @@ worker.append(
         bindings: [
           { type: "assets", name: "ASSETS" },
           { type: "r2_bucket", name: "MEDIA", bucket_name: MEDIA_BUCKET },
+          // main.mjs adds X-Robots-Tag: noindex, nofollow to every answer, so the preview never competes with imorchy.dev.
+          ...(preview ? [{ type: "plain_text", name: "PREVIEW", text: "1" }] : []),
         ],
         // Workers Logs: the Worker's console lines, kept by Cloudflare for a few days.
         observability: { enabled: true, head_sampling_rate: 1 },
@@ -222,4 +248,8 @@ for (const host of hosts) {
   });
   console.log(`Attached ${host}.`);
 }
-console.log(`\nLive: ${hosts.map((h) => `https://${h}`).join("  ")}`);
+if (preview) {
+  // 4. The preview's only address: <name>.<account subdomain>.workers.dev (no per-version preview URLs).
+  await cf("subdomain", "POST", `/accounts/${account}/workers/scripts/${name}/subdomain`, { json: { enabled: true, previews_enabled: false } });
+  console.log(`\nLive: https://${name}.<account>.workers.dev (workers.dev on)`);
+} else console.log(`\nLive: ${hosts.map((h) => `https://${h}`).join("  ")}`);

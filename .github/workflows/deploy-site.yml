@@ -39,6 +39,8 @@ jobs:
       - name: Deploy to imorchy.dev
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Cloudflare Web Analytics site token: kept out of git, deploy.mjs adds it to each page's beacon tag.
+          CF_BEACON_TOKEN: ${{ secrets.CF_BEACON_TOKEN }}
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
             echo "::error title=No Cloudflare token::Add the CLOUDFLARE_API_TOKEN secret to the production environment (Settings → Environments → production)."

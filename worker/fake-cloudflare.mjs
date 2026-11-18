@@ -20,10 +20,14 @@ globalThis.fetch = async (input, init = {}) => {
     call.manifest = Object.keys(manifest);
     return ok({ jwt: "session-jwt", buckets: [Object.values(manifest).slice(0, 2).map((m) => m.hash)] });
   }
-  if (method === "POST" && p === "/accounts/acct1/workers/assets/upload") return ok({ jwt: "completion-jwt" });
-  if (method === "PUT" && p === "/accounts/acct1/workers/scripts/orchy-site") {
+  if (method === "POST" && /^\/accounts\/\w+\/workers\/assets\/upload$/.test(p)) return ok({ jwt: "completion-jwt" });
+  if (method === "PUT" && /^\/accounts\/\w+\/workers\/scripts\/[a-z-]+$/.test(p)) {
     call.metadata = JSON.parse(await init.body.get("metadata").text());
-    return ok({ id: "orchy-site" });
+    return ok({ id: p.split("/").pop() });
+  }
+  if (method === "POST" && p.endsWith("/subdomain")) {
+    call.json = JSON.parse(init.body);
+    return ok(call.json);
   }
   if (method === "PUT" && p === "/accounts/acct1/workers/domains") return ok({ hostname: JSON.parse(init.body).hostname });
   return new Response(JSON.stringify({ success: false, errors: [{ code: 404, message: `fake: no route ${method} ${p}` }] }), { status: 404 });

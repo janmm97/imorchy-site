@@ -36,3 +36,13 @@ export function siteFiles(site, dir = site) {
     return [{ rel, data: fs.readFileSync(full), type: TYPES[path.extname(rel)] }];
   });
 }
+
+// Cloudflare Web Analytics. The pages carry the tag without its site token, which stays out of git (Jan,
+// 2026-11-18): deploy.mjs adds it from CF_BEACON_TOKEN. With no token the tag is dropped (the preview), since the
+// beacon does nothing without one.
+export const BEACON = '<script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>';
+export function withBeacon(html, token) {
+  if (token && !/^[0-9a-f]{32}$/.test(token)) throw new Error("CF_BEACON_TOKEN is not a 32-hex Web Analytics token.");
+  const tag = token ? BEACON.replace("></script>", ` data-cf-beacon='{"token":"${token}"}'></script>`) : "";
+  return html.replaceAll(BEACON, tag);
+}
