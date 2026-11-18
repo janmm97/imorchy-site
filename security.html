@@ -193,19 +193,20 @@
         <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Diagram</b><span>· Where Orchy runs</span></div>
         <div class="fbody dia">
           <div class="col">
-            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Web traffic</b><small>Cloudflare Tunnel</small></span></div>
-            <div class="srv">
+            <div class="node" data-cls="lit" data-at="0.4" data-off="2.6"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Web traffic</b><small>Cloudflare Tunnel</small></span></div>
+            <div class="srv" data-cls="lit" data-at="1.4" data-off="3.6">
               <div class="shead"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg><span><b>OVHcloud</b><small>Canada</small></span></div>
-              <div class="boxes"><div class="node mine"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Your Orchy</b><small>Isolated container</small></span></div><div class="node dim"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Another customer</b><small>Isolated container</small></span></div></div>
+              <div class="boxes"><div class="node mine" data-cls="lit" data-at="2.4" data-off="5"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Your Orchy</b><small>Isolated container</small></span></div><div class="node dim"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Another customer</b><small>Isolated container</small></span></div></div>
             </div>
           </div>
           <div class="col">
-            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><span><b>Your AI key</b><small>Sealed with AES-256-GCM</small></span></div>
+            <div class="node" data-cls="lit" data-at="4.6" data-off="7"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><span><b>Your AI key</b><small>Sealed with AES-256-GCM</small></span></div>
             <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Your AI provider</b><small>OpenRouter · Anthropic · OpenAI</small></span></div>
-            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span><b>Encrypted backups</b><small>Eastern North America</small></span></div>
+            <div class="node" data-cls="lit" data-at="6.4" data-off="8.6"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span><b>Encrypted backups</b><small>Eastern North America</small></span></div>
           </div>
         </div>
       </div>
+      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
     </div>
     <p class="scene-cap">Hosted in Canada, one container per customer, your own AI key.</p>
   </div>

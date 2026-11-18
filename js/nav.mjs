@@ -20,3 +20,6 @@
   // Following an in-page link (/#how) closes the sheet.
   list.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
 })();
+
+// Demo loops load only on pages that have one.
+if (document.querySelector("[data-scene]")) import("/js/demos.mjs");

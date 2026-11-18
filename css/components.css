@@ -385,3 +385,14 @@ main.post{border-bottom:0}
 main.post a:not(.button){display:inline;padding:0;border-radius:0}
 main.post a.button{display:inline-flex;gap:14px;padding:14px 24px;border-radius:999px}
 main.post a:hover{background:none}
+
+/* Demo loops (js/demos.mjs). .run is set only while motion is allowed; without it the markup is the still end state.
+   Reveals and highlight rings change opacity/transform only; state swaps reuse the frame classes above. */
+[data-scene].run [data-at]:not([data-cls]){transition:opacity var(--t) var(--ease),transform var(--t) var(--ease)}
+[data-scene].run [data-at]:not([data-cls]):not(.on){opacity:0;transform:translateY(6px)}
+[data-cls="lit"]{position:relative}
+[data-cls="lit"]::after{content:"";position:absolute;inset:-1px;border-radius:inherit;box-shadow:0 0 0 1px var(--c-hl),0 0 14px -4px var(--c-hl);opacity:0;transition:opacity var(--t) var(--ease);pointer-events:none}
+[data-scene].run .lit::after{opacity:1}
+[data-scene].run .dots3 i{animation:dot 1s var(--ease) infinite}[data-scene].run .dots3 i:nth-child(2){animation-delay:.15s}[data-scene].run .dots3 i:nth-child(3){animation-delay:.3s}
+.pause[hidden]{display:none}
+.ic.sm{width:11px;height:11px}
