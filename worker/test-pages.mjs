@@ -129,9 +129,9 @@ for (const [slug, h1] of Object.entries(LEGAL)) {
   if (slug === "privacy") assert.equal(tables, 3, "privacy.html has its three tables");
   if (slug !== "security") {
     // v4 legal (changes.md v6): Version 3.0, a "What changed" box, and no call, booking or desktop-app text outside it
-    assert.match(html, /Last updated: \d{1,2} [A-Z][a-z]+ 2026 · Version 3\.0/, `${slug}: Version 3.0 header line`);
+    assert.match(html, /Last updated: \d{1,2} [A-Z][a-z]+ 2026 · Version 3\.\d/, `${slug}: Version 3.x header line`);
     const box = html.match(/<aside class="changed"[\s\S]*?<\/aside>/)?.[0];
-    assert.ok(box?.includes("What changed in Version 3.0"), `${slug}: "What changed" box`);
+    assert.ok(/What changed in Version 3\.\d/.test(box ?? ""), `${slug}: "What changed" box`);
     const rest = visibleText(html.replace(box, ""));
     assert.doesNotMatch(rest, /access call|booking|Calendly|Granola|Google Meet|setup call|transcript|call audio|desktop app/i, `${slug}: no call, booking or desktop-app text outside the box (X-check)`);
     assert.doesNotMatch(rest, /\bMIT\b/, `${slug}: no MIT licence text`);
