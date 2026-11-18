@@ -13,7 +13,7 @@ export const PAGES = [
     type: "text/html",
     profile: "page",
     markers: [
-      '<h1>Hand off client busywork. <span class="hl">Approve what goes out.</span></h1>',
+      '<h1>Build agents with access <span class="hl">to 1,000+ apps.</span></h1>',
       'href="/go/early-access?from=hero"',
       "What early users say",
       '"@type": "FAQPage"',
