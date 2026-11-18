@@ -11,108 +11,175 @@
     <meta property="og:site_name" content="Orchy AI" />
     <meta property="og:url" content="https://imorchy.dev/data-privacy" />
     <meta property="og:title" content="Data Privacy: DPA and sub-processors | Orchy AI" />
-    <meta property="og:description" content="For businesses using Orchy: who processes data, on what terms, our DPA and the sub-processors behind hosted Orchy and imorchy.dev." />
+    <meta property="og:description" content="Who processes data for hosted Orchy, on what terms, and our sub-processors." />
     <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Orchy AI: a command center for your AI agents" />
+    <meta property="og:image:alt" content="Orchy AI: AI workspace for VAs, freelancers and agencies" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Data Privacy: DPA and sub-processors | Orchy AI" />
-    <meta name="twitter:description" content="For businesses using Orchy: who processes data, on what terms, our DPA and the sub-processors behind hosted Orchy and imorchy.dev." />
+    <meta name="twitter:description" content="Who processes data for hosted Orchy, on what terms, and our sub-processors." />
     <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
-    <meta name="twitter:image:alt" content="Orchy AI: a command center for your AI agents" />
+    <meta name="twitter:image:alt" content="Orchy AI: AI workspace for VAs, freelancers and agencies" />
+    <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
+    <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/components.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Data Privacy: DPA and sub-processors",
-        "dateModified": "2026-11-11",
-        "url": "https://imorchy.dev/data-privacy"
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://imorchy.dev/data-privacy#webpage",
+            "url": "https://imorchy.dev/data-privacy",
+            "name": "Data Privacy: DPA and sub-processors",
+            "description": "For businesses using Orchy: who processes data, on what terms, our DPA and the sub-processors behind hosted Orchy and imorchy.dev.",
+            "dateModified": "2026-11-17",
+            "isPartOf": {
+              "@id": "https://imorchy.dev/#website"
+            },
+            "about": {
+              "@id": "https://imorchy.dev/#org"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://imorchy.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Data Privacy: DPA and sub-processors",
+                "item": "https://imorchy.dev/data-privacy"
+              }
+            ]
+          }
+        ]
       }
     </script>
-    <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body>
+  <body class="page-read">
     <a class="skip" href="#main">Skip to content</a>
-    <header class="nav">
-      <div class="nav-inner wrap">
-        <a class="brand" href="/" aria-label="Orchy AI home"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="34" height="34" alt="" /><span>Orchy</span></a>
+    <header class="nav" id="top">
+      <div class="bar-in">
+        <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+        <nav aria-label="Main">
+          <ul class="nav-list" id="navlist">
+            <li>
+              <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
+              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <ul class="fmenu glass" id="fmenu">
+              <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
+              <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
+              <li><a href="/agents"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span>Agents &amp; Agent Builder</a></li>
+              <li><a href="/apps"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></svg></span>Apps (One)</a></li>
+              <li><a href="/security"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
+              </ul>
+            </li>
+            <li><a class="nav-link" href="/#how">How it works</a></li>
+            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
+            <li><a class="nav-link" href="/blog">Blog</a></li>
+          </ul>
+        </nav>
+        <div class="nav-end">
+          <a class="btn btn-sm" href="/go/early-access?from=nav">Get early access</a>
+          <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5h11M2.5 11h11"/></svg><span class="t">Menu</span><span class="sr"> (site menu)</span></button>
+          <a class="menu nojs-only" href="#site-footer">Menu</a>
+        </div>
       </div>
+      <script type="module" src="/js/nav.mjs"></script>
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
     </header>
-    <main id="main" class="answer legal wrap">
-      <article>
-        <h1>Data Privacy: DPA and sub-processors</h1>
-<p><strong>Last updated:</strong> 11 November 2026 · <strong>Version</strong> 2.0</p>
+    <main id="main">
+      <section class="phero article">
+        <div class="wrap">
+          <p class="crumb label"><a href="/privacy">Legal</a><span aria-hidden="true">/</span><span>Data privacy</span></p>
+          <h1>Data Privacy: DPA and sub-processors</h1>
+          <div class="meta"><span class="label">Last updated: 17 November 2026 · Version 3.0</span></div>
+        </div>
+      </section>
+      <div class="wrap">
+        <div class="article-grid" style="padding-bottom:var(--section-y)">
+          <nav class="toc" aria-label="On this page"><ol><li><a href="#s1">1. What hosted Orchy stores, and where</a></li><li><a href="#s2">2. Hosted Orchy (app.imorchy.dev): Orchy is your processor</a></li><li><a href="#s3">3. Sub-processors</a></li><li><a href="#s4">4. Where data is and how long we keep it</a></li><li><a href="#s5">5. Security</a></li><li><a href="#s6">6. Questions</a></li></ol></nav>
+          <article class="prose">
+<aside class="changed" aria-labelledby="v3-changes" style="border:1px solid var(--c-edge-soft);border-radius:var(--r-sm);padding:4px 22px 18px;margin-bottom:2em">
+<h2 id="v3-changes">What changed in Version 3.0</h2>
+<ul><li>Section 1 now describes what hosted Orchy stores and where, instead of the desktop app.</li><li>Sub-processor list: OVHcloud server in Canada, with OVHcloud's daily automated backup (server backups replaced within 7 days), and Cloudflare Web Analytics page counts for our website.</li><li>We no longer offer setup calls, so we removed the sections on booking, call notes and the companies we used for them (Calendly, Granola).</li></ul>
+</aside>
 <p>This page is for businesses that use Orchy and need to know who handles their data and on what terms.</p>
-<h2>1. Desktop app: Orchy does not process your data</h2>
-<p>The desktop app runs on your own computer. Your data stays there and Orchy does not receive it. You are the controller, and Orchy is <strong>not</strong> your processor, so no DPA is needed for the app. When you connect outside services (your AI engine, a routing provider, ElevenLabs, Deepgram, Cloudflare), you deal with them directly under your own accounts and their terms. They are your vendors, not ours. <strong>One</strong> (withone.ai), which connects your apps, is run by our own company, One Systems, Inc.; with your own One account, One's <a href="https://www.withone.ai/terms">terms</a> and <a href="https://www.withone.ai/privacy">privacy policy</a> apply.</p>
-<h2>2. Hosted Orchy (app.imorchy.dev): Orchy is your processor</h2>
+<h2 id="s1">1. What hosted Orchy stores, and where</h2>
+<p>Hosted Orchy runs on our server in Canada, so what you put in it is stored with us: tasks, files, logs, settings, your agents' memory and chat history, and records from the apps you connect. It sits in your own container on our server. The server has OVHcloud's daily automated backup, and our own encrypted backups are kept with Cloudflare in Eastern North America.</p>
+<p>You are the controller and we are your processor, so our DPA applies (section 2). Your AI provider, on your own key, is your vendor and not our sub-processor (section 3). One Connect is our own service, covered by the DPA directly (section 3).</p>
+<h2 id="s2">2. Hosted Orchy (app.imorchy.dev): Orchy is your processor</h2>
 <p>When you use hosted Orchy, what you put in it is stored on our server in Canada. You are the controller; we are your <strong>processor</strong>. We use it only to run your Orchy, and <strong>never to train or improve AI models</strong>. Our <a href="/dpa">Data Processing Agreement</a> is part of our Terms. It is based on the Common Paper DPA v1.1 and covers what GDPR Art. 28 requires: instructions only, confidentiality, security, sub-processor rules, help with data-subject requests and breaches, deletion or return, and audits.</p>
 <p>For account, sign-in and waiting-list data, Orchy is the controller; see the <a href="/privacy">Privacy Policy</a>.</p>
 <blockquote><p>Common Paper Data Processing Agreement (v1.1) is free to use under CC BY 4.0, https://commonpaper.com/standards/data-processing-agreement/. Adapted by One Systems, Inc.</p></blockquote>
-<p><strong>Access calls:</strong> if we help you set up on a Google Meet call, we don't record it in Meet; an AI note-taker (Granola) takes notes and a transcript. We tell you at booking and at the start of the call, and turn notes off if you ask. We delete notes after 12 months or sooner on request. You share your own screen and paste your own key; we don't copy or keep your keys, emails or files.</p>
-<h2>3. Sub-processors</h2>
-<p>Orchy uses these companies. Each handles data only to provide its service. We give customers 30 days' notice by email before adding or replacing one, and you may object (DPA section 6). Last updated: 11 November 2026.</p>
+<h2 id="s3">3. Sub-processors</h2>
+<p>Orchy uses these companies. Each handles data only to provide its service. We give customers 30 days' notice by email before adding or replacing one, and you may object (DPA section 6). Last updated: 17 November 2026.</p>
 <p><strong>Companies that handle hosted customer data (our sub-processors)</strong></p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Table: Company, What for, Data, Location, Terms"><table><thead><tr><th scope="col">Company</th><th scope="col">What for</th><th scope="col">Data</th><th scope="col">Location</th><th scope="col">Terms</th></tr></thead><tbody><tr><td>Cloudflare, Inc.</td><td>Site, secure tunnel to our server, encrypted backups (R2)</td><td>Request data; encrypted backups of your Orchy</td><td>US company; global network; backups in Eastern North America</td><td><a href="https://www.cloudflare.com/cloudflare-customer-dpa/">Customer DPA</a></td></tr><tr><td>OVH (OVHcloud)</td><td>Server at Beauharnois and its daily server backup</td><td>Everything in your Orchy</td><td>Canada</td><td><a href="https://contract.eu.ovhapis.com/1.0/pdf/OVH_Data_Protection_Agreement-ca.pdf">Personal Information Protection Agreement</a></td></tr><tr><td>Resend, Inc.</td><td>Sign-in and app email from noreply@updates.imorchy.dev</td><td>Your address and the message</td><td>US (EU-US Data Privacy Framework and UK extension; standard contractual clauses in its DPA)</td><td><a href="https://resend.com/legal/dpa">DPA</a></td></tr><tr><td>Google</td><td>Sign-in (openid and email only)</td><td>Email</td><td>US / global</td><td>Google's own terms for Sign in with Google</td></tr><tr><td>TypeSafe AI, Inc.</td><td>Routes each task in hosted Orchy, on Orchy's own account; it doesn't train or fine-tune models on what it receives</td><td>The text of your request</td><td>US</td><td><a href="https://typesafe.ai/legal/privacy-policy">Privacy policy</a></td></tr></tbody></table></div>
+<div class="tbl" role="region" tabindex="0" aria-label="Table: Company, What for, Data, Location, Terms"><table><thead><tr><th scope="col">Company</th><th scope="col">What for</th><th scope="col">Data</th><th scope="col">Location</th><th scope="col">Terms</th></tr></thead><tbody><tr><td>Cloudflare, Inc.</td><td>Site, secure tunnel to our server, encrypted backups (R2)</td><td>Request data; encrypted backups of your Orchy</td><td>US company; global network; backups in Eastern North America</td><td><a href="https://www.cloudflare.com/cloudflare-customer-dpa/">Customer DPA</a></td></tr><tr><td>OVH (OVHcloud)</td><td>Server in Canada, with OVHcloud's daily automated backup</td><td>Everything in your Orchy</td><td>Canada</td><td><a href="https://contract.eu.ovhapis.com/1.0/pdf/OVH_Data_Protection_Agreement-ca.pdf">Personal Information Protection Agreement</a></td></tr><tr><td>Resend, Inc.</td><td>Sign-in and app email from noreply@updates.imorchy.dev</td><td>Your address and the message</td><td>US (EU-US Data Privacy Framework and UK extension; standard contractual clauses in its DPA)</td><td><a href="https://resend.com/legal/dpa">DPA</a></td></tr><tr><td>Google</td><td>Sign-in (openid and email only)</td><td>Email</td><td>US / global</td><td>Google's own terms for Sign in with Google</td></tr><tr><td>TypeSafe AI, Inc.</td><td>Routes each task in hosted Orchy, on Orchy's own account; it doesn't train or fine-tune models on what it receives</td><td>The text of your request</td><td>US</td><td><a href="https://typesafe.ai/legal/privacy-policy">Privacy policy</a></td></tr></tbody></table></div>
 <p><strong>Our own service, not a sub-processor:</strong> <strong>One Connect</strong> connects your apps (Gmail, Calendar and more) when you ask. It is run by One Systems, Inc. (the company behind Orchy) in the United States, so our DPA covers it directly.</p>
 <p><strong>Your own AI provider (not our sub-processor):</strong> OpenRouter, Anthropic or OpenAI, on <strong>your own key</strong>. Your agents send prompts and files straight to the provider you chose, under your terms with it.</p>
 <p><strong>Companies that handle our own website and early-access data (we are the controller)</strong></p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Table: Company, What for, Data, Location, Terms"><table><thead><tr><th scope="col">Company</th><th scope="col">What for</th><th scope="col">Data</th><th scope="col">Location</th><th scope="col">Terms</th></tr></thead><tbody><tr><td>Cloudflare, Inc.</td><td>Website hosting, delivery, security, video storage</td><td>Visitor IP address and request data</td><td>US / global</td><td><a href="https://www.cloudflare.com/cloudflare-customer-dpa/">Customer DPA</a></td></tr><tr><td>jsDelivr</td><td>Delivers a 3D graphics library on our home page</td><td>Visitor IP address and browser data</td><td>Global</td><td>Public service; we have no contract with it</td></tr><tr><td>Notion Labs, Inc.</td><td>Our older early-access form (answers deleted 90 days after a decision)</td><td>Form answers</td><td>US</td><td><a href="https://www.notion.com/help/gdpr-at-notion">GDPR and DPA</a></td></tr><tr><td>Calendly LLC</td><td>Booking access calls</td><td>Booking details</td><td>US</td><td><a href="https://calendly.com/legal/data-processing-addendum">DPA</a></td></tr><tr><td>Granola, Inc. (with Granola Labs Ltd., UK)</td><td>AI notes on access calls; it uses AI providers such as OpenAI and Anthropic and doesn't let them train on personal data</td><td>Call transcript and notes</td><td>US (standard contractual clauses)</td><td><a href="https://docs.granola.ai/help-center/policies/data-processing-addendum">DPA</a> · <a href="https://trust.granola.ai/subprocessors">its sub-processors</a></td></tr><tr><td>Google</td><td>Google Meet (calls are not recorded in Meet)</td><td>Call audio and video</td><td>US / global</td><td><a href="https://workspace.google.com/terms/dpa_terms.html">Workspace data processing terms</a></td></tr></tbody></table></div>
-<h2>4. Where data is and how long we keep it</h2>
-<p>Hosted data is on our server in <strong>Canada</strong>; encrypted backups are in Eastern North America. Your files, published copies and email are deleted within 30 days of &quot;Delete my Orchy&quot; or of access being removed; your final encrypted backup is removed 14 days after it was made, as every backup is. Transfers outside the EU and UK rely on the safeguards in the DPA (section 9).</p>
-<h2>5. Security</h2>
+<div class="tbl" role="region" tabindex="0" aria-label="Table: Company, What for, Data, Location, Terms"><table><thead><tr><th scope="col">Company</th><th scope="col">What for</th><th scope="col">Data</th><th scope="col">Location</th><th scope="col">Terms</th></tr></thead><tbody><tr><td>Cloudflare, Inc.</td><td>Website hosting, delivery, security, video storage, and Web Analytics page counts</td><td>Visitor IP address and request data</td><td>US / global</td><td><a href="https://www.cloudflare.com/cloudflare-customer-dpa/">Customer DPA</a></td></tr><tr><td>jsDelivr</td><td>Delivers a 3D graphics library on our home page</td><td>Visitor IP address and browser data</td><td>Global</td><td>Public service; we have no contract with it</td></tr><tr><td>Notion Labs, Inc.</td><td>Our older early-access form (answers deleted 90 days after a decision)</td><td>Form answers</td><td>US</td><td><a href="https://www.notion.com/help/gdpr-at-notion">GDPR and DPA</a></td></tr></tbody></table></div>
+<h2 id="s4">4. Where data is and how long we keep it</h2>
+<p>Hosted data is on our server in <strong>Canada</strong>; encrypted backups are in Eastern North America. Your files, published copies and email are deleted within 30 days of &quot;Delete my Orchy&quot; or of access being removed; your final encrypted backup is removed 14 days after it was made, as every backup is. OVHcloud's server backups are replaced within 7 days. Transfers outside the EU and UK rely on the safeguards in the DPA (section 9).</p>
+<h2 id="s5">5. Security</h2>
 <p>See our <a href="/security">Security page</a> and Annex 2 of the DPA.</p>
-<h2>6. Questions</h2>
+<h2 id="s6">6. Questions</h2>
 <p>Email <strong>support@imorchy.dev</strong>. For how we handle personal data on our site and account, see our <a href="/privacy">Privacy Policy</a>.</p>
-      </article>
-    </main>
-    <footer class="footer wrap">
-      <div class="footer-top" data-perch>
-        <div class="footer-brand">
-          <a class="brand" href="/" aria-label="Orchy AI home"><img class="brand-logo" src="/assets/orchy-main-128.webp" width="42" height="42" alt="" /><span>Orchy</span></a>
-          <p class="footer-tagline">A command center for your AI agents.</p>
-          <a class="footer-back" href="/">Back to Home</a>
+          </article>
         </div>
-        <nav class="footer-nav" aria-label="Footer">
-          <div class="footer-col">
-            <h2 class="footer-heading">Product</h2>
-            <ul>
-              <li><a href="/approvals">Approvals</a></li>
-              <li><a href="/client-workspaces">Client workspaces</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h2 class="footer-heading">Resources</h2>
-            <ul>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/changelog">Changelog</a></li>
-              <li><a href="/feed.xml">RSS feed</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h2 class="footer-heading">Legal</h2>
-            <ul>
-              <li><a href="/privacy">Privacy</a></li>
-              <li><a href="/terms">Terms</a></li>
-              <li><a href="/security">Security</a></li>
-              <li><a href="/data-privacy" aria-current="page">Data Privacy</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h2 class="footer-heading">Follow</h2>
-            <ul>
-              <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-              <li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-              <li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X</a></li>
-              <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-            </ul>
-          </div>
-        </nav>
       </div>
-      <p class="footer-wordmark" aria-hidden="true">Orchy</p>
+    </main>
+    <footer class="site" id="site-footer">
+      <div class="wrap">
+        <div class="fcols">
+          <div class="fb">
+            <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
+            <p class="tagline">AI workspaces for people who work for several clients.</p>
+          </div>
+          <nav aria-labelledby="f-prod"><h2 id="f-prod">Product</h2><ul>
+            <li><a href="/#how">How it works</a></li>
+            <li><a href="/client-workspaces">Client workspaces</a></li>
+            <li><a href="/approvals">Approvals</a></li>
+            <li><a href="/agents">Agents &amp; Builder</a></li>
+            <li><a href="/apps">Apps (One)</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
+            <li><a href="/#use-cases">Inbox</a></li>
+            <li><a href="/#use-cases">Scheduling</a></li>
+            <li><a href="/#use-cases">Client reports</a></li>
+            <li><a href="/#use-cases">Social posts</a></li>
+            <li><a href="/#use-cases">Follow-ups</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
+            <li><a href="/security">Security</a></li>
+            <li><a href="/data-privacy" aria-current="page">Data privacy</a></li>
+            <li><a href="/dpa">DPA</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-co"><h2 id="f-co">Company</h2><ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/changelog">Changelog</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-leg"><h2 id="f-leg">Legal</h2><ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
+          </ul></nav>
+          <nav aria-labelledby="f-fol"><h2 id="f-fol">Follow</h2><ul>
+            <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr"> (opens in a new tab)</span></a></li>
+            <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube<span class="sr"> (opens in a new tab)</span></a></li>
+          </ul></nav>
+        </div>
+        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
+      </div>
     </footer>
   </body>
 </html>

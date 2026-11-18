@@ -107,7 +107,7 @@ const checks = [
   ...Object.entries(BOT_UAS).map(([bot, ua]) => ({
     name: `${bot} gets https://${domain}/ with 200 and its h1`,
     run: () => fetch(`https://${domain}/`, { headers: { "User-Agent": ua }, redirect: "manual" }),
-    pass: async (res) => res.status === 200 && (await res.text()).includes('<h1 id="heroTitle"'),
+    pass: async (res) => res.status === 200 && (await res.text()).includes(PAGES[0].markers[0]),
     why: () => "a challenge or a different page? bring it to the reviewer, don't turn the check off",
   })),
   (() => {

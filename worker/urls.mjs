@@ -2,7 +2,7 @@
 // against main.mjs and the files under site/ (part of `npm test`); check-live.mjs checks it against the live site
 // after each deploy. ADR "imorchy.dev content, legal pages and access" (2026-11-03), point 7. Side-effect free.
 //
-// Each page: { path, type (Content-Type prefix), profile ("hero" | "page" for HTML: which CSP), markers (text that
+// Each page: { path, type (Content-Type prefix), profile ("page" for HTML: its CSP, headers.mjs), markers (text that
 // must be in the raw HTML, no JS) }. Every listed URL's file must exist under site/.
 
 export const ORIGIN = "https://imorchy.dev";
@@ -11,24 +11,28 @@ export const PAGES = [
   {
     path: "/",
     type: "text/html",
-    profile: "hero",
+    profile: "page",
     markers: [
-      '<h1 id="heroTitle"',
-      "Orchy <span class=\"hero-ai\">AI</span>",
-      "A command center for your AI agents.",
-      "Early access: we approve each sign-up by hand and let people in in small groups.",
+      '<h1>Hand off client busywork. <span class="hl">Approve what goes out.</span></h1>',
+      'href="/go/early-access?from=hero"',
+      "What early users say",
+      '"@type": "FAQPage"',
     ],
   },
-  { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>AI agents that ask before they act</h1>"] },
-  { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>Separate AI agents and logins for every client</h1>"] },
+  { path: "/approvals", type: "text/html", profile: "page", markers: ["<h1>Nothing goes out without <span class=\"hl\">your OK.</span></h1>"] },
+  { path: "/agents", type: "text/html", profile: "page", markers: ["<h1>Build your own <span class=\"hl\">team of agents.</span></h1>"] },
+  { path: "/apps", type: "text/html", profile: "page", markers: ["<h1>Agents that work in <span class=\"hl\">your clients' own apps.</span></h1>"] },
+  { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>A separate AI workspace for <span class=\"hl\">each client you work for.</span></h1>"] },
   { path: "/robots.txt", type: "text/plain", markers: ["Sitemap: https://imorchy.dev/sitemap.xml"] },
   { path: "/sitemap.xml", type: "application/xml", markers: ["<urlset"] },
+  // llms.txt (Ruby): a plain-text summary for AI search; not in the sitemap.
+  { path: "/llms.txt", type: "text/plain", markers: ["# Orchy AI", "https://imorchy.dev/security"] },
   // The legal pages and security.txt (RFC 9116): direct 200, no redirect.
-  { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc."] },
-  { path: "/terms", type: "text/html", profile: "page", markers: ["<h1>Terms of Use</h1>", "One Systems, Inc."] },
-  { path: "/security", type: "text/html", profile: "page", markers: ["<h1>Security</h1>", "/.well-known/security.txt"] },
-  { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1>Data Privacy: DPA and sub-processors</h1>", "href=\"/dpa\""] },
-  { path: "/dpa", type: "text/html", profile: "page", markers: ["<h1>Data Processing Agreement (DPA)</h1>", "One Systems, Inc."] },
+  { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc.", "Version 3.0"] },
+  { path: "/terms", type: "text/html", profile: "page", markers: ["<h1>Terms of Use</h1>", "One Systems, Inc.", "Version 3.0"] },
+  { path: "/security", type: "text/html", profile: "page", markers: ["<h1>Where your clients' <span class=\"hl\">work lives.</span></h1>", "/.well-known/security.txt"] },
+  { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1>Data Privacy: DPA and sub-processors</h1>", "href=\"/dpa\"", "Version 3.0"] },
+  { path: "/dpa", type: "text/html", profile: "page", markers: ["<h1>Data Processing Agreement (DPA)</h1>", "One Systems, Inc.", "Version 3.0"] },
   { path: "/.well-known/security.txt", type: "text/plain", markers: ["Contact:", "Expires:", "Canonical: https://imorchy.dev/.well-known/security.txt"] },
 ];
 
@@ -48,17 +52,11 @@ export const REDIRECTS = [
   { from: "https://imorchy.dev/claude-code-orchestrator/", to: "https://imorchy.dev/" },
 ];
 
-/**
- * The calls to action on / (imorchy.dev has no form or approval endpoint of its own: both are outbound links).
- * Each must be on the page and point at its host; all but Get Started (the app, same tab) open in a new tab with rel="noopener".
- */
-export const LINKS = [
-  { text: "Get Started", host: "app.imorchy.dev", sameTab: true },
-  { text: "Book a call", host: "calendly.com" },
-];
+/** Every early-access call to action is this same-origin hop with a section name (main.mjs), never a direct app link. */
+export const CTA = { path: "/go/early-access", from: /^[a-z0-9-]{1,40}$/ };
 
-/** Hosts a page may load anything from (script, style, image, font, frame, media). Links are not loads. */
-export const LOAD_HOSTS = { "/": ["cdn.jsdelivr.net"] };
+/** Hosts every page may load anything from (script, style, image, font, frame, media): the analytics beacon only. Links are not loads. */
+export const LOAD_HOSTS = ["static.cloudflareinsights.com"];
 
 /** The security headers every https answer carries, and the ones an HTML page adds next to its CSP profile. */
 export const EXPECT_HEADERS = {

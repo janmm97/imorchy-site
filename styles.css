@@ -1,4 +1,5 @@
-﻿@font-face {
+﻿/* v4 shell (2026-11-18): the v3 header/brand rules are renamed .v3-nav/.v3-brand so they no longer style the kit header (css/components.css). Delete them in v4.1. */
+@font-face {
   font-family: "JetBrains Mono";
   src: url("fonts/JetBrainsMono-Regular.woff2") format("woff2");
   font-weight: 400;
@@ -133,7 +134,7 @@ h3 {
   background: var(--mint);
   width: 0;
 }
-.nav {
+.v3-nav {
   position: relative;
   z-index: 50;
   background: #080a0de8;
@@ -146,19 +147,19 @@ h3 {
   justify-content: space-between;
   gap: 30px;
 }
-.brand {
+.v3-brand {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
-.brand > span:not(.brand-ai) {
+.v3-brand > span:not(.brand-ai) {
   font-size: 31px;
   line-height: 1;
   font-weight: 700;
   letter-spacing: -2px;
 }
-.brand img {
+.v3-brand img {
   object-fit: contain;
 }
 .brand-ai {
@@ -170,21 +171,21 @@ h3 {
   margin: 3px 0 0 4px;
   letter-spacing: 1px;
 }
-.nav nav {
+.v3-nav nav {
   display: flex;
   gap: 32px;
   align-items: center;
   font-size: 13px;
   color: #b0b5b9;
 }
-.nav nav a {
+.v3-nav nav a {
   position: relative;
   transition: color 0.2s;
 }
-.nav nav a:hover {
+.v3-nav nav a:hover {
   color: var(--mint);
 }
-.nav nav a::after {
+.v3-nav nav a::after {
   content: "";
   height: 1px;
   position: absolute;
@@ -194,7 +195,7 @@ h3 {
   background: var(--mint);
   transition: right 0.25s;
 }
-.nav nav a:hover::after {
+.v3-nav nav a:hover::after {
   right: 0;
 }
 .nav-actions {
@@ -904,7 +905,7 @@ h3 {
   }
 }
 @media (max-width: 1150px) {
-  .nav nav {
+  .v3-nav nav {
     gap: 22px;
   }
   .nav-inner {
@@ -974,14 +975,14 @@ h3 {
   .nav-inner {
     height: 78px;
   }
-  .nav nav {
+  .v3-nav nav {
     gap: 18px;
     font-size: 12px;
   }
-  .brand > span:not(.brand-ai) {
+  .v3-brand > span:not(.brand-ai) {
     font-size: 27px;
   }
-  .brand img {
+  .v3-brand img {
     width: 36px;
     height: 36px;
   }
@@ -1119,14 +1120,14 @@ h3 {
     height: 74px;
     gap: 12px;
   }
-  .brand {
+  .v3-brand {
     gap: 4px;
   }
-  .brand img {
+  .v3-brand img {
     width: 36px;
     height: 36px;
   }
-  .brand > span:not(.brand-ai) {
+  .v3-brand > span:not(.brand-ai) {
     font-size: 27px;
   }
   .nav-actions {
@@ -1159,7 +1160,7 @@ h3 {
   .menu-toggle[aria-expanded="true"] > span:last-child {
     transform: translateY(-3px) rotate(-45deg);
   }
-  .nav nav {
+  .v3-nav nav {
     display: none;
     position: absolute;
     top: 74px;
@@ -1171,7 +1172,7 @@ h3 {
     font-size: 13px;
     box-shadow: 0 15px 25px #0005;
   }
-  .nav nav.is-open {
+  .v3-nav nav.is-open {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -1446,7 +1447,7 @@ html.motion-paused [data-tilt] {
   left: 15%;
   top: 10%;
 }
-.nav nav {
+.v3-nav nav {
   font-size: 12px;
 }
 .section-heading > p {
@@ -1524,7 +1525,7 @@ html.motion-paused [data-tilt] {
   .hero h1 {
     font-size: 46px;
   }
-  .nav nav {
+  .v3-nav nav {
     font-size: 12px;
   }
   .hero-character {
@@ -1879,7 +1880,7 @@ body::before {
 
 /* Navigation: a floating glass bar. The blur lives on ::before so the phone
    menu below it can blur the page too. */
-.nav {
+.v3-nav {
   position: sticky;
   top: 12px;
   margin: 12px var(--gutter) 0;
@@ -1888,7 +1889,7 @@ body::before {
   border-radius: var(--r-lg);
   box-shadow: var(--glass-shadow);
 }
-.nav::before {
+.v3-nav::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -1904,11 +1905,11 @@ body::before {
   height: 66px;
   padding-inline: 18px 12px;
 }
-.nav .brand img {
+.v3-nav .v3-brand img {
   width: 34px;
   height: 34px;
 }
-.nav .brand > span:not(.brand-ai) {
+.v3-nav .v3-brand > span:not(.brand-ai) {
   font-size: 26px;
 }
 /* The little logo hops now and then: crouch, jump, squash on landing.
@@ -1917,7 +1918,7 @@ body::before {
   transform-origin: 50% 100%;
   animation: logo-hop 3.6s cubic-bezier(0.3, 0, 0.3, 1) 1.2s infinite;
 }
-.brand:hover .brand-logo {
+.v3-brand:hover .brand-logo {
   animation: logo-bounce 0.7s ease-in-out infinite;
 }
 @keyframes logo-hop {
@@ -1957,20 +1958,20 @@ body::before {
     transform: translateY(-8px) scale(0.94, 1.08) rotate(8deg);
   }
 }
-.nav nav {
+.v3-nav nav {
   gap: 4px;
 }
-.nav nav a {
+.v3-nav nav a {
   padding: 8px 14px;
   border-radius: 999px;
   transition:
     color 0.2s,
     background 0.2s;
 }
-.nav nav a::after {
+.v3-nav nav a::after {
   display: none;
 }
-.nav nav a:hover {
+.v3-nav nav a:hover {
   background: #ffffff12;
 }
 
@@ -2194,7 +2195,7 @@ body::before {
     --nav-h: 70px;
     --r-xl: 24px;
   }
-  .nav {
+  .v3-nav {
     top: 8px;
     margin: 8px 12px 0;
     border-radius: 20px;
@@ -2203,15 +2204,15 @@ body::before {
     height: 58px;
     padding-inline: 12px 6px;
   }
-  .nav .brand img {
+  .v3-nav .v3-brand img {
     width: 30px;
     height: 30px;
   }
-  .nav .brand > span:not(.brand-ai) {
+  .v3-nav .v3-brand > span:not(.brand-ai) {
     font-size: 23px;
   }
   /* The menu drops below the bar as its own glass sheet. */
-  .nav nav {
+  .v3-nav nav {
     top: calc(100% + 8px);
     border: 1px solid var(--glass-edge);
     border-radius: var(--r-lg);
@@ -2221,10 +2222,10 @@ body::before {
     backdrop-filter: var(--glass-blur);
     padding: 14px 10px;
   }
-  .nav nav.is-open {
+  .v3-nav nav.is-open {
     gap: 2px;
   }
-  .nav nav a {
+  .v3-nav nav a {
     width: 100%;
   }
   .hero-tagline {
@@ -2245,8 +2246,8 @@ body::before {
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   /* Without blur, solid panels keep the copy readable. */
-  .nav::before,
-  .nav nav {
+  .v3-nav::before,
+  .v3-nav nav {
     background-color: #0f1317;
   }
   .demo-console,
