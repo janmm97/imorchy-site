@@ -28,7 +28,7 @@ export const PAGES = [
   // llms.txt (Ruby): a plain-text summary for AI search; not in the sitemap.
   { path: "/llms.txt", type: "text/plain", markers: ["# Orchy AI", "https://imorchy.dev/security"] },
   // The legal pages and security.txt (RFC 9116): direct 200, no redirect.
-  { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc.", "Version 3.0"] },
+  { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1>Privacy Policy</h1>", "One Systems, Inc.", "Version 3.1"] },
   { path: "/terms", type: "text/html", profile: "page", markers: ["<h1>Terms of Use</h1>", "One Systems, Inc.", "Version 3.0"] },
   { path: "/security", type: "text/html", profile: "page", markers: ["<h1>Where your clients' <span class=\"hl\">work lives.</span></h1>", "/.well-known/security.txt"] },
   { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1>Data Privacy: DPA and sub-processors</h1>", "href=\"/dpa\"", "Version 3.0"] },
