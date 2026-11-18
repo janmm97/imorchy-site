@@ -1,4 +1,4 @@
-/* v4 homepage only (Miles's comp, kit v1.4 tokens). The kit has no hero, demo band, slab or quote grid; this adds them. */
+/* v4 homepage only (Miles's comp, kit v1.4 tokens). The kit has no hero, demo band or quote grid; this adds them. */
 
 /* Width-matched fallback so the swap to the web font doesn't re-wrap the hero H1 (CLS). Ratio from the comp. */
 @font-face{font-family:"Hero Fallback";src:local("Arial"),local("Helvetica"),local("Roboto");size-adjust:104.9%}
@@ -6,7 +6,8 @@
 /* hero: static (no JS visual), text is the LCP */
 .hero{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:clamp(480px,calc(100svh - 76px),860px);padding:40px 0 72px;overflow:hidden;isolation:isolate}
 .hero-copy{text-align:center;display:flex;flex-direction:column;align-items:center}
-.hero h1{font-size:clamp(44px,5vw,76px);letter-spacing:-.035em;line-height:1;max-width:9.39em;font-family:"Instrument Sans","Hero Fallback",system-ui,sans-serif}
+.hero h1{font-size:clamp(44px,5vw,76px);letter-spacing:-.035em;line-height:1;font-family:"Instrument Sans","Hero Fallback",system-ui,sans-serif}
+.hero h1 .hl{display:block} /* always 2 lines: break after "access" */
 .hero .lede{margin:24px auto 30px;max-width:56ch}
 .hero .note{margin-top:14px}
 .hero::before{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(#ffffff12 1px,transparent 1.4px) 0 0/26px 26px;
@@ -15,29 +16,6 @@
 /* demo band under the hero */
 .demo{padding:8px 0 112px}
 .demo>.wrap>.label{display:block;color:var(--c-muted);padding-top:24px;border-top:1px solid var(--c-edge-soft)}
-
-/* the Agent Builder slab: one deeper glass panel holding head + frame */
-.slab{border-radius:var(--r-xl);padding:64px 56px 56px;background:var(--glass-sheen),var(--tint-deep);border-color:var(--c-edge-hi);box-shadow:var(--glass-shine),0 50px 120px -40px #000,0 0 0 1px #00000066}
-.slab::after{content:"";position:absolute;left:12%;right:12%;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--c-hl),transparent);opacity:.7;pointer-events:none}
-
-/* use cases: a real table, scrolls sideways on phones inside a focusable region */
-.uc-wrap{overflow-x:auto;border:1px solid var(--c-edge-soft);border-radius:var(--r-lg);background:var(--in)}
-.uc-wrap:focus-visible{outline:2px solid var(--c-hl);outline-offset:3px}
-.uc{width:100%;min-width:640px;border-collapse:collapse;font-size:var(--fs-small)}
-.uc caption{caption-side:bottom;text-align:left;padding:14px 20px}
-.uc th,.uc td{padding:16px 20px;text-align:left;vertical-align:top;border-bottom:1px solid var(--c-edge-soft)}
-.uc thead th{font:500 var(--fs-label-sm)/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted)}
-.uc tbody th{color:var(--c-ivory);font-weight:600;white-space:nowrap}
-.uc td{color:var(--c-muted)}
-.uc td q{color:var(--c-ivory)}
-.uc-apps{margin:22px auto 0;max-width:62ch;text-align:center;color:var(--c-muted)}
-
-/* security facts: kit .points with a bold lead line */
-.facts{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.facts li{color:var(--c-muted);font-size:var(--fs-small)}
-.facts b{display:block;color:var(--c-ivory);font-size:17px;font-weight:600}
-.center-link{margin-top:28px;text-align:center}
-.center-link .more{color:var(--c-ivory);text-decoration:underline;text-underline-offset:4px}
 
 /* testimonials */
 .quotes{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
@@ -49,14 +27,12 @@
 .quotes blockquote p::after{content:"\201D"}
 .quotes figcaption{font:500 12px/1.2 var(--font-mono);letter-spacing:.06em;color:var(--c-muted);padding-top:14px;border-top:1px solid var(--c-edge-soft)}
 
-@media (max-width:1100px){.slab{padding:48px 32px 40px}}
 @media (max-width:900px){
   .hero{min-height:0;justify-content:flex-start;padding:56px 0 64px}
-  .hero h1{font-size:clamp(40px,11vw,64px)}
+  .hero h1{font-size:clamp(24px,calc(8.9vw - 4px),64px)} /* "Build agents with access" is ~10.7em: keeps line 1 inside the gutters down to 300px */
   .hero .lede{margin:20px auto 26px}
   .hero::before{-webkit-mask:linear-gradient(transparent 45%,#000);mask:linear-gradient(transparent 45%,#000)}
   .demo{padding:0 0 76px}
-  .slab{padding:36px 18px 28px;border-radius:var(--r-lg)}
   .quotes{grid-template-columns:1fr 1fr;gap:14px}
   .quotes li,.quotes li:nth-child(n+4){grid-column:span 1}
   .quotes li:last-child{grid-column:1/-1}

@@ -137,7 +137,7 @@
           <ul class="nav-list" id="navlist">
             <li>
               <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
-              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <a class="nav-link nojs-only" href="#site-footer">Features</a>
               <ul class="fmenu glass" id="fmenu">
               <li><a href="/client-workspaces" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
               <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
@@ -147,7 +147,6 @@
               </ul>
             </li>
             <li><a class="nav-link" href="/#how">How it works</a></li>
-            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
             <li><a class="nav-link" href="/blog">Blog</a></li>
           </ul>
         </nav>
@@ -163,7 +162,7 @@
 <main id="main">
 <section class="phero cw">
   <div class="wrap">
-    <p class="crumb label"><a href="/#features">Features</a><span aria-hidden="true">/</span><span>Client workspaces</span></p>
+    <p class="crumb label"><span>Features</span><span aria-hidden="true">/</span><span>Client workspaces</span></p>
     <p class="eyebrow">One workspace for every client.</p>
     <h1>A separate AI workspace for <span class="hl">each client you work for.</span></h1>
     <p class="lede">Each client gets their own apps, agents and files. A task runs in one workspace, so six clients in one day stay apart.</p>
@@ -179,32 +178,33 @@
         <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Example</b><span>· made-up clients</span></div>
         <div class="fbody split">
           <ul class="switcher">
-            <li class="cur cur">Acme Dental</li>
-            <li>Birch Bookkeeping</li>
-            <li>Larkspur Florist</li>
+            <li class="cur" data-cls="cur" data-at="0" data-off="4">Acme Dental</li>
+            <li data-cls="cur" data-at="4" data-off="8">Birch Bookkeeping</li>
+            <li data-cls="cur" data-at="8">Larkspur Florist</li>
           </ul>
           <div class="wsp">
-            <div class="ws on on">
-              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use use"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use use"><span class="dot" aria-hidden="true"></span>LinkedIn</span></div></div>
+            <div class="ws on" data-cls="on" data-at="0" data-off="4">
+              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use" data-cls="use" data-at="1.4"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use" data-cls="use" data-at="1.4"><span class="dot" aria-hidden="true"></span>LinkedIn</span></div></div>
               <div class="grp"><span class="label">Agents</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Inbox agent</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Social agent</span></div></div>
               <div class="grp"><span class="label">Files</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Brand notes</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Enquiry log</span></div></div>
-              <div class="logline on"><span><small>Task · Acme Dental</small>Reply to this week's new patient enquiries and draft Friday's LinkedIn post.</span></div>
+              <div class="logline on" data-at="0.8"><span><small>Task · Acme Dental</small>Reply to this week's new patient enquiries and draft Friday's LinkedIn post.</span></div>
             </div>
-            <div class="ws">
-              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use"><span class="dot" aria-hidden="true"></span>Google Calendar</span></div></div>
+            <div class="ws" data-cls="on" data-at="4" data-off="8">
+              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use" data-cls="use" data-at="5.4"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use" data-cls="use" data-at="5.4"><span class="dot" aria-hidden="true"></span>Google Calendar</span></div></div>
               <div class="grp"><span class="label">Agents</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Inbox agent</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Scheduling agent</span></div></div>
               <div class="grp"><span class="label">Files</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Client list</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Meeting notes</span></div></div>
-              <div class="logline"><span><small>Task · Birch Bookkeeping</small>Check next week's calendar and reply to this morning's client emails.</span></div>
+              <div class="logline" data-at="4.8"><span><small>Task · Birch Bookkeeping</small>Check next week's calendar and reply to this morning's client emails.</span></div>
             </div>
-            <div class="ws">
-              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use"><span class="dot" aria-hidden="true"></span>LinkedIn</span><span class="chip use"><span class="dot" aria-hidden="true"></span>Google Sheets</span></div></div>
+            <div class="ws" data-cls="on" data-at="8">
+              <div class="grp"><span class="label">Apps</span><div class="chips"><span class="chip use" data-cls="use" data-at="9.4"><span class="dot" aria-hidden="true"></span>LinkedIn</span><span class="chip use" data-cls="use" data-at="9.4"><span class="dot" aria-hidden="true"></span>Google Sheets</span></div></div>
               <div class="grp"><span class="label">Agents</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Social agent</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>Report agent</span></div></div>
               <div class="grp"><span class="label">Files</span><div class="chips"><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Price list</span><span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Weekly sheet</span></div></div>
-              <div class="logline"><span><small>Task · Larkspur Florist</small>Draft this week's LinkedIn post and summarise the Weekly sheet for the owner.</span></div>
+              <div class="logline" data-at="8.8"><span><small>Task · Larkspur Florist</small>Draft this week's LinkedIn post and summarise the Weekly sheet for the owner.</span></div>
             </div>
           </div>
         </div>
       </div>
+      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
     </div>
     <p class="scene-cap">Apps, agents and files switch with the client. They never mix.</p>
   </div>
@@ -235,7 +235,7 @@
   <div class="wrap">
     <div class="cards">
       <article class="card glass" aria-labelledby="s3">
-        <div class="vis"><div class="ws" style="gap:12px;display:flex;flex-direction:column"><div class="grp"><span class="label">Acme Dental</span><div class="chips"><span class="chip use"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use"><span class="dot" aria-hidden="true"></span>LinkedIn</span></div></div><ul class="rules"><li class="ask">App outside its list<span class="st"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-ask"/></svg>Asks first</span></li></ul></div></div>
+        <div class="vis"><div class="ws" style="gap:12px;display:flex;flex-direction:column"><div class="grp"><span class="label">Acme Dental</span><div class="chips"><span class="chip use"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip use"><span class="dot" aria-hidden="true"></span>LinkedIn</span></div></div><ul class="rules"><li class="ask">App outside its list<span class="st"><svg class="ic sm" aria-hidden="true"><use href="#i-ask"/></svg>Asks first</span></li></ul></div></div>
         <div class="txt"><span class="label">03</span><h2 id="s3">A task runs in one workspace</h2><p>Say the task inside the client's workspace. Orchy checks every app call against that workspace's connections. If an agent reaches for an app outside its list, Orchy asks you first, and accounts are never mixed between workspaces.</p><p>A job that takes several steps runs as a mission inside that one workspace. A mission never spans two clients.</p></div>
       </article>
       <article class="card glass" aria-labelledby="s4">
@@ -287,13 +287,6 @@
             <li><a href="/approvals">Approvals</a></li>
             <li><a href="/agents">Agents &amp; Builder</a></li>
             <li><a href="/apps">Apps (One)</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
-            <li><a href="/#use-cases">Inbox</a></li>
-            <li><a href="/#use-cases">Scheduling</a></li>
-            <li><a href="/#use-cases">Client reports</a></li>
-            <li><a href="/#use-cases">Social posts</a></li>
-            <li><a href="/#use-cases">Follow-ups</a></li>
           </ul></nav>
           <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
             <li><a href="/security">Security</a></li>

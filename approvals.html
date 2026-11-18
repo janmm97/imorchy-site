@@ -137,7 +137,7 @@
           <ul class="nav-list" id="navlist">
             <li>
               <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
-              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <a class="nav-link nojs-only" href="#site-footer">Features</a>
               <ul class="fmenu glass" id="fmenu">
               <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
               <li><a href="/approvals" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
@@ -147,7 +147,6 @@
               </ul>
             </li>
             <li><a class="nav-link" href="/#how">How it works</a></li>
-            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
             <li><a class="nav-link" href="/blog">Blog</a></li>
           </ul>
         </nav>
@@ -163,7 +162,7 @@
 <main id="main">
 <section class="phero">
   <div class="wrap">
-    <p class="crumb label"><a href="/#features">Features</a><span aria-hidden="true">/</span><span>Approvals</span></p>
+    <p class="crumb label"><span>Features</span><span aria-hidden="true">/</span><span>Approvals</span></p>
     <h1>Nothing goes out without <span class="hl">your OK.</span></h1>
     <p class="lede">By default Orchy stops and asks before it sends or posts, spends money, changes a calendar, deletes or shares. Reading, drafting and taking notes run on their own.</p>
     <div class="cta-stack"><a class="btn" href="/go/early-access?from=approvals-hero">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
@@ -178,25 +177,26 @@
         <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Example</b><span>· made-up client</span></div>
         <div class="fbody one">
           <div class="wsp">
-            <div class="ws">
+            <div class="ws" data-cls="on" data-at="0" data-off="3.4">
               <span class="label">What Orchy asks about</span>
-              <ul class="rules flip"><li>Sending<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Money<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Calendar<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Deleting<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Sharing<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li class="free">Reading · drafting · notes<span class="st">Runs</span></li></ul>
+              <ul class="rules flip"><li data-cls="ask" data-at="0.7">Sending<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.0">Money<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.3">Calendar<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.6">Deleting<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.9">Sharing<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li class="free">Reading · drafting · notes<span class="st">Runs</span></li></ul>
             </div>
-            <div class="ws on">
-              <div class="pop ok">
+            <div class="ws on" data-cls="on" data-at="3.4" data-off="7.2">
+              <div class="pop ok" data-cls="ok" data-at="5.4">
                 <span class="label">Approval · Larkspur Florist</span>
                 <p class="q">Send 2 messages for Larkspur Florist?</p>
                 <ul class="rules"><li class="ask">Why it asks<span class="st">Sending</span></li></ul>
-                <div class="acts"><span class="mb">Deny</span><span class="mb pri">Approve</span><span class="badge"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></div>
+                <div class="acts"><span class="mb">Deny</span><span class="mb pri" data-cls="press" data-at="5" data-off="5.3">Approve</span><span class="badge"><svg class="ic sm" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></div>
               </div>
             </div>
-            <div class="ws">
+            <div class="ws" data-cls="on" data-at="7.2">
               <span class="label">Task record · Larkspur Florist</span>
-              <ul class="rules log"><li><span><time>09:12</time>Read 4 new messages</span><span class="st">Ran</span></li><li><span><time>09:13</time>Drafted 2 replies</span><span class="st">Ran</span></li><li class="ask"><span><time>09:13</time>Send 2 messages</span><span class="st">Asked</span></li><li class="ok"><span><time>09:15</time>You approved</span><span class="st"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></li><li><span><time>09:15</time>Sent 2 messages</span><span class="st">Ran</span></li></ul>
+              <ul class="rules log"><li data-at="7.5"><span><time>09:12</time>Read 4 new messages</span><span class="st">Ran</span></li><li data-at="7.8"><span><time>09:13</time>Drafted 2 replies</span><span class="st">Ran</span></li><li class="ask" data-at="8.1"><span><time>09:13</time>Send 2 messages</span><span class="st">Asked</span></li><li class="ok" data-at="8.4"><span><time>09:15</time>You approved</span><span class="st"><svg class="ic sm" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></li><li data-at="8.7"><span><time>09:15</time>Sent 2 messages</span><span class="st">Ran</span></li></ul>
             </div>
           </div>
         </div>
       </div>
+      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
     </div>
     <p class="scene-cap">It stops, shows you what it wants to do, and waits for your answer.</p>
   </div>
@@ -285,13 +285,6 @@
             <li><a href="/approvals" aria-current="page">Approvals</a></li>
             <li><a href="/agents">Agents &amp; Builder</a></li>
             <li><a href="/apps">Apps (One)</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
-            <li><a href="/#use-cases">Inbox</a></li>
-            <li><a href="/#use-cases">Scheduling</a></li>
-            <li><a href="/#use-cases">Client reports</a></li>
-            <li><a href="/#use-cases">Social posts</a></li>
-            <li><a href="/#use-cases">Follow-ups</a></li>
           </ul></nav>
           <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
             <li><a href="/security">Security</a></li>

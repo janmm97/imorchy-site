@@ -189,7 +189,7 @@
           <ul class="nav-list" id="navlist">
             <li>
               <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
-              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <a class="nav-link nojs-only" href="#site-footer">Features</a>
               <ul class="fmenu glass" id="fmenu">
               <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
               <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
@@ -199,7 +199,6 @@
               </ul>
             </li>
             <li><a class="nav-link" href="/#how">How it works</a></li>
-            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
             <li><a class="nav-link" href="/blog">Blog</a></li>
           </ul>
         </nav>
@@ -215,8 +214,8 @@
 <main id="main">
 <section class="hero">
   <div class="wrap hero-copy">
-    <h1>Hand off client busywork. <span class="hl">Approve what goes out.</span></h1>
-    <p class="lede">Tell Orchy a task in plain words. The right agent does it inside that client's own apps and workspace, then waits for your OK before anything is sent, posted, paid or deleted.</p>
+    <h1>Build agents with access <span class="hl">to 1,000+ apps.</span></h1>
+    <p class="lede">Build and manage AI agents with Orchy AI. Every final action waits for your approval.</p>
     <a class="btn" href="/go/early-access?from=hero">Get early access <svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a>
     <p class="note">Orchy is in beta. We approve every sign-up by hand.</p>
   </div>
@@ -225,43 +224,43 @@
 <section class="demo" id="how">
   <div class="wrap">
     <span class="label">How it works · sample data</span>
-    <div class="dh dh-how" id="demo-home-how">
+    <div class="dh dh-how scene" data-scene id="demo-home-how">
       <p class="sr">Example with sample data: in the Acme Dental workspace you ask Orchy to reply to this week's new patient enquiries and draft Friday's LinkedIn post. Orchy picks the Inbox agent, uses Acme Dental's own Gmail and LinkedIn through One, drafts 6 replies and asks before sending them. You approve and the 6 replies are sent; the LinkedIn post waits in drafts.</p>
       <div class="stage" aria-hidden="true">
         <div class="panel glass">
           <div class="bar"><span class="dots"><i></i><i></i><i></i></span>Orchy · <b>Acme Dental</b></div>
           <div class="chat">
-            <div class="bubble">Reply to this week's new patient enquiries and draft Friday's LinkedIn post.</div>
+            <div class="bubble" data-at="0.3">Reply to this week's new patient enquiries and draft Friday's LinkedIn post.</div>
             <div class="steps">
-              <span class="chip"><span class="sq"></span>gmail · <b>read 9 enquiries</b></span>
-              <span class="chip"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>memory · <b>tone &amp; sign-off</b></span>
-              <span class="chip"><span class="sq"></span>gmail · <b>draft 6 replies</b></span>
-              <span class="chip"><span class="sq"></span>linkedin · <b>draft Friday post</b></span>
-              <span class="chip"><span class="sq"></span>gmail · <b>send 6 replies</b><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span>
+              <span class="chip" data-at="1.1"><span class="sq"></span>gmail · <b>read 9 enquiries</b></span>
+              <span class="chip" data-at="1.9"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>memory · <b>tone &amp; sign-off</b></span>
+              <span class="chip" data-at="2.7"><span class="sq"></span>gmail · <b>draft 6 replies</b></span>
+              <span class="chip" data-at="3.5"><span class="sq"></span>linkedin · <b>draft Friday post</b></span>
+              <span class="chip" data-at="4.3"><span class="sq"></span>gmail · <b>send 6 replies</b><svg class="ic" data-at="6.2" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span>
             </div>
-            <p class="reply">Done. 6 replies went out from Acme Dental's Gmail. Friday's post is waiting in drafts.</p>
+            <p class="reply" data-at="9.2">Done. 6 replies went out from Acme Dental's Gmail. Friday's post is waiting in drafts.</p>
           </div>
           <div class="input">Ask Orchy… <span class="send"><svg class="ic" viewBox="0 0 16 16"><path d="M8 13V3.5M4 7.5l4-4 4 4"/></svg></span></div>
         </div>
         <div class="hub glass">
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6h12"/></svg>Workspace</span><span class="v">Acme Dental</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg>Agent</span><span class="v">Inbox agent</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M6 10l4-4M5 7.5 3.6 8.9a2.3 2.3 0 0 0 3.3 3.3L8.3 11M11 8.5l1.4-1.4a2.3 2.3 0 0 0-3.3-3.3L7.7 5.2"/></svg>Apps</span><span class="v">Gmail · LinkedIn via One</span></div>
+          <div class="row" data-cls="lit" data-at="0.4" data-off="2.2"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6h12"/></svg>Workspace</span><span class="v">Acme Dental</span></div>
+          <div class="row" data-cls="lit" data-at="1.0" data-off="4.6"><span class="k"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg>Agent</span><span class="v">Inbox agent</span></div>
+          <div class="row" data-cls="lit" data-at="1.2" data-off="4.6"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M6 10l4-4M5 7.5 3.6 8.9a2.3 2.3 0 0 0 3.3 3.3L8.3 11M11 8.5l1.4-1.4a2.3 2.3 0 0 0-3.3-3.3L7.7 5.2"/></svg>Apps</span><span class="v">Gmail · LinkedIn via One</span></div>
           <div class="core"><img src="/assets/orchy-main-128.webp" width="22" height="22" alt="" />ORCHY</div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>Memory</span><span class="v">Practice tone</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>Approvals</span><span class="v">Approved</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M3 3h10M3 6.5h10M3 10h7M3 13.5h5"/></svg>Log</span><span class="v">5 steps</span></div>
+          <div class="row" data-cls="lit" data-at="1.9" data-off="3.4"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>Memory</span><span class="v">Practice tone</span></div>
+          <div class="row" data-cls="lit" data-at="4.6" data-off="7.4"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>Approvals</span><span class="v" data-at="6.2">Approved</span></div>
+          <div class="row" data-cls="lit" data-at="8.6" data-off="10.6"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M3 3h10M3 6.5h10M3 10h7M3 13.5h5"/></svg>Log</span><span class="v" data-at="8.6">5 steps</span></div>
         </div>
         <div class="panel glass">
           <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="sq"></span>Gmail · <b>Acme Dental</b> · Sent</div>
           <div class="mail">
-            <div class="mrow"><span class="pav">P</span><span><span class="who">Priya N.</span><span class="sub"> · Re: New patient, cleaning?</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">M</span><span><span class="who">Marcus O.</span><span class="sub"> · Re: Do you take Delta?</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">L</span><span><span class="who">Lena K.</span><span class="sub"> · Re: Saturday hours</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">J</span><span><span class="who">Jon B.</span><span class="sub"> · Re: Kids' check-up</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">A</span><span><span class="who">Ana R.</span><span class="sub"> · Re: Whitening price list</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">T</span><span><span class="who">Tom W.</span><span class="sub"> · Re: First visit forms</span></span><span class="tag">Sent</span></div>
-            <div class="toast"><span class="ck"><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><div><b>Approved · 6 replies sent</b><small>Acme Dental · Gmail · logged</small></div></div>
+            <div class="mrow" data-at="6.8"><span class="pav">P</span><span><span class="who">Priya N.</span><span class="sub"> · Re: New patient, cleaning?</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.0"><span class="pav">M</span><span><span class="who">Marcus O.</span><span class="sub"> · Re: Do you take Delta?</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.2"><span class="pav">L</span><span><span class="who">Lena K.</span><span class="sub"> · Re: Saturday hours</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.4"><span class="pav">J</span><span><span class="who">Jon B.</span><span class="sub"> · Re: Kids' check-up</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.6"><span class="pav">A</span><span><span class="who">Ana R.</span><span class="sub"> · Re: Whitening price list</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.8"><span class="pav">T</span><span><span class="who">Tom W.</span><span class="sub"> · Re: First visit forms</span></span><span class="tag">Sent</span></div>
+            <div class="toast" data-at="8.3"><span class="ck"><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><div><b>Approved · 6 replies sent</b><small>Acme Dental · Gmail · logged</small></div></div>
           </div>
           <div class="tabs"><span>Drafts</span><span class="on">Sent</span><span>Inbox</span></div>
         </div>
@@ -272,173 +271,8 @@
         <li><b>03 You approve</b>See what's about to go out. Yes or no.</li>
         <li><b>04 Done</b>Move on to the next client.</li>
       </ol>
+      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
     </div>
-  </div>
-</section>
-
-<section class="sec" id="features">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><span class="label">Workspaces</span><h2>One workspace <span class="hl">for every client.</span></h2></div>
-      <p class="lede">Each client gets a workspace of their own, with their own apps, agents and files. A task for one client runs in that client's workspace, so nothing mixes.</p>
-    </div>
-    <div class="dh dh-clients" id="demo-home-clients">
-      <p class="sr">Example with sample data: the Acme Dental workspace, one of three client workspaces (Acme Dental, Birch &amp; Co Bakery, Fieldnote Studio). It shows only Acme Dental's own apps (Gmail, Google Calendar, LinkedIn through One), agents (Inbox agent, Booking agent, Social poster) and files.</p>
-      <div class="stage glass" aria-hidden="true">
-        <div class="ws-list">
-          <span class="label">Your clients</span>
-          <div class="wsi cur"><span class="mk">AD</span>Acme Dental</div>
-          <div class="wsi"><span class="mk">BC</span>Birch &amp; Co Bakery</div>
-          <div class="wsi"><span class="mk">FS</span>Fieldnote Studio</div>
-        </div>
-        <div class="ws-main">
-          <div class="ws-top"><span class="nm">Acme Dental</span><span class="label">Workspace · separate</span></div>
-          <div class="ws-cols">
-            <div class="ws-col"><div class="h">Apps <span>via One</span></div><ul><li><span class="sq"></span>Gmail</li><li><span class="sq"></span>Google Calendar</li><li><span class="sq"></span>LinkedIn</li></ul></div>
-            <div class="ws-col"><div class="h">Agents</div><ul><li><span class="dot"></span>Inbox agent</li><li><span class="dot"></span>Booking agent</li><li><span class="dot"></span>Social poster</li></ul></div>
-            <div class="ws-col"><div class="h">Files</div><ul><li><span class="f">patient-faq.md</span></li><li><span class="f">brand-voice.md</span></li><li><span class="f">opening-hours.pdf</span></li></ul></div>
-            <p class="ws-note">↳ Only this client's accounts are connected here.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <ul class="points">
-      <li><b>Their apps</b>Connect each client's accounts to that client's workspace only.</li>
-      <li><b>Their agents</b>Set up the agents each client needs, or ask the Agent Builder for one in plain words.</li>
-      <li><b>Their files</b>Notes and files stay in the workspace they belong to.</li>
-    </ul>
-  </div>
-</section>
-
-<section class="sec" id="approvals">
-  <div class="wrap">
-    <div class="sec-head center">
-      <span class="label">Approvals</span>
-      <h2>Nothing goes out <span class="hl">without your OK.</span></h2>
-      <p class="lede">Reading and drafting run on their own, so work moves while you're on another client. Before Orchy sends, pays, changes a calendar, deletes or shares, it stops and asks.</p>
-    </div>
-    <div class="dh dh-approvals" id="demo-home-approvals">
-      <p class="sr">Example with sample data: five kinds of action ask first; a request to move an appointment is approved; the task log shows each step with its time and an Approved badge.</p>
-      <div class="cardsx">
-        <div class="cardx glass">
-          <div class="vis" aria-hidden="true">
-            <ul class="rules">
-              <li class="free"><span>Read &amp; draft</span><span class="st">Runs on its own</span></li>
-              <li class="ask"><span>Sending</span><span class="st">Asks first</span></li>
-              <li class="ask"><span>Money</span><span class="st">Asks first</span></li>
-              <li class="ask"><span>Calendar</span><span class="st">Asks first</span></li>
-              <li class="ask"><span>Deleting</span><span class="st">Asks first</span></li>
-              <li class="ask"><span>Sharing</span><span class="st">Asks first</span></li>
-            </ul>
-          </div>
-          <div class="txt"><h3 class="h">Five things always ask first</h3><p>Sending, money, calendar changes, deleting and sharing wait for you, in every client's workspace.</p></div>
-        </div>
-        <div class="cardx glass">
-          <div class="vis" aria-hidden="true">
-            <div class="ap">
-              <div class="ttl">From: Booking agent · needs your OK</div>
-              <div class="from"><span class="av"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span><div><b>Booking agent</b><span>Acme Dental · 10:05</span></div></div>
-              <p class="ask">Booking agent wants to: <strong>Move Tue 3 pm cleaning to Thu 10 am</strong></p>
-              <div class="why">This changes the practice calendar. Nothing happens until you approve.</div>
-              <div class="done"><span class="badge"><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg>Approved</span>Calendar updated</div>
-            </div>
-          </div>
-          <div class="txt"><h3 class="h">You see it before it happens</h3><p>Who is asking, for which client, what it wants to do and why. Approve or deny.</p></div>
-        </div>
-        <div class="cardx glass">
-          <div class="vis" aria-hidden="true">
-            <div class="tl">
-              <div class="n"><i><svg class="ic" viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="M2.5 4.5 8 9l5.5-4.5"/></svg></i>9:41</div>
-              <div class="n"><i><svg class="ic" viewBox="0 0 16 16"><path d="M10.5 2.5l3 3L6 13H3v-3z"/></svg></i>9:42</div>
-              <div class="n"><i>?</i>9:43</div>
-              <div class="n last"><i><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></i>9:44</div>
-            </div>
-            <div class="logline"><div>Sent 6 replies<small>Acme Dental · Inbox agent</small></div><span class="badge">Approved</span></div>
-          </div>
-          <div class="txt"><h3 class="h">Every step in the task log</h3><p>What each agent did, for which client, when, and what needed your OK.</p></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="agents">
-  <div class="wrap">
-    <div class="slab glass">
-      <div class="sec-head">
-        <div><span class="label">Agent Builder</span><h2>Build your own <span class="hl">team of agents.</span></h2></div>
-        <div><p class="lede">Describe the agent a client needs in plain words. The Agent Builder sets up its apps, schedule, memory and limits. It still asks before anything goes out.</p></div>
-      </div>
-      <div class="dh dh-agents" id="demo-home-agents">
-        <p class="sr">Example with sample data: you describe a social posting agent for Fieldnote Studio. The Agent Builder creates "Social poster" with LinkedIn and X through One, a Tuesday 9:00 schedule, brand voice memory, and posting set to ask first.</p>
-        <div class="stage" aria-hidden="true">
-          <div class="bterm">
-            <div class="bar"><span class="dots"><i></i><i></i><i></i></span>Agent Builder · <b>Fieldnote Studio</b></div>
-            <div class="body">
-              <span class="pr">› Describe the agent you need</span>
-              <div class="brief">Every Tuesday, turn Fieldnote's latest blog post into a LinkedIn and an X post. Use their brand voice. Drafts only: I approve each post.</div>
-              <span class="ln"><span class="g">✓</span> name ........ <b>Social poster</b></span>
-              <span class="ln"><span class="g">✓</span> apps ........ <b>LinkedIn, X</b> (via One)</span>
-              <span class="ln"><span class="g">✓</span> schedule .... <b>Tue 9:00</b></span>
-              <span class="ln"><span class="g">✓</span> memory ...... <b>brand-voice.md</b></span>
-              <span class="ln"><span class="g">✓</span> approvals ... <b>posting asks first</b></span>
-              <span class="ln"><span class="g">●</span> agent ready in <b>Fieldnote Studio</b></span>
-            </div>
-          </div>
-          <div class="agent">
-            <div class="top"><span class="av"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span><div><div class="nm">Social poster</div><span>Fieldnote Studio</span></div><span class="badge">Ready</span></div>
-            <dl>
-              <div><dt>Apps</dt><dd><span class="chip"><span class="sq"></span>LinkedIn</span><span class="chip"><span class="sq"></span>X</span></dd></div>
-              <div><dt>Schedule</dt><dd>Every Tuesday, 9:00</dd></div>
-              <div><dt>Memory</dt><dd><span class="chip">brand-voice.md</span></dd></div>
-              <div><dt>Asks first</dt><dd><span class="chip">Posting</span><span class="chip">Sharing</span></dd></div>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="use-cases">
-  <div class="wrap">
-    <div class="sec-head center">
-      <span class="label">Use cases</span>
-      <h2 id="uc-h">What can you hand off?</h2>
-      <p class="lede">Pick a task. Each one runs in that client's workspace, and you approve what goes out.</p>
-    </div>
-    <div class="uc-wrap" role="region" aria-labelledby="uc-h" tabindex="0">
-      <table class="uc">
-        <caption class="note">Examples of what you could type, not results.</caption>
-        <thead><tr><th scope="col">Task</th><th scope="col">Example request</th><th scope="col">You approve</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Inbox</th><td><q>Sort this week's emails for the client and draft replies to the ones that need an answer.</q></td><td>Every reply, before it is sent</td></tr>
-          <tr><th scope="row">Scheduling</th><td><q>Find a time next week for the client's call with the printer and draft the invite.</q></td><td>The invite, before it goes on a calendar</td></tr>
-          <tr><th scope="row">Client reports</th><td><q>Pull this week's updates into a draft report for the client.</q></td><td>The report, before it is shared</td></tr>
-          <tr><th scope="row">Social posts</th><td><q>Turn the client's latest article into three post drafts.</q></td><td>Every post, before it is published</td></tr>
-          <tr><th scope="row">Follow-ups</th><td><q>Draft a follow-up to everyone who hasn't replied since Monday.</q></td><td>Every message, before it is sent</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="uc-apps">Through One, Orchy can connect to 1,000+ apps. You connect the ones each client uses, and agents work there instead of in a separate tool.</p>
-  </div>
-</section>
-
-<section class="sec" id="security">
-  <div class="wrap">
-    <div class="sec-head center">
-      <span class="label">Security</span>
-      <h2>Where your clients' work lives.</h2>
-      <p class="lede">The facts, in plain words.</p>
-    </div>
-    <ul class="points facts">
-      <li><b>Hosted in Canada</b>Orchy is hosted at OVHcloud in Canada. Encrypted backups are kept in Eastern North America.</li>
-      <li><b>One isolated container per customer</b>Your Orchy runs in its own container.</li>
-      <li><b>Your own AI key</b>Bring a key from OpenRouter, Anthropic or OpenAI. Your key is stored sealed and does not appear in your workspaces or logs.</li>
-      <li><b>Approvals before anything goes out</b>See above.</li>
-      <li><b>Delete when you want</b>You can delete your Orchy from your account.</li>
-    </ul>
-    <p class="center-link"><a class="more" href="/security">Security, privacy and the data processing agreement <span aria-hidden="true">→</span></a></p>
   </div>
 </section>
 
@@ -505,13 +339,6 @@
             <li><a href="/approvals">Approvals</a></li>
             <li><a href="/agents">Agents &amp; Builder</a></li>
             <li><a href="/apps">Apps (One)</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
-            <li><a href="/#use-cases">Inbox</a></li>
-            <li><a href="/#use-cases">Scheduling</a></li>
-            <li><a href="/#use-cases">Client reports</a></li>
-            <li><a href="/#use-cases">Social posts</a></li>
-            <li><a href="/#use-cases">Follow-ups</a></li>
           </ul></nav>
           <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
             <li><a href="/security">Security</a></li>

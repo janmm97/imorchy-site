@@ -153,7 +153,7 @@
           <ul class="nav-list" id="navlist">
             <li>
               <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
-              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <a class="nav-link nojs-only" href="#site-footer">Features</a>
               <ul class="fmenu glass" id="fmenu">
               <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
               <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
@@ -163,7 +163,6 @@
               </ul>
             </li>
             <li><a class="nav-link" href="/#how">How it works</a></li>
-            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
             <li><a class="nav-link" href="/blog">Blog</a></li>
           </ul>
         </nav>
@@ -179,7 +178,7 @@
 <main id="main">
 <section class="phero">
   <div class="wrap">
-    <p class="crumb label"><a href="/#features">Features</a><span aria-hidden="true">/</span><span>Security</span></p>
+    <p class="crumb label"><span>Features</span><span aria-hidden="true">/</span><span>Security</span></p>
     <h1>Where your clients' <span class="hl">work lives.</span></h1>
     <p class="lede">Plain facts about hosting, who can reach your data, and how to delete it. We list what is in place and nothing more.</p>
     <div class="cta-stack"><a class="btn" href="/go/early-access?from=security-hero">Get early access<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Orchy is in beta. We approve every sign-up by hand.</p></div>
@@ -194,19 +193,20 @@
         <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Diagram</b><span>· Where Orchy runs</span></div>
         <div class="fbody dia">
           <div class="col">
-            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Web traffic</b><small>Cloudflare Tunnel</small></span></div>
-            <div class="srv">
+            <div class="node" data-cls="lit" data-at="0.4" data-off="2.6"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Web traffic</b><small>Cloudflare Tunnel</small></span></div>
+            <div class="srv" data-cls="lit" data-at="1.4" data-off="3.6">
               <div class="shead"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg><span><b>OVHcloud</b><small>Canada</small></span></div>
-              <div class="boxes"><div class="node mine"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Your Orchy</b><small>Isolated container</small></span></div><div class="node dim"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Another customer</b><small>Isolated container</small></span></div></div>
+              <div class="boxes"><div class="node mine" data-cls="lit" data-at="2.4" data-off="5"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Your Orchy</b><small>Isolated container</small></span></div><div class="node dim"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span><b>Another customer</b><small>Isolated container</small></span></div></div>
             </div>
           </div>
           <div class="col">
-            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><span><b>Your AI key</b><small>Sealed with AES-256-GCM</small></span></div>
+            <div class="node" data-cls="lit" data-at="4.6" data-off="7"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><span><b>Your AI key</b><small>Sealed with AES-256-GCM</small></span></div>
             <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg><span><b>Your AI provider</b><small>OpenRouter · Anthropic · OpenAI</small></span></div>
-            <div class="node"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span><b>Encrypted backups</b><small>Eastern North America</small></span></div>
+            <div class="node" data-cls="lit" data-at="6.4" data-off="8.6"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span><b>Encrypted backups</b><small>Eastern North America</small></span></div>
           </div>
         </div>
       </div>
+      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
     </div>
     <p class="scene-cap">Hosted in Canada, one container per customer, your own AI key.</p>
   </div>
@@ -297,13 +297,6 @@
             <li><a href="/approvals">Approvals</a></li>
             <li><a href="/agents">Agents &amp; Builder</a></li>
             <li><a href="/apps">Apps (One)</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-use"><h2 id="f-use">Use cases</h2><ul>
-            <li><a href="/#use-cases">Inbox</a></li>
-            <li><a href="/#use-cases">Scheduling</a></li>
-            <li><a href="/#use-cases">Client reports</a></li>
-            <li><a href="/#use-cases">Social posts</a></li>
-            <li><a href="/#use-cases">Follow-ups</a></li>
           </ul></nav>
           <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
             <li><a href="/security" aria-current="page">Security</a></li>
