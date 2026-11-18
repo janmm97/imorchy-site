@@ -380,8 +380,3 @@ html.solid .band::before{display:none}
 .site .brand{margin-left:0}
 a.menu{text-decoration:none}
 html:not(.js) .js-only,html.js .nojs-only{display:none}
-/* The kit's .post rules are for blog-list rows (li.post); the v3 blog article is main.post, so undo the row styling there. */
-main.post{border-bottom:0}
-main.post a:not(.button){display:inline;padding:0;border-radius:0}
-main.post a.button{display:inline-flex;gap:14px;padding:14px 24px;border-radius:999px}
-main.post a:hover{background:none}

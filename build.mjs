@@ -299,6 +299,7 @@ const ICONS = {
   lock: '<rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/>',
   chev: '<path d="M4 6l4 4 4-4"/>',
   menu: '<path d="M2.5 5h11M2.5 11h11"/>',
+  arr: '<path d="M3 8h9.5M8.5 4l4 4-4 4"/>',
 };
 const icon = (name, cls = "ic") => `<svg class="${cls}" viewBox="0 0 16 16" aria-hidden="true">${ICONS[name]}</svg>`;
 // The Features menu: exactly these five (Jan/Claire, 2026-11-17; no Teams & huddles).
@@ -435,17 +436,19 @@ ${ld({ "@context": "https://schema.org", ...data, url: ORIGIN + p })}
     <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
 ${STYLE_LINKS}
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/css/blog.css" />
   </head>
-  <body>
+  <body class="page-read">
     <a class="skip" href="#main">Skip to content</a>
 ${header(p)}
 ${
   main ||
-  `    <main id="main" class="answer wrap">
+  `    <main id="main" class="reading">
       <article>
-        <h1>${esc(title)}</h1>
+        <section class="phero article"><div class="wrap col"><h1>${esc(title)}</h1></div></section>
+        <div class="wrap"><div class="col prose log">
 ${body}
+        </div></div>
       </article>
     </main>`
 }
@@ -461,39 +464,57 @@ const img = (e, { alt = "", eager = false } = {}) =>
   `<img src="${e.image}" width="${IMAGE.width}" height="${IMAGE.height}" alt="${esc(alt)}"${eager ? ' fetchpriority="high"' : ' loading="lazy" decoding="async"'} />`;
 const meta = (e) => `${day(e.date)} · ${e.minutes} min read`;
 const card = (e) =>
-  `          <article class="card"><a href="${e.path}"><span class="feat">${img(e)}</span><span class="tag">${esc(e.tag)}</span><h3>${esc(e.title)}</h3><p class="meta">${meta(e)}</p><p class="excerpt">${esc(e.description)}</p></a></article>`;
+  `          <article class="card"><a class="glass" href="${e.path}"><span class="feat">${img(e)}</span><span class="txt"><span class="tag">${esc(e.tag)}</span><h3>${esc(e.title)}</h3><p class="meta">${meta(e)}</p><p class="excerpt">${esc(e.description)}</p></span></a></article>`;
 const grid = (list) => `        <h2 class="grid-head" id="more-h">More posts</h2>\n        <div class="grid">\n${list.map(card).join("\n")}\n        </div>`;
+// The marker test needs a bare <h1>Blog</h1>, so it sits as the page's eyebrow and the H2 carries the display line.
 function blogIndex(list) {
   const [lead, ...rest] = list;
-  return `    <main id="main" class="blog wrap">
-      <header class="blog-head">
-        <h1>Blog</h1>
-        <p class="blog-intro">${esc(BLOG_INTRO)}</p>
+  return `    <main id="main" class="blog">
+      <header class="phero blog-head">
+        <div class="wrap">
+          <h1>Blog</h1>
+          <h2>Costs, hiring and <span class="hl">AI agents.</span></h2>
+          <p class="lede">${esc(BLOG_INTRO)}</p>
+        </div>
       </header>
-      <article class="lead-card"><a href="${lead.path}"><span class="feat">${img(lead, { eager: true })}</span><span class="lead-text"><span class="tag">${esc(lead.tag)}</span><h2>${esc(lead.title)}</h2><p class="meta">${meta(lead)}</p><p class="excerpt">${esc(lead.description)}</p><span class="read">Read the post →</span></span></a></article>
-${rest.length ? `      <section class="more" aria-labelledby="more-h">\n${grid(rest)}\n      </section>\n` : ""}    </main>`;
+      <div class="wrap">
+      <article class="lead-card"><a class="glass" href="${lead.path}"><span class="feat">${img(lead, { eager: true })}</span><span class="lead-text"><span class="tag">${esc(lead.tag)}</span><h3>${esc(lead.title)}</h3><p class="meta">${meta(lead)}</p><p class="excerpt">${esc(lead.description)}</p><span class="read">Read the post ${icon("arr", "ic arr")}</span></span></a></article>
+${rest.length ? `      <section class="more" aria-labelledby="more-h">\n${grid(rest)}\n      </section>\n` : ""}      </div>
+    </main>`;
 }
 function blogPost(e, list, html) {
   const others = list.filter((o) => o !== e).slice(0, 3);
   const takeaways = Array.isArray(e.takeaways)
     ? `        <aside class="takeaways" aria-labelledby="takeaways-h"><p class="tk-head" id="takeaways-h">Key takeaways</p><ul>${e.takeaways.map((t) => `<li>${inline(t)}</li>`).join("")}</ul></aside>\n`
     : "";
-  return `    <main id="main" class="answer post wrap">
+  return `    <main id="main" class="reading">
       <article>
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="/blog">Blog</a> <span aria-hidden="true">/</span> <span class="tag">${esc(e.tag)}</span></nav>
-        <h1>${esc(e.title)}</h1>
-        <p class="meta big">${meta(e)}${e.updated ? ` · Updated ${day(e.updated)}` : ""}</p>
-        <div class="feat feat-hero">${img(e, { alt: e.image_alt, eager: true })}</div>
-${takeaways}        <div class="prose">
+        <section class="phero article"><div class="wrap col">
+          <nav class="crumbs" aria-label="Breadcrumb"><a href="/blog">Blog</a> <span aria-hidden="true">/</span> <span class="tag">${esc(e.tag)}</span></nav>
+          <h1>${esc(e.title)}</h1>
+          <p class="meta big">${meta(e)}${e.updated ? ` · Updated ${day(e.updated)}` : ""}</p>
+        </div></section>
+        <div class="wrap"><div class="col">
+          <div class="feat feat-hero">${img(e, { alt: e.image_alt, eager: true })}</div>
+${takeaways}          <div class="prose">
 ${html}
-        </div>
-        <aside class="cta-card" aria-labelledby="cta-h">
-          <p class="cta-title" id="cta-h">Run routine work with agents, keep the final say</p>
-          <p>Orchy AI asks before it sends, posts or deletes. For VAs and agencies with several clients.</p>
-          <p><a class="button button-mint" href="https://app.imorchy.dev">Get Started</a></p>
-        </aside>
-${list.length >= 2 ? `        <section class="more" aria-labelledby="more-h">\n${grid(others)}\n        </section>\n` : ""}        <p class="back"><a href="/blog">← All posts</a></p>
+          </div>
+        </div></div>
       </article>
+      <aside class="cta-card" aria-labelledby="cta-h">
+        <div class="wrap">
+          <div class="band glass">
+            <span class="label">Early access · <span data-cap>${CAP_COPY}</span></span>
+            <h2 id="cta-h">Run routine work with agents, <span class="hl">keep the final say.</span></h2>
+            <p class="lede">Orchy AI asks before it sends, posts or deletes. For VAs and agencies with several clients.</p>
+            <a class="btn" href="/go/early-access?from=blog">Get early access ${icon("arr", "ic arr")}</a>
+            <p class="note">Orchy is in beta. We approve every sign-up by hand.</p>
+          </div>
+        </div>
+      </aside>
+      <div class="wrap">
+${list.length >= 2 ? `        <section class="more" aria-labelledby="more-h">\n${grid(others)}\n        </section>\n` : ""}        <p class="back"><a href="/blog">← All posts</a></p>
+      </div>
     </main>`;
 }
 
