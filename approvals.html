@@ -178,25 +178,26 @@
         <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Example</b><span>· made-up client</span></div>
         <div class="fbody one">
           <div class="wsp">
-            <div class="ws">
+            <div class="ws" data-cls="on" data-at="0" data-off="3.4">
               <span class="label">What Orchy asks about</span>
-              <ul class="rules flip"><li>Sending<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Money<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Calendar<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Deleting<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li>Sharing<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li class="free">Reading · drafting · notes<span class="st">Runs</span></li></ul>
+              <ul class="rules flip"><li data-cls="ask" data-at="0.7">Sending<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.0">Money<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.3">Calendar<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.6">Deleting<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li data-cls="ask" data-at="1.9">Sharing<span class="st"><span class="a">Runs</span><span class="b">Asks first</span></span></li><li class="free">Reading · drafting · notes<span class="st">Runs</span></li></ul>
             </div>
-            <div class="ws on">
-              <div class="pop ok">
+            <div class="ws on" data-cls="on" data-at="3.4" data-off="7.2">
+              <div class="pop ok" data-cls="ok" data-at="5.4">
                 <span class="label">Approval · Larkspur Florist</span>
                 <p class="q">Send 2 messages for Larkspur Florist?</p>
                 <ul class="rules"><li class="ask">Why it asks<span class="st">Sending</span></li></ul>
-                <div class="acts"><span class="mb">Deny</span><span class="mb pri">Approve</span><span class="badge"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></div>
+                <div class="acts"><span class="mb">Deny</span><span class="mb pri" data-cls="press" data-at="5" data-off="5.3">Approve</span><span class="badge"><svg class="ic sm" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></div>
               </div>
             </div>
-            <div class="ws">
+            <div class="ws" data-cls="on" data-at="7.2">
               <span class="label">Task record · Larkspur Florist</span>
-              <ul class="rules log"><li><span><time>09:12</time>Read 4 new messages</span><span class="st">Ran</span></li><li><span><time>09:13</time>Drafted 2 replies</span><span class="st">Ran</span></li><li class="ask"><span><time>09:13</time>Send 2 messages</span><span class="st">Asked</span></li><li class="ok"><span><time>09:15</time>You approved</span><span class="st"><svg class="ic" style="width:11px;height:11px" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></li><li><span><time>09:15</time>Sent 2 messages</span><span class="st">Ran</span></li></ul>
+              <ul class="rules log"><li data-at="7.5"><span><time>09:12</time>Read 4 new messages</span><span class="st">Ran</span></li><li data-at="7.8"><span><time>09:13</time>Drafted 2 replies</span><span class="st">Ran</span></li><li class="ask" data-at="8.1"><span><time>09:13</time>Send 2 messages</span><span class="st">Asked</span></li><li class="ok" data-at="8.4"><span><time>09:15</time>You approved</span><span class="st"><svg class="ic sm" aria-hidden="true"><use href="#i-check"/></svg>Approved</span></li><li data-at="8.7"><span><time>09:15</time>Sent 2 messages</span><span class="st">Ran</span></li></ul>
             </div>
           </div>
         </div>
       </div>
+      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
     </div>
     <p class="scene-cap">It stops, shows you what it wants to do, and waits for your answer.</p>
   </div>
