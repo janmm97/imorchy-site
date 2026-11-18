@@ -179,7 +179,7 @@ for (const page of pages) {
   const nav = footers[0];
   for (const [, link] of nav.matchAll(/<a href="([^"]+)"/g)) {
     if (/^https:\/\//.test(link)) continue;
-    const href = link.split("#")[0] || "/"; // /#how and /#use-cases are sections of the home page
+    const href = link.split("#")[0] || "/"; // /#how is a section of the home page
     assert.match(href, /^\/[a-z0-9./-]*$/, `${page}: footer link ${link} is a site path`);
     assert.ok(fs.existsSync(SITE + fileFor(href)) && (locs.includes(href) || built.has(fileFor(href))), `${page}: footer link ${link} resolves to a built page`);
   }
@@ -190,6 +190,13 @@ for (const page of pages) {
   same.add(footers[0].replace(/ aria-current="page"/g, ""));
 }
 assert.equal(same.size, 1, "every page has the identical footer, apart from aria-current");
+// v4.1 removed home sections: no page may link a /#id that index.html no longer has
+const homeIds = new Set([...fs.readFileSync(SITE + "index.html", "utf8").matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+for (const page of pages) {
+  for (const [, id] of fs.readFileSync(SITE + page, "utf8").matchAll(/href="\/#([^"]+)"/g)) {
+    assert.ok(homeIds.has(id), `${page}: link /#${id} has no matching id on the home page`);
+  }
+}
 assert.ok(footer("/").includes('<footer class="site" id="site-footer">'), "the footer is the kit's footer.site, the no-JS Menu target");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Changelog" && h === "/changelog"), "the footer links /changelog");
 assert.ok(FOOTER_COLUMNS.flatMap((c) => c.links).some(([t, h]) => t === "Blog" && h === "/blog"), "the footer links /blog");
@@ -205,7 +212,7 @@ for (const [, url] of SOCIAL) assert.ok(footer("/").includes(`<a href="${url}" t
 
 // ── one header (v4 shell, 2026-11-18): every shipped page has build.mjs's kit header and both kit stylesheets
 // before styles.css; aria-current marks only the page's own link; the Features menu is the five approved items;
-// without JS the nav still works (kit option a: Features → /#features, Menu → the footer) ──
+// without JS the nav still works (Features and Menu → the footer, which lists every page) ──
 assert.deepEqual(FEATURES.map(([n]) => n), ["Client workspaces", "Approvals", "Agents & Agent Builder", "Apps (One)", "Security"], "Features menu: the five approved items, in order");
 for (const page of pages) {
   const html = fs.readFileSync(SITE + page, "utf8");
@@ -215,7 +222,7 @@ for (const page of pages) {
   assert.doesNotMatch(headers[0], /Teams|huddle/i, `${page}: no Teams & huddles in the nav`);
   const current = [...headers[0].matchAll(/<a [^>]*href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
   assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
-  for (const fallback of ['href="/#features"', 'href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
+  for (const fallback of ['href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
   const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
   // v4 pages are kit-only; a v3 page still links /styles.css, after the kit.
   assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css (before /styles.css, if any)`);

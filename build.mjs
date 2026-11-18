@@ -333,12 +333,11 @@ export function header(p, site = siteDir) {
           <ul class="nav-list" id="navlist">
             <li>
               <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features${icon("chev", "ic chev")}</button>
-              <a class="nav-link nojs-only" href="/#features">Features</a>
+              <a class="nav-link nojs-only" href="#site-footer">Features</a>
               <ul class="fmenu glass" id="fmenu">
 ${items}              </ul>
             </li>
             <li><a class="nav-link" href="/#how">How it works</a></li>
-            <li><a class="nav-link" href="/#use-cases">Use cases</a></li>
             <li><a class="nav-link" href="/blog"${cur("/blog", p)}>Blog</a></li>
           </ul>
         </nav>
@@ -358,11 +357,6 @@ export const FOOTER_COLUMNS = [
     id: "f-prod",
     heading: "Product",
     links: [["How it works", "/#how"], ["Client workspaces", "/client-workspaces"], ["Approvals", "/approvals"], ["Agents & Builder", "/agents"], ["Apps (One)", "/apps"]],
-  },
-  {
-    id: "f-use",
-    heading: "Use cases",
-    links: ["Inbox", "Scheduling", "Client reports", "Social posts", "Follow-ups"].map((t) => [t, "/#use-cases"]),
   },
   { id: "f-sec", heading: "Security", links: [["Security", "/security"], ["Data privacy", "/data-privacy"], ["DPA", "/dpa"]] },
   { id: "f-co", heading: "Company", links: [["Blog", "/blog"], ["Changelog", "/changelog"]] },

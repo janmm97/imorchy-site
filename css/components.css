@@ -206,7 +206,7 @@ a.card:focus-visible{outline-offset:4px;border-radius:var(--r-xl)}
 
 /* ---------- footer ---------- */
 footer.site{border-top:1px solid var(--c-edge-soft);padding:56px 0 36px;background:#14131266}
-.fcols{display:grid;grid-template-columns:1.3fr repeat(6,1fr);gap:24px}
+.fcols{display:grid;grid-template-columns:1.3fr repeat(5,1fr);gap:24px}
 @media (max-width:1100px) and (min-width:901px){.fcols{grid-template-columns:repeat(3,1fr)}.fcols .fb{grid-column:1/-1}}
 .fcols .tagline{font-size:14px;color:var(--c-muted);max-width:26ch;margin-top:14px}
 .fcols h2{font:500 var(--fs-label-sm)/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);margin-bottom:10px;padding-top:12px;border-top:1px solid var(--c-edge)}
@@ -375,7 +375,7 @@ html.solid .band::before{display:none}
 .fcols .tagline{max-width:17.3em}
 
 /* v4 shell (Sadie, 2026-11-18): no-JS nav = kit README option (a), Nora's call. /js/nav.mjs adds html.js;
-   without it the Features link goes to /#features and, below 900px, "Menu" goes to the footer. No sheet animation at launch. */
+   without it the Features link goes to the footer and, below 900px, "Menu" goes to the footer. No sheet animation at launch. */
 .nav-end{display:flex;gap:8px;justify-self:end;align-items:center}
 .site .brand{margin-left:0}
 a.menu{text-decoration:none}

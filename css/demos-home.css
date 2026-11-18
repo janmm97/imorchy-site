@@ -2,7 +2,7 @@
    (Miles's comp index.html, data-poster), so nothing moves, nothing loops and no pause control is needed.
    The loops come back in v4.1 on top of this markup. Every rule is scoped to .dh so it can't touch the feature
    pages; colours, radii, fonts and glass come from tokens.css (kit v1.4). Kit classes reused as they are:
-   .glass .label .hl .sr .ic .chip .badge .rules .logline. Homepage only: link it after components.css. */
+   .glass .label .hl .sr .ic .chip. Homepage only: link it after components.css. */
 
 .dh{position:relative}
 .dh .sq{display:inline-block;width:16px;height:16px;flex:none;background:var(--c-muted);clip-path:inset(25% round 2px)} /* neutral app mark (Miles's rule) */
@@ -49,75 +49,6 @@
 .dh .capsteps li{border-top:1px solid var(--c-hl);padding-top:12px;font-size:14px;color:var(--c-ivory)}
 .dh .capsteps b{display:block;font:500 12px var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-hl);margin-bottom:4px}
 
-/* approval card: anatomy of Orchy's real pop-up; near-opaque sheet, no blur */
-.dh .ap{background:var(--sheet);border:1px solid var(--c-edge-hi);border-radius:var(--r-md);box-shadow:var(--glass-shine),0 24px 50px -20px #000;padding:14px;font-size:13px;width:100%;max-width:300px;margin:0 auto}
-.dh .ap .ttl{font:500 10.5px var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);margin-bottom:10px}
-.dh .ap .from{display:flex;gap:9px;align-items:center;margin-bottom:8px}
-.dh .ap .av{width:28px;height:28px;border-radius:50%;background:var(--c-ivory);color:var(--c-ink);display:grid;place-items:center;flex:none}
-.dh .ap .from div span{display:block;font-size:11.5px;color:var(--c-muted)}
-.dh .ap .ask{margin:0 0 8px}
-.dh .ap .why{background:var(--in);border:1px solid var(--c-edge-soft);border-radius:10px;padding:8px 10px;font-size:12px;color:var(--c-muted);margin-bottom:10px}
-.dh .ap .done{display:flex;align-items:center;gap:8px;height:34px;font:500 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
-.dh .badge .ic{width:11px;height:11px;stroke-width:2.2}
-
-/* s2 · one workspace per client */
-.dh-clients .stage{display:grid;grid-template-columns:260px 1fr;border-radius:var(--r-xl);overflow:hidden;min-height:400px}
-.dh .ws-list{border-right:1px solid var(--c-edge-soft);background:#0000001f;padding:14px;display:flex;flex-direction:column;gap:6px}
-.dh .ws-list .label{color:var(--c-muted);padding:6px 8px 10px}
-.dh .wsi{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--r-sm);border:1px solid transparent;font-size:14.5px;color:var(--c-muted)}
-.dh .wsi .mk{width:28px;height:28px;border-radius:var(--r-xs);display:grid;place-items:center;font:700 11px/1 var(--font-mono);flex:none;color:var(--c-ivory);background:#ffffff1a}
-.dh .wsi.cur{background:var(--in-2);border-color:var(--c-edge-hi);color:var(--c-ivory);box-shadow:var(--glass-shine)}
-.dh .wsi.cur .mk{background:var(--c-hl);color:var(--c-on-hl)}
-.dh .ws-main{padding:22px 26px;display:grid;grid-template-rows:auto 1fr;gap:18px}
-.dh .ws-top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--c-edge-soft);padding-bottom:16px}
-.dh .ws-top .nm{font-size:26px;font-weight:500;letter-spacing:-.025em;line-height:1.04}
-.dh .ws-top .label{color:var(--c-muted)}
-.dh .ws-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-content:start}
-.dh .ws-col{border:1px solid var(--c-edge-soft);background:var(--in);border-radius:var(--r-md);padding:14px}
-.dh .ws-col .h{font:500 11px var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);margin-bottom:12px;display:flex;justify-content:space-between}
-.dh .ws-col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-.dh .ws-col li{display:flex;align-items:center;gap:10px;min-height:20px;font-size:14px;line-height:1.2}
-.dh .ws-col .sq{width:18px;height:18px}
-.dh .ws-col .f{font:400 12.5px var(--font-mono)}
-.dh .ws-col .dot{width:6px;height:6px;border-radius:50%;background:var(--c-hl);flex:none}
-.dh .ws-note{grid-column:1/-1;margin:0;font:400 12px var(--font-mono);color:var(--c-muted)}
-
-/* s3 · three control cards */
-.dh-approvals .cardsx{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.dh .cardx{border-radius:var(--r-xl);overflow:hidden;display:flex;flex-direction:column}
-.dh .cardx .vis{height:290px;border-bottom:1px solid var(--c-edge-soft);background:#00000024;padding:18px;display:flex;flex-direction:column;justify-content:center}
-.dh .cardx .txt{padding:20px 22px 24px}
-.dh .cardx .h{font-size:20px;font-weight:500;letter-spacing:-.01em;line-height:1.2;margin:0 0 6px}
-.dh .cardx p{color:var(--c-muted);font-size:15px;margin:0}
-.dh .rules{padding:0;margin:0}
-.dh .tl{display:flex;justify-content:space-between;position:relative;margin:0 6px 20px}
-.dh .tl::before{content:"";position:absolute;left:14px;right:14px;top:15px;height:1px;background:var(--c-edge)}
-.dh .tl .n{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;font:400 11px var(--font-mono);color:var(--c-ivory)}
-.dh .tl .n i{width:30px;height:30px;border-radius:50%;background:var(--c-control);border:1px solid var(--c-ivory);display:grid;place-items:center;font-style:normal}
-.dh .tl .n.last i{background:var(--c-hl);color:var(--c-on-hl);border-color:var(--c-hl)}
-.dh .logline small{display:block;color:var(--c-muted);font:400 11px var(--font-mono)}
-
-/* s4 · Agent Builder (sits inside the page's deep slab; inner glass only, no extra blur) */
-.dh-agents .stage{display:grid;grid-template-columns:1.15fr 1fr;gap:56px;align-items:center}
-.dh .bterm{background:#00000052;border:1px solid var(--c-edge-soft);border-radius:var(--r-lg);overflow:hidden;font:400 13px/1.7 var(--font-mono);min-height:420px;display:flex;flex-direction:column}
-.dh .bterm .body{padding:18px 20px;flex:1;display:flex;flex-direction:column;gap:4px}
-.dh .bterm .pr,.dh .bterm .ln{color:var(--c-muted)}
-.dh .bterm .brief{background:var(--in-2);border:1px solid var(--c-edge-soft);border-radius:10px;padding:10px 12px;margin:6px 0 10px;color:var(--c-ivory)}
-.dh .bterm .ln b{color:var(--c-ivory);font-weight:500}
-.dh .bterm .g{color:var(--c-hl)}
-.dh .agent{background:var(--in);border:1px solid var(--c-edge);border-radius:var(--r-lg);padding:22px;box-shadow:var(--glass-shine)}
-.dh .agent .top{display:flex;gap:14px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--c-edge-soft);margin-bottom:6px}
-.dh .agent .av{width:46px;height:46px;border-radius:var(--r-sm);background:var(--c-ivory);color:var(--c-ink);display:grid;place-items:center;flex:none}
-.dh .agent .av .ic{width:22px;height:22px;stroke-width:1.6}
-.dh .agent .nm{font-size:22px;font-weight:500;letter-spacing:-.01em;line-height:1.1}
-.dh .agent .top div span{display:block;font:400 12px var(--font-mono);color:var(--c-muted)}
-.dh .agent .badge{margin-left:auto}
-.dh .agent dl{display:flex;flex-direction:column;margin:0}
-.dh .agent dl div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-edge-soft);font-size:14px;align-items:center}
-.dh .agent dl div:last-child{border-bottom:0}
-.dh .agent dt{font:500 11px var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted)}
-.dh .agent dd{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0}
-
 @media (max-width:1100px){
   .dh-how .stage{grid-template-columns:1fr 260px 1fr;gap:34px}
 }
@@ -132,15 +63,4 @@
   .dh .row{height:40px;padding:0 10px}
   .dh .row .v{display:none}
   .dh .capsteps{grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-  .dh-clients .stage{grid-template-columns:1fr;border-radius:var(--r-lg)}
-  .dh .ws-list{flex-direction:row;border-right:0;border-bottom:1px solid var(--c-edge-soft);padding:10px}
-  .dh .ws-list .label{display:none}
-  .dh .wsi{flex:1;flex-direction:column;gap:6px;padding:8px 4px;font-size:12px;text-align:center}
-  .dh .ws-main{padding:16px}
-  .dh .ws-cols{grid-template-columns:1fr}
-  .dh-approvals .cardsx{grid-template-columns:1fr}
-  .dh .cardx{border-radius:var(--r-lg)}
-  .dh .cardx .vis{height:auto;min-height:250px}
-  .dh-agents .stage{grid-template-columns:1fr;gap:18px}
-  .dh .bterm{min-height:0}
 }
