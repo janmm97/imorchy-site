@@ -3,7 +3,7 @@ title: Virtual assistant cost in 2026: rates, hours and AI help
 description: What a virtual assistant costs per hour in the US, the Philippines and on freelance platforms, with sources, and where AI agents can take on routine work.
 date: 2026-11-04
 updated: 2026-11-05
-og_image: /assets/og/virtual-assistant-cost.png
+og_image: /assets/og-image.png
 canonical: https://imorchy.dev/blog/virtual-assistant-cost
 image: /assets/blog/virtual-assistant-cost.webp
 image_alt: Ten of Orchy's blocky cartoon helpers in two rows, each a different colour, on a dark background.
