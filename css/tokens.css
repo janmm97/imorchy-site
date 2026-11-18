@@ -1,0 +1,126 @@
+/* =====================================================================
+   imorchy.dev v4 · design tokens (kit v1.4, 2026-11-17)
+   Source of truth: the approved homepage comp (centred hero, locked by Jan
+   2026-11-17): Tasks/Miles/2026-11-16-goal-revise-imorchy-dev-website-v4-2/comp/index.html
+   Every value below is lifted from that comp. Nothing here is new except the
+   spacing/type scale names (the comp's values, given names) and the prose
+   tokens for legal/article pages. No new accent colour.
+   Load order on every page: tokens.css -> components.css -> page CSS.
+   ===================================================================== */
+
+/* ---- fonts: production self-hosts both OFL faces as woff2 subsets (Nora: <= 2 files, <= 90 KB) ---- */
+/* Width-matched fallbacks so the web-font swap doesn't re-wrap headings (measured CLS 0.29 -> 0.003 in the comp). */
+@font-face{font-family:"Sans Fallback";src:local("Arial"),local("Helvetica"),local("Roboto");size-adjust:101.8%}
+@font-face{font-family:"Mono Fallback";src:local("Courier New"),local("Courier");size-adjust:100%}
+
+:root{
+  color-scheme:dark;
+
+  /* ---------- colour: brand (fixed by the PRD) ---------- */
+  --c-ink:#1C1C1C;            /* charcoal page base */
+  --c-ivory:#FFFDFA;          /* primary text, primary button fill, focus ring */
+  --c-muted:#D3CDC3;          /* secondary text. Worst case on glass measured in README (>= 4.5:1) */
+  --c-hl:#E9D2A4;             /* champagne highlight: heading emphasis, live/approved states. Approved in the comp; not a new accent */
+  --c-on-hl:#1C1C1C;          /* text on champagne (badges, check discs) */
+
+  /* ---------- colour: lines (white at low alpha, so they read on any tint) ---------- */
+  --c-edge:#ffffff1f;         /* default 1 px glass edge, dividers above lists */
+  --c-edge-soft:#ffffff14;    /* inner dividers, chip borders */
+  --c-edge-hi:#ffffff33;      /* active/hover edge, pause control ring */
+
+  /* ---------- glass: outer surfaces (the only ones that blur) ---------- */
+  --glass-blur:blur(28px) saturate(160%);
+  --glass-sheen:linear-gradient(160deg,#ffffff14,#ffffff05 45%,#ffffff00 70%);
+  --glass-shine:inset 0 1px 0 #ffffff2b,inset 0 -1px 0 #ffffff08;   /* inner top light edge */
+  --glass-shadow:0 30px 70px -30px #000000c7;                       /* soft deep drop */
+  --glass-shadow-deep:0 50px 120px -40px #000,0 0 0 1px #00000066;   /* the deep slab */
+  --tint:#151413ad;           /* standard outer glass (panels, cards, CTA band, Features menu) */
+  --tint-nav:#141312b8;       /* nav bar and mobile menu sheet */
+  --tint-deep:#0d0c0bd1;      /* the one deep slab per page */
+
+  /* ---------- glass: inner surfaces (tinted, NEVER blurred) ---------- */
+  --in:#ffffff09;             /* rows, chips, inputs, FAQ items, table header */
+  --in-2:#ffffff12;           /* the active/selected inner item */
+  --sheet:#1f1d1bf2;          /* near-opaque sheet: approval card, toast (nothing shows through) */
+  --c-control:#262422;        /* solid disc behind the pause control */
+
+  /* ---------- colour field behind the glass: "ember" (approved default) ---------- */
+  --f1:#B8733352; --f2:#7A2E2A66; --f3:#3E5F6466; --f4:#E9D8B41f;
+  --field-opacity:1;          /* reading pages (legal, blog post) set .page-read -> .55 */
+
+  /* ---------- radii ---------- */
+  --r-xl:28px;                /* large glass: demo frame, feature card, CTA band, slab */
+  --r-lg:22px;                /* nav bar, panels, all large glass on <= 900 px */
+  --r-md:16px;                /* approval card, inner columns, toast */
+  --r-sm:12px;                /* buttons, rows, inputs, FAQ items */
+  --r-xs:8px;                 /* chips, tags */
+  --r-pill:999px;
+
+  /* ---------- type ---------- */
+  --font-sans:"Instrument Sans","Sans Fallback",system-ui,-apple-system,"Segoe UI",sans-serif;  /* headings + body (OFL) */
+  --font-mono:"JetBrains Mono","Mono Fallback",ui-monospace,Consolas,monospace;                  /* labels, nav, buttons, footer, demo UI, code (OFL) */
+  /* display + headings (Instrument Sans 500, tight tracking, balanced) */
+  --fs-hero:clamp(44px,5vw,76px);      --ls-hero:-.035em; --lh-hero:1;
+  --fs-h1:clamp(40px,5.4vw,68px);      /* feature-page H1: one step under the homepage hero */
+  --fs-h2:clamp(32px,4.2vw,52px);      --ls-head:-.025em; --lh-head:1.04;
+  --fs-h3:clamp(20px,1.8vw,26px);      --ls-h3:-.01em;
+  /* body */
+  --fs-lede:clamp(17px,1.5vw,19px);
+  --fs-body:17px;  --lh-body:1.55;
+  --fs-small:15px;                      /* card body, list item excerpt */
+  /* prose (legal, blog, changelog) */
+  --fs-prose:18px; --lh-prose:1.7; --measure:45.3em; /* v1.4: was 68ch; ch changes with the font, em does not (68ch = 45.3em in Instrument Sans) */
+  --fs-p-h2:clamp(26px,2.6vw,34px); --fs-p-h3:clamp(20px,1.9vw,24px);
+  /* mono labels: uppercase with wide tracking */
+  --fs-label:12px; --ls-label:.1em;     /* nav links, section labels, footer links */
+  --fs-label-sm:11px;                   /* footer column heads, bars, tags */
+  --fs-btn:13px;   --fs-btn-sm:12px;
+  --fs-note:12px;                       /* the beta note under every CTA */
+
+  /* ---------- spacing (4 px base; values are the comp's) ---------- */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px;
+  --s-7:48px; --s-8:56px; --s-9:88px; --s-10:112px;
+  --gutter:24px;              /* page side padding; 16 px under 420 px */
+  --wrap:1240px;              /* content max width */
+  --section-y:var(--s-10);    /* 112 px above 900 px; 76 px on <= 900 px */
+  --head-gap:var(--s-8);      /* section heading -> content */
+  --nav-h:62px;
+  --target-min:44px;          /* every tap target (WCAG 2.5.8 floor is 24; we hold 44 on touch) */
+
+  /* ---------- motion (Stella may refine) ---------- */
+  --ease:cubic-bezier(.2,.7,.2,1);      /* ease-out: every UI transition */
+  --t-fast:180ms;             /* hover, colour, focus */
+  --t:280ms;                  /* demo state changes, reveals */
+  --t-swap:220ms;             /* content swap inside a demo (fade out -> fill -> fade in) */
+  --t-press:120ms;            /* button press scale */
+  --t-cursor:700ms;           /* demo pointer travel */
+  --t-drift:36s;              /* colour-field drift, alternate, infinite */
+  --loop-max:15s;             /* one demo loop; anything looping > 5 s needs the pause control */
+}
+
+/* ---------- optional field variant (kept from the comp, not the default) ---------- */
+html.tide{--f1:#1F7A7266;--f2:#24447A66;--f3:#2E524966;--f4:#B8F9D41f;--c-hl:#B8F9D4}
+
+/* ---------- breakpoints (documented, CSS can't tokenise them) ----------
+   <= 1100 px  tighter demo grids
+   <=  900 px  phone/tablet: single column, menu button, lighter blur, no drift
+   <=  420 px  small phone: 16 px gutters, brand word hidden in nav           */
+@media (max-width:900px){
+  :root{--glass-blur:blur(18px) saturate(150%);--section-y:76px;--head-gap:var(--s-6)}
+}
+@media (max-width:420px){ :root{--gutter:16px} }
+
+/* ---------- reduced motion: no drift, no loops, no smooth scroll (posters shown by components) ---------- */
+@media (prefers-reduced-motion:reduce){
+  :root{--t-fast:0ms;--t:0ms;--t-swap:0ms;--t-press:0ms;--t-cursor:0ms}
+}
+
+/* ---------- solid fallbacks. KEEP LAST: they must beat the phone blur override above ----------
+   Reduced transparency, browsers without backdrop-filter, or ?solid (QA): solid tinted panels. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  :root{--glass-blur:none;--tint:#272523;--tint-nav:#242220;--tint-deep:#131211;--sheet:#2f2c29}
+}
+@media (prefers-reduced-transparency:reduce){
+  :root{--glass-blur:none;--tint:#272523;--tint-nav:#242220;--tint-deep:#131211;--sheet:#2f2c29;--field-opacity:.4}
+}
+html.solid{--glass-blur:none;--tint:#272523;--tint-nav:#242220;--tint-deep:#131211;--sheet:#2f2c29;--field-opacity:.4}

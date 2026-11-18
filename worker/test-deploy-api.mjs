@@ -99,6 +99,35 @@ if (!fs.existsSync(path.join(WORKER, "node_modules", "esbuild"))) {
     assert.match(run.stderr, /--file is gone/);
     assert.equal(run.calls.length, 0);
     ok("--dry-run only reads (zone, DNS, custom domains); --file is refused before any call");
+
+    // ── preview mode: only the imorchy-site-preview Worker on workers.dev ──
+    const PREVIEW_ENV = { CLOUDFLARE_API_TOKEN: "cf-test-token", CLOUDFLARE_ACCOUNT_ID: "0123456789abcdef0123456789abcdef" };
+    for (const bad of [["--preview", "imorchy.dev"], ["--preview", "--name", "orchy-site"], ["imorchy.dev", "--preview", "--no-www"]]) {
+      run = deploy(bad, PREVIEW_ENV);
+      assert.equal(run.status, 1, bad.join(" "));
+      assert.match(run.stderr, /--preview deploys only the Worker imorchy-site-preview/);
+      assert.equal(run.calls.length, 0, bad.join(" "));
+    }
+    run = deploy(["--preview"], { CLOUDFLARE_ACCOUNT_ID: PREVIEW_ENV.CLOUDFLARE_ACCOUNT_ID });
+    assert.equal(run.status, 1);
+    assert.match(run.stderr, /needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID/);
+    assert.equal(run.calls.length, 0);
+    ok("--preview refuses a domain (imorchy.dev), --name orchy-site and a missing token or account, before any call");
+
+    run = deploy(["--preview"], { ...PREVIEW_ENV, CLOUDFLARE_ACCOUNT_ID: "acct1" });
+    assert.equal(run.status, 1, "a malformed account id is refused");
+    run = deploy(["--preview"], PREVIEW_ENV);
+    assert.equal(run.status, 0, run.stderr);
+    const A = `/accounts/${PREVIEW_ENV.CLOUDFLARE_ACCOUNT_ID}`;
+    assert.deepEqual(run.calls.map(route), [
+      `POST ${A}/workers/scripts/imorchy-site-preview/assets-upload-session`,
+      `POST ${A}/workers/assets/upload`,
+      `PUT ${A}/workers/scripts/imorchy-site-preview`,
+      `POST ${A}/workers/scripts/imorchy-site-preview/subdomain`,
+    ]);
+    assert.deepEqual(run.calls.find((c) => c.metadata).metadata.bindings, [{ type: "assets", name: "ASSETS" }, R2, { type: "plain_text", name: "PREVIEW", text: "1" }]);
+    assert.deepEqual(run.calls.at(-1).json, { enabled: true, previews_enabled: false });
+    ok("--preview: only the imorchy-site-preview Worker (upload, script, workers.dev on), no zone, DNS or domain call, PREVIEW bound");
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }

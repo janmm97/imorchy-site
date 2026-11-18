@@ -50,7 +50,13 @@ ok("http:// and www. answer 301 to https://imorchy.dev with path and query kept,
 res = await get("/");
 assert.equal(res.status, 200);
 assert.equal(seen.at(-1), "https://imorchy.dev/");
-ok("https://imorchy.dev/ passes through to the static assets");
+assert.equal(res.headers.get("X-Robots-Tag"), null);
+ok("https://imorchy.dev/ passes through to the static assets, with no X-Robots-Tag in production");
+for (const p of ["/", "/go/early-access?from=hero", "/local"]) {
+  res = await worker.fetch(new Request("https://imorchy-site-preview.janmm97.workers.dev" + p), { ...env, PREVIEW: "1" });
+  assert.equal(res.headers.get("X-Robots-Tag"), "noindex, nofollow", p);
+}
+ok("with the PREVIEW binding (deploy.mjs --preview) every answer, redirects too, says X-Robots-Tag: noindex, nofollow");
 const ANSWER_PAGES = ["/approvals", "/client-workspaces"];
 for (const p of ANSWER_PAGES) {
   res = await get(p);
