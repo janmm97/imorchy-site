@@ -33,9 +33,9 @@
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/components.css" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/css/blog.css" />
   </head>
-  <body>
+  <body class="page-read">
     <a class="skip" href="#main">Skip to content</a>
     <header class="nav" id="top">
       <div class="bar-in">
@@ -66,15 +66,17 @@
       <script type="module" src="/js/nav.mjs"></script>
       <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
     </header>
-    <main id="main" class="answer wrap">
+    <main id="main" class="reading">
       <article>
-        <h1>Changelog</h1>
+        <section class="phero article"><div class="wrap col"><h1>Changelog</h1></div></section>
+        <div class="wrap"><div class="col prose log">
         <section id="security-headers"><h2>Stricter browser security settings</h2>
         <p class="answer-lede"><time datetime="2026-11-02">2026-11-02</time></p>
 <ul><li>Browsers are told to use only HTTPS for the site, not to show it inside other sites' frames, and to load scripts only from the places the site needs. Pages other than the homepage run no scripts.</li></ul></section>
         <section id="answer-pages-and-faster-phones"><h2>Answer pages, an FAQ and a faster site on phones</h2>
         <p class="answer-lede"><time datetime="2026-10-30">2026-10-30</time></p>
 <ul><li>The homepage has an FAQ, an &quot;Orchy AI is in early access.&quot; badge, a &quot;Join the early-access list&quot; button and a &quot;Book 30 minutes&quot; link. Addresses that start with http:// or www. now go straight to https://imorchy.dev.</li><li>Four answer pages: Approvals, Client workspaces, Claude Code orchestrator and Local command center. Each has its own FAQ and works without JavaScript, and the homepage links to them from its Learn menu.</li><li>The site is faster on phones: lighter images and fonts, and the 3D squad waits until the page has loaded. On phones, with Save-Data on or with reduced motion, a still picture shows instead. In a local Lighthouse mobile test, the largest contentful paint (LCP) went from 3.08 s to 2.48 s.</li><li>The homepage footer has &quot;Back to the Top&quot;, the answer pages' footers have &quot;Back to Home&quot;, and the answer pages show the homepage logo.</li><li>The FAQs open and close on click, work with the keyboard and without JavaScript, and are centred.</li><li>Every page uses the same Orchy icon in the browser tab.</li></ul></section>
+        </div></div>
       </article>
     </main>
     <footer class="site" id="site-footer">

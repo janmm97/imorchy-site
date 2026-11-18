@@ -41,9 +41,9 @@
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/components.css" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/css/blog.css" />
   </head>
-  <body>
+  <body class="page-read">
     <a class="skip" href="#main">Skip to content</a>
     <header class="nav" id="top">
       <div class="bar-in">
@@ -74,12 +74,17 @@
       <script type="module" src="/js/nav.mjs"></script>
       <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
     </header>
-    <main id="main" class="blog wrap">
-      <header class="blog-head">
-        <h1>Blog</h1>
-        <p class="blog-intro">Notes from the team building Orchy AI: costs, hiring, and how to hand routine work to AI agents while you keep the final say.</p>
+    <main id="main" class="blog">
+      <header class="phero blog-head">
+        <div class="wrap">
+          <h1>Blog</h1>
+          <h2>Costs, hiring and <span class="hl">AI agents.</span></h2>
+          <p class="lede">Notes from the team building Orchy AI: costs, hiring, and how to hand routine work to AI agents while you keep the final say.</p>
+        </div>
       </header>
-      <article class="lead-card"><a href="/blog/virtual-assistant-cost"><span class="feat"><img src="/assets/blog/virtual-assistant-cost.webp" width="1600" height="900" alt="" fetchpriority="high" /></span><span class="lead-text"><span class="tag">Pricing</span><h2>Virtual assistant cost in 2026: rates, hours and AI help</h2><p class="meta"><time datetime="2026-11-04">Nov 4, 2026</time> · 4 min read</p><p class="excerpt">What a virtual assistant costs per hour in the US, the Philippines and on freelance platforms, with sources, and where AI agents can take on routine work.</p><span class="read">Read the post →</span></span></a></article>
+      <div class="wrap">
+      <article class="lead-card"><a class="glass" href="/blog/virtual-assistant-cost"><span class="feat"><img src="/assets/blog/virtual-assistant-cost.webp" width="1600" height="900" alt="" fetchpriority="high" /></span><span class="lead-text"><span class="tag">Pricing</span><h3>Virtual assistant cost in 2026: rates, hours and AI help</h3><p class="meta"><time datetime="2026-11-04">Nov 4, 2026</time> · 4 min read</p><p class="excerpt">What a virtual assistant costs per hour in the US, the Philippines and on freelance platforms, with sources, and where AI agents can take on routine work.</p><span class="read">Read the post <svg class="ic arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></svg></span></span></a></article>
+      </div>
     </main>
     <footer class="site" id="site-footer">
       <div class="wrap">

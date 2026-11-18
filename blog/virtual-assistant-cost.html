@@ -44,9 +44,9 @@
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/components.css" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/css/blog.css" />
   </head>
-  <body>
+  <body class="page-read">
     <a class="skip" href="#main">Skip to content</a>
     <header class="nav" id="top">
       <div class="bar-in">
@@ -77,14 +77,17 @@
       <script type="module" src="/js/nav.mjs"></script>
       <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
     </header>
-    <main id="main" class="answer post wrap">
+    <main id="main" class="reading">
       <article>
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="/blog">Blog</a> <span aria-hidden="true">/</span> <span class="tag">Pricing</span></nav>
-        <h1>Virtual assistant cost in 2026: rates, hours and AI help</h1>
-        <p class="meta big"><time datetime="2026-11-04">Nov 4, 2026</time> · 4 min read · Updated <time datetime="2026-11-05">Nov 5, 2026</time></p>
-        <div class="feat feat-hero"><img src="/assets/blog/virtual-assistant-cost.webp" width="1600" height="900" alt="Ten of Orchy's blocky cartoon helpers in two rows, each a different colour, on a dark background." fetchpriority="high" /></div>
+        <section class="phero article"><div class="wrap col">
+          <nav class="crumbs" aria-label="Breadcrumb"><a href="/blog">Blog</a> <span aria-hidden="true">/</span> <span class="tag">Pricing</span></nav>
+          <h1>Virtual assistant cost in 2026: rates, hours and AI help</h1>
+          <p class="meta big"><time datetime="2026-11-04">Nov 4, 2026</time> · 4 min read · Updated <time datetime="2026-11-05">Nov 5, 2026</time></p>
+        </div></section>
+        <div class="wrap"><div class="col">
+          <div class="feat feat-hero"><img src="/assets/blog/virtual-assistant-cost.webp" width="1600" height="900" alt="Ten of Orchy's blocky cartoon helpers in two rows, each a different colour, on a dark background." fetchpriority="high" /></div>
         <aside class="takeaways" aria-labelledby="takeaways-h"><p class="tk-head" id="takeaways-h">Key takeaways</p><ul><li>Where you hire moves the hourly cost more than anything else.</li><li>BLS has no VA category; the closest US job is executive and admin assistants.</li><li>AI agents suit routine, checkable work: reading, sorting and drafting.</li></ul></aside>
-        <div class="prose">
+          <div class="prose">
 <p>A virtual assistant's hourly cost depends mostly on where and how you hire. Published figures start at about $5 an hour for a direct hire in the Philippines. In the US, the median wage for executive secretaries and executive administrative assistants is $36.82 an hour, before employer costs. Below is each rate with its source, then where AI agents can take routine tasks off a VA's plate.</p>
 <h2>How much does a virtual assistant cost per hour?</h2>
 <p>Here are the ranges we found, with the page each one comes from. Vendor figures are what staffing companies publish about their own market, so treat them as ranges, not quotes. We last checked every page in November 2026.</p>
@@ -125,14 +128,23 @@
 <h2>What this means for you</h2>
 <p>Price the hours you need, not the headline rate: the same task can cost very different amounts depending on how you hire. Then look at which of those hours are routine reading, sorting and drafting. Those are the ones an agent can take on, with you approving whatever goes out.</p>
 <p>If you handle several clients and want to see how that works, <a href="https://app.imorchy.dev">Get Started</a>. Orchy AI is in invite-only early access.</p>
-        </div>
-        <aside class="cta-card" aria-labelledby="cta-h">
-          <p class="cta-title" id="cta-h">Run routine work with agents, keep the final say</p>
-          <p>Orchy AI asks before it sends, posts or deletes. For VAs and agencies with several clients.</p>
-          <p><a class="button button-mint" href="https://app.imorchy.dev">Get Started</a></p>
-        </aside>
-        <p class="back"><a href="/blog">← All posts</a></p>
+          </div>
+        </div></div>
       </article>
+      <aside class="cta-card" aria-labelledby="cta-h">
+        <div class="wrap">
+          <div class="band glass">
+            <span class="label">Early access · <span data-cap>a small first group, approved by hand</span></span>
+            <h2 id="cta-h">Run routine work with agents, <span class="hl">keep the final say.</span></h2>
+            <p class="lede">Orchy AI asks before it sends, posts or deletes. For VAs and agencies with several clients.</p>
+            <a class="btn" href="/go/early-access?from=blog">Get early access <svg class="ic arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></svg></a>
+            <p class="note">Orchy is in beta. We approve every sign-up by hand.</p>
+          </div>
+        </div>
+      </aside>
+      <div class="wrap">
+        <p class="back"><a href="/blog">← All posts</a></p>
+      </div>
     </main>
     <footer class="site" id="site-footer">
       <div class="wrap">
