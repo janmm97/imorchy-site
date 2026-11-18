@@ -225,43 +225,43 @@
 <section class="demo" id="how">
   <div class="wrap">
     <span class="label">How it works · sample data</span>
-    <div class="dh dh-how" id="demo-home-how">
+    <div class="dh dh-how scene" data-scene id="demo-home-how">
       <p class="sr">Example with sample data: in the Acme Dental workspace you ask Orchy to reply to this week's new patient enquiries and draft Friday's LinkedIn post. Orchy picks the Inbox agent, uses Acme Dental's own Gmail and LinkedIn through One, drafts 6 replies and asks before sending them. You approve and the 6 replies are sent; the LinkedIn post waits in drafts.</p>
       <div class="stage" aria-hidden="true">
         <div class="panel glass">
           <div class="bar"><span class="dots"><i></i><i></i><i></i></span>Orchy · <b>Acme Dental</b></div>
           <div class="chat">
-            <div class="bubble">Reply to this week's new patient enquiries and draft Friday's LinkedIn post.</div>
+            <div class="bubble" data-at="0.3">Reply to this week's new patient enquiries and draft Friday's LinkedIn post.</div>
             <div class="steps">
-              <span class="chip"><span class="sq"></span>gmail · <b>read 9 enquiries</b></span>
-              <span class="chip"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>memory · <b>tone &amp; sign-off</b></span>
-              <span class="chip"><span class="sq"></span>gmail · <b>draft 6 replies</b></span>
-              <span class="chip"><span class="sq"></span>linkedin · <b>draft Friday post</b></span>
-              <span class="chip"><span class="sq"></span>gmail · <b>send 6 replies</b><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span>
+              <span class="chip" data-at="1.1"><span class="sq"></span>gmail · <b>read 9 enquiries</b></span>
+              <span class="chip" data-at="1.9"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>memory · <b>tone &amp; sign-off</b></span>
+              <span class="chip" data-at="2.7"><span class="sq"></span>gmail · <b>draft 6 replies</b></span>
+              <span class="chip" data-at="3.5"><span class="sq"></span>linkedin · <b>draft Friday post</b></span>
+              <span class="chip" data-at="4.3"><span class="sq"></span>gmail · <b>send 6 replies</b><svg class="ic" data-at="6.2" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span>
             </div>
-            <p class="reply">Done. 6 replies went out from Acme Dental's Gmail. Friday's post is waiting in drafts.</p>
+            <p class="reply" data-at="9.2">Done. 6 replies went out from Acme Dental's Gmail. Friday's post is waiting in drafts.</p>
           </div>
           <div class="input">Ask Orchy… <span class="send"><svg class="ic" viewBox="0 0 16 16"><path d="M8 13V3.5M4 7.5l4-4 4 4"/></svg></span></div>
         </div>
         <div class="hub glass">
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6h12"/></svg>Workspace</span><span class="v">Acme Dental</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg>Agent</span><span class="v">Inbox agent</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M6 10l4-4M5 7.5 3.6 8.9a2.3 2.3 0 0 0 3.3 3.3L8.3 11M11 8.5l1.4-1.4a2.3 2.3 0 0 0-3.3-3.3L7.7 5.2"/></svg>Apps</span><span class="v">Gmail · LinkedIn via One</span></div>
+          <div class="row" data-cls="lit" data-at="0.4" data-off="2.2"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6h12"/></svg>Workspace</span><span class="v">Acme Dental</span></div>
+          <div class="row" data-cls="lit" data-at="1.0" data-off="4.6"><span class="k"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg>Agent</span><span class="v">Inbox agent</span></div>
+          <div class="row" data-cls="lit" data-at="1.2" data-off="4.6"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M6 10l4-4M5 7.5 3.6 8.9a2.3 2.3 0 0 0 3.3 3.3L8.3 11M11 8.5l1.4-1.4a2.3 2.3 0 0 0-3.3-3.3L7.7 5.2"/></svg>Apps</span><span class="v">Gmail · LinkedIn via One</span></div>
           <div class="core"><img src="/assets/orchy-main-128.webp" width="22" height="22" alt="" />ORCHY</div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>Memory</span><span class="v">Practice tone</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>Approvals</span><span class="v">Approved</span></div>
-          <div class="row"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M3 3h10M3 6.5h10M3 10h7M3 13.5h5"/></svg>Log</span><span class="v">5 steps</span></div>
+          <div class="row" data-cls="lit" data-at="1.9" data-off="3.4"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.6-4 2.6z"/></svg>Memory</span><span class="v">Practice tone</span></div>
+          <div class="row" data-cls="lit" data-at="4.6" data-off="7.4"><span class="k"><svg class="ic" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>Approvals</span><span class="v" data-at="6.2">Approved</span></div>
+          <div class="row" data-cls="lit" data-at="8.6" data-off="10.6"><span class="k"><svg class="ic" viewBox="0 0 16 16"><path d="M3 3h10M3 6.5h10M3 10h7M3 13.5h5"/></svg>Log</span><span class="v" data-at="8.6">5 steps</span></div>
         </div>
         <div class="panel glass">
           <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="sq"></span>Gmail · <b>Acme Dental</b> · Sent</div>
           <div class="mail">
-            <div class="mrow"><span class="pav">P</span><span><span class="who">Priya N.</span><span class="sub"> · Re: New patient, cleaning?</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">M</span><span><span class="who">Marcus O.</span><span class="sub"> · Re: Do you take Delta?</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">L</span><span><span class="who">Lena K.</span><span class="sub"> · Re: Saturday hours</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">J</span><span><span class="who">Jon B.</span><span class="sub"> · Re: Kids' check-up</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">A</span><span><span class="who">Ana R.</span><span class="sub"> · Re: Whitening price list</span></span><span class="tag">Sent</span></div>
-            <div class="mrow"><span class="pav">T</span><span><span class="who">Tom W.</span><span class="sub"> · Re: First visit forms</span></span><span class="tag">Sent</span></div>
-            <div class="toast"><span class="ck"><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><div><b>Approved · 6 replies sent</b><small>Acme Dental · Gmail · logged</small></div></div>
+            <div class="mrow" data-at="6.8"><span class="pav">P</span><span><span class="who">Priya N.</span><span class="sub"> · Re: New patient, cleaning?</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.0"><span class="pav">M</span><span><span class="who">Marcus O.</span><span class="sub"> · Re: Do you take Delta?</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.2"><span class="pav">L</span><span><span class="who">Lena K.</span><span class="sub"> · Re: Saturday hours</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.4"><span class="pav">J</span><span><span class="who">Jon B.</span><span class="sub"> · Re: Kids' check-up</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.6"><span class="pav">A</span><span><span class="who">Ana R.</span><span class="sub"> · Re: Whitening price list</span></span><span class="tag">Sent</span></div>
+            <div class="mrow" data-at="7.8"><span class="pav">T</span><span><span class="who">Tom W.</span><span class="sub"> · Re: First visit forms</span></span><span class="tag">Sent</span></div>
+            <div class="toast" data-at="8.3"><span class="ck"><svg class="ic" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><div><b>Approved · 6 replies sent</b><small>Acme Dental · Gmail · logged</small></div></div>
           </div>
           <div class="tabs"><span>Drafts</span><span class="on">Sent</span><span>Inbox</span></div>
         </div>
@@ -272,6 +272,7 @@
         <li><b>03 You approve</b>See what's about to go out. Yes or no.</li>
         <li><b>04 Done</b>Move on to the next client.</li>
       </ol>
+      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
     </div>
   </div>
 </section>
