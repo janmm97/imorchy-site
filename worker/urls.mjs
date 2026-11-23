@@ -14,8 +14,8 @@ export const PAGES = [
     profile: "page",
     markers: [
       '<h1>Build agents with access <span class="hl">to 1,000+ apps.</span></h1>',
-      'href="/go/early-access?from=hero"',
-      "What early users say",
+      'href="/go/start?from=hero"',
+      "What our users say",
       '"@type": "FAQPage"',
     ],
   },
@@ -52,8 +52,8 @@ export const REDIRECTS = [
   { from: "https://imorchy.dev/claude-code-orchestrator/", to: "https://imorchy.dev/" },
 ];
 
-/** Every early-access call to action is this same-origin hop with a section name (main.mjs), never a direct app link. */
-export const CTA = { path: "/go/early-access", from: /^[a-z0-9-]{1,40}$/ };
+/** Every "Get started" call to action is this same-origin hop with a section name (main.mjs), never a direct app link. */
+export const CTA = { path: "/go/start", from: /^[a-z0-9-]{1,40}$/ };
 
 /** Hosts every page may load anything from (script, style, image, font, frame, media): the analytics beacon only. Links are not loads. */
 export const LOAD_HOSTS = ["static.cloudflareinsights.com"];

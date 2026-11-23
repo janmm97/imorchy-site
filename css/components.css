@@ -40,7 +40,7 @@ h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
 /* ---------- the one glass recipe for blurring surfaces ---------- */
 .glass{position:relative;border:1px solid var(--c-edge);background:var(--glass-sheen),var(--tint);box-shadow:var(--glass-shine),var(--glass-shadow);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
 
-/* ---------- button (one CTA everywhere: "Get early access") ---------- */
+/* ---------- button (one CTA everywhere: "Get started") ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:0 22px;border:1px solid var(--c-ivory);background:var(--c-ivory);color:var(--c-ink);text-decoration:none;font:500 var(--fs-btn)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;border-radius:var(--r-sm);cursor:pointer;
   box-shadow:0 10px 30px -12px #000c,inset 0 -1px 0 #0000001a;transition:background var(--t-fast),color var(--t-fast),border-color var(--t-fast),transform var(--t-press)}
 .btn:hover,.btn.is-hover{background:#ffffff14;color:var(--c-ivory);border-color:var(--c-edge-hi)}
