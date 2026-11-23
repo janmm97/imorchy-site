@@ -13,7 +13,7 @@ export const PAGES = [
     type: "text/html",
     profile: "page",
     markers: [
-      '<h1>Build agents with access <span class="hl">to 1,000+ apps.</span></h1>',
+      '<h1>A team of AI agents <span class="hl">that works in your apps</span></h1>',
       'href="/go/start?from=hero"',
       "What our users say",
       '"@type": "FAQPage"',
@@ -24,6 +24,16 @@ export const PAGES = [
   { path: "/apps", type: "text/html", profile: "page", markers: ["<h1>Agents that work in <span class=\"hl\">your clients' own apps.</span></h1>"] },
   { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>A separate AI workspace for <span class=\"hl\">each client you work for.</span></h1>"] },
   { path: "/pricing", type: "text/html", profile: "page", markers: ["<h1>Simple monthly plans for people who <span class=\"hl\">work for several clients.</span></h1>", 'href="/go/start?from=pricing-hero"'] },
+  // AI agents by team and comparison pages (2026-11-24).
+  { path: "/ai-agents-for-business", type: "text/html", profile: "page", markers: ["<h1>AI agents for business that <span class=\"hl\">work in your apps</span></h1>", 'href="/go/start?from=ai-agents-for-business-hero"'] },
+  { path: "/ai-employees", type: "text/html", profile: "page", markers: ["<h1>AI employees that <span class=\"hl\">check with you first</span></h1>", 'href="/go/start?from=ai-employees-hero"'] },
+  { path: "/ai-agents-for-marketing", type: "text/html", profile: "page", markers: ["<h1>AI agents for <span class=\"hl\">marketing teams</span></h1>", 'href="/go/start?from=ai-agents-for-marketing-hero"'] },
+  { path: "/ai-agents-for-operations", type: "text/html", profile: "page", markers: ["<h1>AI agents for <span class=\"hl\">operations teams</span></h1>", 'href="/go/start?from=ai-agents-for-operations-hero"'] },
+  { path: "/ai-agents-for-it", type: "text/html", profile: "page", markers: ["<h1>AI agents for <span class=\"hl\">IT teams</span></h1>", 'href="/go/start?from=ai-agents-for-it-hero"'] },
+  { path: "/ai-agents-for-finance", type: "text/html", profile: "page", markers: ["<h1>AI agents for <span class=\"hl\">finance admin</span></h1>", 'href="/go/start?from=ai-agents-for-finance-hero"'] },
+  { path: "/ai-agents-for-sales", type: "text/html", profile: "page", markers: ["<h1>AI agents for <span class=\"hl\">sales teams</span></h1>", 'href="/go/start?from=ai-agents-for-sales-hero"'] },
+  { path: "/compare/openai-dots-vs-grok-bot", type: "text/html", profile: "page", markers: ["<h1>OpenAI Dots vs Grok Bot <span class=\"hl\">compared</span></h1>", 'href="/go/start?from=compare-dots-grok-hero"'] },
+  { path: "/alternatives/grok-bot", type: "text/html", profile: "page", markers: ["<h1>Grok Bot alternatives <span class=\"hl\">for AI agents</span></h1>", 'href="/go/start?from=alternatives-grok-bot-hero"'] },
   { path: "/robots.txt", type: "text/plain", markers: ["Sitemap: https://imorchy.dev/sitemap.xml"] },
   { path: "/sitemap.xml", type: "application/xml", markers: ["<urlset"] },
   // llms.txt (Ruby): a plain-text summary for AI search; not in the sitemap.

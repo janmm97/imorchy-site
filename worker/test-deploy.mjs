@@ -76,9 +76,9 @@ for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assista
 assert.equal(TYPES[".txt"], "text/plain; charset=utf-8", "security.txt is served as text/plain (RFC 9116)");
 for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png"])
   assert.ok(!workerFirst(p), `${p} should skip the Worker`);
-// Every file on disk: root pages (.html, .xml, .txt), blog posts (blog/*.html), .well-known files and videos reach the
-// Worker, every other file skips it.
-const page = (rel) => /^([^/]+\.(html|xml|txt)|blog\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || rel.endsWith(".mp4");
+// Every file on disk: root pages (.html, .xml, .txt), blog posts and the compare and alternatives pages
+// (blog/, compare/, alternatives/ *.html), .well-known files and videos reach the Worker, every other file skips it.
+const page = (rel) => /^([^/]+\.(html|xml|txt)|(blog|compare|alternatives)\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || rel.endsWith(".mp4");
 for (const rel of files) assert.equal(workerFirst("/" + rel), page(rel), `/${rel} should ${page(rel) ? "reach" : "skip"} the Worker`);
 const exts = [...new Set(files.filter((f) => f.startsWith("assets/")).map((f) => path.extname(f)))].sort();
 assert.ok(files.includes("BingSiteAuth.xml"), "Bing Webmaster verification file is in the repo root at its exact case");

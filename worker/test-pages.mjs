@@ -102,7 +102,7 @@ for (const slug of ANSWER) {
   if (LINKED_FROM_HOME.includes(slug)) assert.ok((home.match(new RegExp(`href="/${slug}"`, "g")) || []).length >= 1, `${slug}: linked from the home nav`);
 }
 // v4 copy: "human-in-the-loop" is in the approved meta description (Ruby), not in the body text.
-assert.match(fs.readFileSync(SITE + "approvals.html", "utf8"), /name="description" content="Human-in-the-loop by default/, "/approvals meta says human-in-the-loop");
+assert.match(fs.readFileSync(SITE + "approvals.html", "utf8"), /name="description" content="Orchy's AI agents ask before/, "/approvals meta says the agents ask first");
 assert.ok(fs.readFileSync(SITE + "apps.html", "utf8").includes("Inbox agent · Gmail<span"), "/apps: the last Inbox agent row names Gmail");
 assert.ok(fs.readFileSync(SITE + "security.html", "utf8").includes('href="/.well-known/security.txt"'), "/security links security.txt");
 // v4 retires /local and /claude-code-orchestrator: the Worker 301s them home (test-urls.mjs), so no file ships.
