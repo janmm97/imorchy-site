@@ -52,7 +52,7 @@ assert.equal(res.status, 200);
 assert.equal(seen.at(-1), "https://imorchy.dev/");
 assert.equal(res.headers.get("X-Robots-Tag"), null);
 ok("https://imorchy.dev/ passes through to the static assets, with no X-Robots-Tag in production");
-for (const p of ["/", "/go/early-access?from=hero", "/local"]) {
+for (const p of ["/", "/go/start?from=hero", "/go/early-access?from=hero", "/local"]) {
   res = await worker.fetch(new Request("https://imorchy-site-preview.janmm97.workers.dev" + p), { ...env, PREVIEW: "1" });
   assert.equal(res.headers.get("X-Robots-Tag"), "noindex, nofollow", p);
 }

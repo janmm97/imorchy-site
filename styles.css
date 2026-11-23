@@ -3273,7 +3273,7 @@ body::before {
   pointer-events: none;
 }
 
-/* ---- Early access, FAQ (plain HTML text, readable with JS off) ------------ */
+/* ---- FAQ (plain HTML text, readable with JS off) ------------ */
 .hero-category {
   display: block;
   font-weight: 700;

@@ -93,8 +93,9 @@ for (const slug of ANSWER) {
   assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), `${slug}: FAQPage JSON-LD`);
   assert.ok(!/<canvas|importmap|three\.module/i.test(html), `${slug}: no canvas or Three.js`);
   assert.ok(html.includes('href="/"'), `${slug}: links home`);
-  const ctas = [...html.matchAll(/href="\/go\/early-access\?from=([a-z0-9-]+)"/g)].map((m) => m[1]);
-  assert.ok(ctas.includes(`${slug}-hero`) && ctas.includes(`${slug}-final`), `${slug}: hero and final CTAs go through /go/early-access`);
+  const ctas = [...html.matchAll(/href="\/go\/start\?from=([a-z0-9-]+)"/g)].map((m) => m[1]);
+  assert.ok(ctas.includes(`${slug}-hero`) && ctas.includes(`${slug}-final`), `${slug}: hero and final CTAs go through /go/start`);
+  assert.doesNotMatch(html, /early.access|by hand|in beta|bring your own|bring a key/i, `${slug}: launch copy, no early access, hand approval, beta or own key`);
   assert.ok(!html.includes("app.imorchy.dev") && !html.includes("notion.site"), `${slug}: no direct app link, no Notion form`);
   assert.ok(/<div class="scene" data-scene id="demo-[a-z-]+">/.test(html), `${slug}: the demo frame has a stable id`);
   assert.doesNotMatch(html.match(/<main\b[\s\S]*<\/main>/)[0], /\b(Facebook|Instagram|Shopify)\b/,`${slug}: no Facebook, Instagram or Shopify in the page body`);
@@ -222,7 +223,8 @@ for (const page of pages) {
   assert.doesNotMatch(headers[0], /Teams|huddle/i, `${page}: no Teams & huddles in the nav`);
   const current = [...headers[0].matchAll(/<a [^>]*href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
   assert.ok(current.every((h) => h === pathOf(page)) && current.length <= 1, `${page}: header aria-current marks this page only`);
-  for (const fallback of ['href="#site-footer"', 'href="/go/early-access?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
+  for (const fallback of ['href="#site-footer"', 'href="/go/start?from=nav"']) assert.ok(headers[0].includes(fallback), `${page}: header has ${fallback}`);
+  assert.doesNotMatch(html, /Get early access|\/go\/early-access/, `${page}: no "Get early access" CTA left`);
   const css = html.indexOf(STYLE_LINKS.trim()), v3 = html.indexOf('href="/styles.css"');
   // v4 pages are kit-only; a v3 page still links /styles.css, after the kit.
   assert.ok(css > 0 && (v3 === -1 || v3 > css), `${page}: links /css/tokens.css and /css/components.css (before /styles.css, if any)`);

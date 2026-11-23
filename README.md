@@ -14,7 +14,7 @@ Open http://127.0.0.1:4173. Stop with Ctrl+C. The preview serves only this folde
 
 ## The page
 
-Four sections: the hero (the "Orchy AI" wordmark centred on screen with the squad standing on it, a two-line tagline, a "Join the early-access list" button, the launch-video button marked "Coming soon", and the line "Orchy AI is in early access."), How it works (the in-action loop), Your rules (approvals, separate workspaces, local-first, harnesses and apps), and Get access (the early-access list, plus "Book 30 minutes" on Calendly).
+Four sections: the hero (the "Orchy AI" wordmark centred on screen with the squad standing on it, a two-line tagline, a "Get started" button, the launch-video button marked "Coming soon",), How it works (the in-action loop), Your rules (approvals, separate workspaces, local-first, harnesses and apps), and Get access (the "Get started" sign-up, plus "Book 30 minutes" on Calendly).
 
 ## The living squad
 
@@ -32,7 +32,7 @@ Orchy and his nine teammates are real 3D characters built from the supplied art 
 
 - Self-hosted JetBrains Mono regular and bold, with its OFL license in `fonts/`.
 - The "in action" console: a 34s story in four scenes. Connect: Gmail, Slack, Notion, Google Calendar, Stripe and GitHub wire into One. Ask: you type a request for an inbox agent in Workspace A, and Orchy hands it to the Agent Builder. Build: the builder fills in the agent (name, role, tools, rules) until Inbox Triage is live. Run: it sorts five new emails, drafts the two urgent replies, and asks for your OK in a Slack notification. The workflow steps beside it light up with the story, and the 3D Builder and Inbox characters act out their parts. It only plays while on screen; under reduced motion or without script it holds still on the notification. Logos are the real ones, from One's connector catalogue, in `assets/logos/`.
-- Sample approval controls and a mobile menu. "Get Access" in the nav and "Join the early-access list" in the hero and Get access section open the early-access signup form in a new tab; "Book 30 minutes" opens Calendly in a new tab.
+- Sample approval controls and a mobile menu. "Get started" in the nav, the hero and the Get access section goes through /go/start to sign-up; "Book 30 minutes" opens Calendly in a new tab.
 
 ## Loading
 
