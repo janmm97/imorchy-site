@@ -8,17 +8,15 @@
    Load order on every page: tokens.css -> components.css -> page CSS.
    ===================================================================== */
 
-/* ---- fonts: self-hosted OFL woff2, Latin subsets (licences in /fonts). Same origin only (CSP font-src 'self').
-   Instrument Sans (variable 400-700) = body/UI, Instrument Serif (+ italic) = h1/h2 display, JetBrains Mono = labels. ---- */
-@font-face{font-family:"Instrument Sans";src:url("/fonts/InstrumentSans-Variable-latin.woff2") format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
-@font-face{font-family:"Instrument Serif";src:url("/fonts/InstrumentSerif-Regular-latin.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:"Instrument Serif";src:url("/fonts/InstrumentSerif-Italic-latin.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+/* ---- fonts: JetBrains Mono is the single brand typeface (Jan, 2026-11-24): headings, body and UI, matching the app.
+   Self-hosted OFL woff2 Regular + Bold (licence in /fonts). Same origin only (CSP font-src 'self'). No italic file:
+   font-synthesis:none (components.css) stops the browser faking one; emphasis is the champagne colour. ---- */
 @font-face{font-family:"JetBrains Mono";src:url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:"JetBrains Mono";src:url("/fonts/JetBrainsMono-Bold.woff2") format("woff2");font-weight:500 700;font-style:normal;font-display:swap}
-/* Width-matched fallbacks so the web-font swap doesn't re-wrap headings (measured CLS 0.29 -> 0.003 in the comp). */
-@font-face{font-family:"Sans Fallback";src:local("Arial"),local("Helvetica"),local("Roboto");size-adjust:101.8%}
-@font-face{font-family:"Serif Fallback";src:local("Times New Roman"),local("Times"),local("Georgia");size-adjust:82.5%}  /* measured: Instrument Serif sets at 82.5% of Times New Roman */
-@font-face{font-family:"Mono Fallback";src:local("Courier New"),local("Courier");size-adjust:100%}
+/* Metric-matched fallback so the swap doesn't re-wrap or re-space text. Measured in Edge (2026-11-24): JetBrains Mono
+   advances 0.600em per character; Courier New sets at 99.98% of it (Liberation Mono/Cousine are Courier-metric clones),
+   Consolas at 91.6% (so it is not in this face). Ascent/descent copied from JetBrains Mono (1.02/0.30, no line gap). */
+@font-face{font-family:"Mono Fallback";src:local("Courier New"),local("CourierNewPSMT"),local("Liberation Mono"),local("Cousine"),local("Courier");size-adjust:100%;ascent-override:102%;descent-override:30%;line-gap-override:0%}
 
 :root{
   color-scheme:dark;
@@ -64,23 +62,23 @@
   --r-pill:999px;
 
   /* ---------- type ---------- */
-  --font-sans:"Instrument Sans","Sans Fallback",system-ui,-apple-system,"Segoe UI",sans-serif;  /* headings + body (OFL) */
-  --font-mono:"JetBrains Mono","Mono Fallback",ui-monospace,Consolas,monospace;                  /* labels, nav, buttons, footer, demo UI, code (OFL) */
-  --font-display:"Instrument Serif","Serif Fallback",Georgia,"Times New Roman",serif;           /* h1/h2 display (OFL) */
-  /* display (h1/h2: Instrument Serif 400, light negative tracking, balanced; the .hl word goes italic).
-     The serif sets ~15% narrower than the sans, so sizes sit one step up from the v1.4 sans scale. */
-  --fs-hero:clamp(52px,6.4vw,100px);   --ls-hero:-.015em; --lh-hero:1;
-  --fs-h1:clamp(46px,6vw,84px);        /* feature-page H1: one step under the homepage hero */
-  --fs-h2:clamp(38px,4.8vw,64px);      --ls-display:-.01em; --lh-display:1.02;
-  --ls-head:-.025em; --lh-head:1.04;   /* sans headings (h3, card titles) */
-  --fs-h3:clamp(20px,1.8vw,26px);      --ls-h3:-.01em;
-  /* body */
-  --fs-lede:clamp(17px,1.5vw,19px);
-  --fs-body:17px;  --lh-body:1.55;
-  --fs-small:15px;                      /* card body, list item excerpt */
-  /* prose (legal, blog, changelog) */
-  --fs-prose:18px; --lh-prose:1.7; --measure:45.3em; /* v1.4: was 68ch; ch changes with the font, em does not (68ch = 45.3em in Instrument Sans) */
-  --fs-p-h2:clamp(26px,2.6vw,34px); --fs-p-h3:clamp(20px,1.9vw,24px);
+  --font-mono:"JetBrains Mono","Mono Fallback",ui-monospace,Consolas,monospace;  /* the one typeface (OFL) */
+  --font-sans:var(--font-mono);        /* body + UI (name kept so existing rules keep working) */
+  --font-display:var(--font-mono);     /* h1/h2 */
+  /* Display (h1/h2: JetBrains Mono 400, tight tracking, balanced; the .hl phrase is champagne, not italic).
+     Mono sets 0.6em per character (~1.75x the width of the old serif display), so the scale sits well under v1.5. */
+  --fs-hero:clamp(44px,4.4vw,68px);    --ls-hero:-.03em;  --lh-hero:1.08;
+  --fs-h1:clamp(36px,4vw,56px);        /* feature-page H1: one step under the homepage hero */
+  --fs-h2:clamp(28px,3.2vw,44px);      --ls-display:-.025em; --lh-display:1.12;
+  --ls-head:-.02em; --lh-head:1.2;     /* h3, card titles */
+  --fs-h3:clamp(18px,1.5vw,22px);      --ls-h3:-.01em;
+  /* body: mono reads ~2px larger than a proportional face at the same size */
+  --fs-lede:clamp(16px,1.3vw,18px);
+  --fs-body:15px;  --lh-body:1.65;
+  --fs-small:14px;                      /* card body, list item excerpt */
+  /* prose (legal, blog, changelog): 16 px, 1.75 leading, 40em = 66 characters a line */
+  --fs-prose:16px; --lh-prose:1.75; --measure:40em;
+  --fs-p-h2:clamp(22px,2.2vw,28px); --fs-p-h3:clamp(18px,1.6vw,20px);
   /* mono labels: uppercase with wide tracking */
   --fs-label:12px; --ls-label:.1em;     /* nav links, section labels, footer links */
   --fs-label-sm:11px;                   /* footer column heads, bars, tags */
