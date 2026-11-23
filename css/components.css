@@ -8,7 +8,7 @@
 /* ---------- base ---------- */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:100px;background:var(--c-ink);scrollbar-color:#4a4642 var(--c-ink)}
-body{background:transparent;color:var(--c-ivory);font:400 var(--fs-body)/var(--lh-body) var(--font-sans);-webkit-font-smoothing:antialiased;position:relative;isolation:isolate}
+body{background:transparent;color:var(--c-ivory);font:400 var(--fs-body)/var(--lh-body) var(--font-sans);font-synthesis:none;-webkit-font-smoothing:antialiased;position:relative;isolation:isolate}
 /* the colour field the glass picks up as the page scrolls beneath it */
 body::before{content:"";position:fixed;inset:-12vmax;z-index:-1;pointer-events:none;opacity:var(--field-opacity);
   background:radial-gradient(34vmax 26vmax at 14% 20%,var(--f1),transparent 70%),radial-gradient(40vmax 30vmax at 86% 28%,var(--f2),transparent 70%),
@@ -32,6 +32,8 @@ img{display:block;max-width:100%}
 
 /* ---------- type ---------- */
 h1,h2,h3{font-family:var(--font-sans);font-weight:500;letter-spacing:var(--ls-head);line-height:var(--lh-head);text-wrap:balance}
+/* display headings: JetBrains Mono 400; the .hl phrase is champagne (colour only: there is no italic file) */
+h1,h2{font-family:var(--font-display);font-weight:400;letter-spacing:var(--ls-display);line-height:var(--lh-display)}
 h1{font-size:var(--fs-h1)}
 h2{font-size:var(--fs-h2)}
 h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
@@ -98,7 +100,7 @@ h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
 .card{border-radius:var(--r-xl);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:border-color var(--t-fast),transform var(--t) var(--ease)}
 .card .vis{min-height:220px;border-bottom:1px solid var(--c-edge-soft);background:#00000024;padding:18px;display:flex;flex-direction:column;justify-content:center}
 .card .txt{padding:20px 22px 24px;display:flex;flex-direction:column;gap:6px;flex:1}
-.card h2,.card h3{font-size:20px;overflow-wrap:anywhere}
+.card h2,.card h3{font:500 18px/var(--lh-head) var(--font-sans);letter-spacing:var(--ls-head);overflow-wrap:anywhere}
 .card p{color:var(--c-muted);font-size:var(--fs-small)}
 .card .more{margin-top:auto;padding-top:14px;display:inline-flex;align-items:center;gap:8px;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-ivory)}
 a.card:hover,a.card.is-hover{border-color:var(--c-edge-hi);transform:translateY(-2px)}
@@ -346,11 +348,11 @@ html.solid .band::before{display:none}
 @media (max-width:900px){.frame .fbody.dia{grid-template-columns:1fr}}
 @media (max-width:420px){.srv .boxes{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.dots3 i{animation:none!important}}
-/* v1.2 CLS fix: `ch` is 0.67em in Instrument Sans but 0.57em in the Arial fallback, so ch widths re-wrap on font swap
-   (measured CLS 0.16 on /client-workspaces at 1440). Same widths, in em, which don't change with the font. */
-.lede{max-width:37.3em}
-.phero h1{max-width:10.75em}
-.phero.cw h1{max-width:12.1em}
+/* v1.2 CLS fix, re-tuned for JetBrains Mono (2026-11-24): widths in em, which don't change on the font swap.
+   Mono is 0.6em a character, so 1ch = 0.6em in both JetBrains Mono and its Courier New fallback. */
+.lede{max-width:36em}          /* 60 characters */
+.phero h1{max-width:13.2em}    /* 22 characters */
+.phero.cw h1{max-width:14.4em} /* 24 characters */
 
 /* v1.2 QA: icon rows keep the label left; the status sits right; neutral logo stand-in is visible */
 .rules li{justify-content:flex-start}
@@ -368,11 +370,10 @@ html.solid .band::before{display:none}
 .sec-text+.sec-text{padding-top:0}
 @media (max-width:900px){.sec-head:not(.center)>:nth-child(2){padding-top:0}}
 
-/* v1.4 CLS fix (legal round 2): the remaining ch widths, in em (1ch = 0.666em in Instrument Sans).
-   --measure moved to em in tokens.css; the prose column was 689 px on Arial and 815 px on Instrument Sans (CLS 0.105 on /privacy at 1440). */
-.phero.article h1{max-width:14.65em}
-.post p{max-width:42.6em}
-.fcols .tagline{max-width:17.3em}
+/* v1.4 CLS fix (legal round 2), re-tuned for mono: the remaining widths, in em (1ch = 0.6em). --measure is in em in tokens.css. */
+.phero.article h1{max-width:16.8em} /* 28 characters */
+.post p{max-width:var(--measure)}
+.fcols .tagline{max-width:15.6em}   /* 26 characters */
 
 /* v4 shell (Sadie, 2026-11-18): no-JS nav = kit README option (a), Nora's call. /js/nav.mjs adds html.js;
    without it the Features link goes to the footer and, below 900px, "Menu" goes to the footer. No sheet animation at launch. */
@@ -390,3 +391,13 @@ html:not(.js) .js-only,html.js .nojs-only{display:none}
 [data-scene].run .dots3 i{animation:dot 1s var(--ease) infinite}[data-scene].run .dots3 i:nth-child(2){animation-delay:.15s}[data-scene].run .dots3 i:nth-child(3){animation-delay:.3s}
 .pause[hidden]{display:none}
 .ic.sm{width:11px;height:11px}
+
+/* v1.5 premium finish (Sadie, 2026-11-24): a lit 1 px glass edge on the outer glass and the nav. It's a gradient ring
+   drawn by ::after and masked to the border box: bright at the top-left, gone by the middle. Static (no motion); hidden when
+   transparency is reduced or the page runs solid. */
+.glass::after,.nav::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(150deg,#ffffff4d,#ffffff14 28%,#ffffff00 55%,#e9d2a41f 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+@media (prefers-reduced-transparency:reduce){.glass::after,.nav::after{display:none}}
+html.solid .glass::after,html.solid .nav::after{display:none}

@@ -1,12 +1,9 @@
 /* v4 homepage only (Miles's comp, kit v1.4 tokens). The kit has no hero, demo band or quote grid; this adds them. */
 
-/* Width-matched fallback so the swap to the web font doesn't re-wrap the hero H1 (CLS). Ratio from the comp. */
-@font-face{font-family:"Hero Fallback";src:local("Arial"),local("Helvetica"),local("Roboto");size-adjust:104.9%}
-
 /* hero: static (no JS visual), text is the LCP */
 .hero{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:clamp(480px,calc(100svh - 76px),860px);padding:40px 0 72px;overflow:hidden;isolation:isolate}
 .hero-copy{text-align:center;display:flex;flex-direction:column;align-items:center}
-.hero h1{font-size:clamp(44px,5vw,76px);letter-spacing:-.035em;line-height:1;font-family:"Instrument Sans","Hero Fallback",system-ui,sans-serif}
+.hero h1{font-size:var(--fs-hero);letter-spacing:var(--ls-hero);line-height:var(--lh-hero)}
 .hero h1 .hl{display:block} /* always 2 lines: break after "access" */
 .hero .lede{margin:24px auto 30px;max-width:56ch}
 .hero .note{margin-top:14px}
@@ -22,14 +19,14 @@
 .quotes li{grid-column:span 2;display:flex;border:1px solid var(--c-edge-soft);border-radius:var(--r-lg);background:var(--glass-sheen),var(--in);box-shadow:var(--glass-shine)}
 .quotes li:nth-child(n+4){grid-column:span 3}
 .quotes figure{display:flex;flex-direction:column;justify-content:space-between;gap:22px;width:100%;padding:26px 26px 22px}
-.quotes blockquote p{font-size:17px;line-height:1.55}
+.quotes blockquote p{font-size:15px;line-height:1.6}
 .quotes blockquote p::before{content:"\201C"}
 .quotes blockquote p::after{content:"\201D"}
 .quotes figcaption{font:500 12px/1.2 var(--font-mono);letter-spacing:.06em;color:var(--c-muted);padding-top:14px;border-top:1px solid var(--c-edge-soft)}
 
 @media (max-width:900px){
   .hero{min-height:0;justify-content:flex-start;padding:56px 0 64px}
-  .hero h1{font-size:clamp(24px,calc(8.9vw - 4px),64px)} /* "Build agents with access" is ~10.7em: keeps line 1 inside the gutters down to 300px */
+  .hero h1{font-size:clamp(19px,calc((100vw - 2 * var(--gutter)) / 14.1),54px)} /* "Build agents with access" is 24 x (0.6 - 0.03)em = 13.68em in JetBrains Mono (measured 0.6em a character): line 1 stays inside the gutters down to 300px */
   .hero .lede{margin:20px auto 26px}
   .hero::before{-webkit-mask:linear-gradient(transparent 45%,#000);mask:linear-gradient(transparent 45%,#000)}
   .demo{padding:0 0 76px}
@@ -40,5 +37,5 @@
 }
 @media (max-width:620px){
   .quotes{grid-template-columns:1fr}
-  .quotes blockquote p{font-size:16px}
+  .quotes blockquote p{font-size:14px}
 }
