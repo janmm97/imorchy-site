@@ -50,7 +50,19 @@ for (const f of ["css/tokens.css", "css/components.css", "css/home.css", "css/bl
     if (/url\(/.test(face)) assert.match(face, /font-display:\s*swap/, `${f}: ${face.slice(0, 80)}`);
   }
 }
-assert.match(read("css/tokens.css"), /@font-face\{font-family:"Instrument Serif"[^}]*url\(/, "the display serif is self-hosted");
+// One typeface (Jan, 2026-11-24): JetBrains Mono, self-hosted Regular + Bold only, preloaded on every page; no other web font.
+{
+  const tokens = read("css/tokens.css");
+  const urls = [...tokens.matchAll(/url\("([^"]+)"\)/g)].map((m) => m[1]).sort();
+  assert.deepEqual(urls, ["/fonts/JetBrainsMono-Bold.woff2", "/fonts/JetBrainsMono-Regular.woff2"], "only the two JetBrains Mono files are downloaded");
+  assert.match(tokens, /--font-sans:var\(--font-mono\)/, "body text is JetBrains Mono");
+  assert.match(tokens, /--font-display:var\(--font-mono\)/, "headings are JetBrains Mono");
+  assert.doesNotMatch(tokens + read("css/components.css"), /font-style:\s*italic/, "no italic: there is no italic file, and the browser must not fake one");
+  assert.match(read("css/components.css"), /body\{[^}]*font-synthesis:none/, "no synthetic italic or bold");
+  for (const f of fs.readdirSync(SITE + "fonts")) assert.match(f, /^(JetBrainsMono-(Regular|Bold)\.woff2|OFL-JetBrainsMono\.txt)$/, `unexpected font file ${f}`);
+  for (const page of pages) for (const w of ["Regular", "Bold"]) assert.match(read(page), new RegExp(`<link rel="preload" href="/fonts/JetBrainsMono-${w}\\.woff2" as="font" type="font/woff2" crossorigin />`), `${page} preloads JetBrains Mono ${w}`);
+  for (const f of ["fonts/JetBrainsMono-Regular.woff2", "fonts/JetBrainsMono-Bold.woff2"]) assert.ok(fs.statSync(SITE + f).size < 32 * 1024, `${f} under 32 KB`);
+}
 ok("hero image (if any) preloaded ahead of the CSS; every font uses font-display: swap");
 
 // ── v4 home: no WebGL, no hero bundle, and no script that blocks rendering ──
