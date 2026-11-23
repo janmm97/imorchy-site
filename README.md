@@ -14,7 +14,7 @@ Open http://127.0.0.1:4173. Stop with Ctrl+C. The preview serves only this folde
 
 ## The page
 
-Four sections: the hero (the "Orchy AI" wordmark centred on screen with the squad standing on it, a two-line tagline, a "Join the early-access list" button, the launch-video button marked "Coming soon", and the line "Orchy AI is in early access."), How it works (the in-action loop), Your rules (approvals, separate workspaces, local-first, harnesses and apps), and Get access (the early-access list, plus "Book 30 minutes" on Calendly).
+Four sections: the hero (the "Orchy AI" wordmark centred on screen with the squad standing on it, a two-line tagline, a "Get started" button, the launch-video button marked "Coming soon",), How it works (the in-action loop), Your rules (approvals, separate workspaces, local-first, harnesses and apps), and Get access (the "Get started" sign-up, plus "Book 30 minutes" on Calendly).
 
 ## The living squad
 
@@ -30,16 +30,16 @@ Orchy and his nine teammates are real 3D characters built from the supplied art 
 
 ## Design and interactions
 
-- Self-hosted JetBrains Mono regular and bold, with its OFL license in `fonts/`.
+- Self-hosted type, each with its OFL license in `fonts/`: Instrument Sans (variable 400-700, body and UI), Instrument Serif regular and italic (h1/h2 display; the champagne phrase is the italic) and JetBrains Mono regular and bold (labels, nav, buttons). The @font-face rules are in `css/tokens.css`; every page preloads Instrument Serif regular and Instrument Sans.
 - The "in action" console: a 34s story in four scenes. Connect: Gmail, Slack, Notion, Google Calendar, Stripe and GitHub wire into One. Ask: you type a request for an inbox agent in Workspace A, and Orchy hands it to the Agent Builder. Build: the builder fills in the agent (name, role, tools, rules) until Inbox Triage is live. Run: it sorts five new emails, drafts the two urgent replies, and asks for your OK in a Slack notification. The workflow steps beside it light up with the story, and the 3D Builder and Inbox characters act out their parts. It only plays while on screen; under reduced motion or without script it holds still on the notification. Logos are the real ones, from One's connector catalogue, in `assets/logos/`.
-- Sample approval controls and a mobile menu. "Get Access" in the nav and "Join the early-access list" in the hero and Get access section open the early-access signup form in a new tab; "Book 30 minutes" opens Calendly in a new tab.
+- Sample approval controls and a mobile menu. "Get started" in the nav, the hero and the Get access section goes through /go/start to sign-up; "Book 30 minutes" opens Calendly in a new tab.
 
 ## Loading
 
 First paint never waits on the big art. `worker/test-speed.mjs` (part of `npm test`) holds these rules:
 
 - The hero art is `assets/orchy-main-500.webp` / `-1000.webp`, preloaded ahead of the CSS (it is the LCP element). The logos use `orchy-main-128.webp`, the favicon is `orchy-icon-64.png`, and the demo avatars crop `orchy-squad-sheet.webp`. Every `<img>` has width and height and stays under 64 KB.
-- The fonts are subset to the characters the site uses (Latin-1, punctuation, arrows) and use `font-display: swap`. If new copy needs another character, re-subset from the full JetBrains Mono release.
+- The fonts are subset to the characters the site uses (Latin-1, punctuation, arrows) and use `font-display: swap`. The Instrument files are the Latin subsets from Google Fonts (U+0000-00FF plus common punctuation; the arrow U+2192 falls back to the system font). If new copy needs another character, re-subset from the full upstream release. Size-adjusted local fallbacks ("Sans Fallback" 101.8%, "Serif Fallback" 82.5% of Times New Roman, measured) keep the swap from re-wrapping headings.
 - The 3D squad (Three.js and the two big SVGs) loads only after the page's `load` event, when the browser is idle, and only on desktop.
 - The character SVGs keep their embedded PNGs as `js/art.mjs` reads them: the greyscale mask first, then the colour render. Recompress them losslessly in place; never run SVGO over them.
 

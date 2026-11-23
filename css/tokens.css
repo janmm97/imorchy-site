@@ -8,9 +8,16 @@
    Load order on every page: tokens.css -> components.css -> page CSS.
    ===================================================================== */
 
-/* ---- fonts: production self-hosts both OFL faces as woff2 subsets (Nora: <= 2 files, <= 90 KB) ---- */
+/* ---- fonts: self-hosted OFL woff2, Latin subsets (licences in /fonts). Same origin only (CSP font-src 'self').
+   Instrument Sans (variable 400-700) = body/UI, Instrument Serif (+ italic) = h1/h2 display, JetBrains Mono = labels. ---- */
+@font-face{font-family:"Instrument Sans";src:url("/fonts/InstrumentSans-Variable-latin.woff2") format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url("/fonts/InstrumentSerif-Regular-latin.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url("/fonts/InstrumentSerif-Italic-latin.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url("/fonts/JetBrainsMono-Bold.woff2") format("woff2");font-weight:500 700;font-style:normal;font-display:swap}
 /* Width-matched fallbacks so the web-font swap doesn't re-wrap headings (measured CLS 0.29 -> 0.003 in the comp). */
 @font-face{font-family:"Sans Fallback";src:local("Arial"),local("Helvetica"),local("Roboto");size-adjust:101.8%}
+@font-face{font-family:"Serif Fallback";src:local("Times New Roman"),local("Times"),local("Georgia");size-adjust:82.5%}  /* measured: Instrument Serif sets at 82.5% of Times New Roman */
 @font-face{font-family:"Mono Fallback";src:local("Courier New"),local("Courier");size-adjust:100%}
 
 :root{
@@ -59,10 +66,13 @@
   /* ---------- type ---------- */
   --font-sans:"Instrument Sans","Sans Fallback",system-ui,-apple-system,"Segoe UI",sans-serif;  /* headings + body (OFL) */
   --font-mono:"JetBrains Mono","Mono Fallback",ui-monospace,Consolas,monospace;                  /* labels, nav, buttons, footer, demo UI, code (OFL) */
-  /* display + headings (Instrument Sans 500, tight tracking, balanced) */
-  --fs-hero:clamp(44px,5vw,76px);      --ls-hero:-.035em; --lh-hero:1;
-  --fs-h1:clamp(40px,5.4vw,68px);      /* feature-page H1: one step under the homepage hero */
-  --fs-h2:clamp(32px,4.2vw,52px);      --ls-head:-.025em; --lh-head:1.04;
+  --font-display:"Instrument Serif","Serif Fallback",Georgia,"Times New Roman",serif;           /* h1/h2 display (OFL) */
+  /* display (h1/h2: Instrument Serif 400, light negative tracking, balanced; the .hl word goes italic).
+     The serif sets ~15% narrower than the sans, so sizes sit one step up from the v1.4 sans scale. */
+  --fs-hero:clamp(52px,6.4vw,100px);   --ls-hero:-.015em; --lh-hero:1;
+  --fs-h1:clamp(46px,6vw,84px);        /* feature-page H1: one step under the homepage hero */
+  --fs-h2:clamp(38px,4.8vw,64px);      --ls-display:-.01em; --lh-display:1.02;
+  --ls-head:-.025em; --lh-head:1.04;   /* sans headings (h3, card titles) */
   --fs-h3:clamp(20px,1.8vw,26px);      --ls-h3:-.01em;
   /* body */
   --fs-lede:clamp(17px,1.5vw,19px);
@@ -82,8 +92,8 @@
   --s-7:48px; --s-8:56px; --s-9:88px; --s-10:112px;
   --gutter:24px;              /* page side padding; 16 px under 420 px */
   --wrap:1240px;              /* content max width */
-  --section-y:var(--s-10);    /* 112 px above 900 px; 76 px on <= 900 px */
-  --head-gap:var(--s-8);      /* section heading -> content */
+  --section-y:136px;          /* 136 px above 900 px (was 112: more air between sections); 76 px on <= 900 px */
+  --head-gap:64px;            /* section heading -> content (was 56) */
   --nav-h:62px;
   --target-min:44px;          /* every tap target (WCAG 2.5.8 floor is 24; we hold 44 on touch) */
 

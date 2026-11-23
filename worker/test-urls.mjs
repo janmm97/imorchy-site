@@ -315,26 +315,31 @@ for (const { from, to } of REDIRECTS) {
 }
 ok("http:// and www. answer 301 with Location kept, then 200 on https://imorchy.dev; HSTS only on the https answers; /local and /claude-code-orchestrator (any spelling) 301 home");
 
-// ── the early-access CTA hop (PRD v4): 302 to the app, `from` passed on only when it's a plain section name ──
-for (const [query, want] of [
-  ["?from=hero", "https://app.imorchy.dev/?from=hero"],
-  ["?from=final-cta&x=1", "https://app.imorchy.dev/?from=final-cta"],
-  ["", "https://app.imorchy.dev/"],
-  ["?from=" + encodeURIComponent("https://evil.example/"), "https://app.imorchy.dev/"],
-  ["?from=" + "a".repeat(41), "https://app.imorchy.dev/"],
-]) {
-  const res = await get("https://imorchy.dev/go/early-access" + query);
-  assert.equal(res.status, 302, query);
-  assert.equal(res.headers.get("Location"), want, query);
-  assert.equal(res.headers.get("Cache-Control"), "no-store", query);
-  assert.equal(res.headers.get("Strict-Transport-Security"), "max-age=31536000", query);
+// ── the "Get started" CTA hop: 302 to sign-up, `from` passed on only when it's a plain section name ──
+// /go/early-access is kept as an alias (old links and posts) and must answer exactly like /go/start.
+for (const hop of ["/go/start", "/go/early-access"]) {
+  for (const [query, want] of [
+    ["?from=hero", "https://app.imorchy.dev/?from=hero"],
+    ["?from=final-cta&x=1", "https://app.imorchy.dev/?from=final-cta"],
+    ["", "https://app.imorchy.dev/"],
+    ["?from=" + encodeURIComponent("https://evil.example/"), "https://app.imorchy.dev/"],
+    ["?from=" + "a".repeat(41), "https://app.imorchy.dev/"],
+  ]) {
+    const res = await get("https://imorchy.dev" + hop + query);
+    assert.equal(res.status, 302, hop + query);
+    assert.equal(res.headers.get("Location"), want, hop + query);
+    assert.equal(res.headers.get("Cache-Control"), "no-store", hop + query);
+    assert.equal(res.headers.get("Strict-Transport-Security"), "max-age=31536000", hop + query);
+  }
 }
+assert.equal((await get("https://imorchy.dev/go/start/x")).status === 302, false, "only the exact hop paths redirect");
 assert.match(read("robots.txt"), /^Disallow: \/go\/$/m, "robots.txt keeps crawlers off /go/");
-ok("/go/early-access answers 302 to the app with a validated from=, never cached; robots.txt disallows /go/");
+ok("/go/start and its alias /go/early-access answer 302 to sign-up with a validated from=, never cached; robots.txt disallows /go/");
 
-// ── the calls to action on /: every early-access link is the /go/ hop with a section name; no direct app or booking link ──
+// ── the calls to action on /: every CTA is the /go/start hop with a section name; no early-access link left ──
 const home = read("index.html");
-const ctas = [...home.matchAll(/href="([^"]*early-access[^"]*)"/g)].map((m) => m[1]);
+assert.doesNotMatch(home, /early.access/i, "/ no longer mentions early access");
+const ctas = [...home.matchAll(/href="([^"]*\/go\/[^"]*)"/g)].map((m) => m[1]);
 assert.ok(ctas.length >= 3, "/ has the nav, hero and final CTAs");
 for (const href of ctas) {
   const u = new URL(href.replace(/&amp;/g, "&"), ORIGIN);
@@ -343,7 +348,7 @@ for (const href of ctas) {
 }
 assert.ok(ctas.includes(`${CTA.path}?from=hero`), "the hero CTA says from=hero");
 assert.doesNotMatch(home, /href="https?:\/\/(?:app\.imorchy\.dev|calendly\.com)/, "no direct app or booking link on /");
-ok(`/: ${ctas.length} early-access CTAs, each ${CTA.path}?from=<section> (hero: from=hero); no direct app or calendly link`);
+ok(`/: ${ctas.length} "Get started" CTAs, each ${CTA.path}?from=<section> (hero: from=hero); no direct app or calendly link`);
 
 // ── nothing loads from a host outside the allowlist (scripts, styles, images, fonts, frames, media, imports) ──
 const outside = (text, allowed) =>

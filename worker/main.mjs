@@ -34,13 +34,15 @@ async function video(request, env, url) {
 
 /** Retired v3 pages (Ruby's v4 redirect map, L2): every spelling answers one 301 to the homepage. */
 const RETIRED = /^\/(?:local|claude-code-orchestrator)(?:\.html|\/)?$/;
-/** Where the early-access CTA lands. `from` (the page section) is passed on so the app can count sign-ups per CTA. */
-export const EARLY_ACCESS = "https://app.imorchy.dev/";
+/** Where the "Get started" CTA lands (sign-up). `from` (the page section) is passed on so the app can count sign-ups per CTA. */
+export const SIGN_UP = "https://app.imorchy.dev/";
 const SECTION = /^[a-z0-9-]{1,40}$/;
+/** /go/start is the CTA hop; /go/early-access stays as an alias so old links and posts keep working. */
+const CTA_HOPS = new Set(["/go/start", "/go/early-access"]);
 
-/** /go/early-access?from=<section>: a same-origin hop so every CTA click is a Worker request, then on to the app. */
-function earlyAccess(url) {
-  const to = new URL(EARLY_ACCESS);
+/** /go/start?from=<section>: a same-origin hop so every CTA click is a Worker request, then on to the app. */
+function signUp(url) {
+  const to = new URL(SIGN_UP);
   const from = url.searchParams.get("from");
   if (from && SECTION.test(from)) to.searchParams.set("from", from);
   return new Response(null, { status: 302, headers: { Location: to.href, "Cache-Control": "no-store" } });
@@ -52,7 +54,7 @@ async function route(request, env, url) {
   if (url.protocol === "http:" || url.hostname === "www.imorchy.dev")
     return Response.redirect("https://imorchy.dev" + url.pathname + url.search, 301);
   if (RETIRED.test(url.pathname)) return Response.redirect("https://imorchy.dev/", 301);
-  if (url.pathname === "/go/early-access") return earlyAccess(url);
+  if (CTA_HOPS.has(url.pathname)) return signUp(url);
   if (url.pathname.endsWith(".mp4") && ["GET", "HEAD"].includes(request.method)) return video(request, env, url);
   // Google Search Console's verification file must answer 200 at its .html path; static assets would redirect it to the bare name.
   if (/^\/google[0-9a-f]+\.html$/.test(url.pathname)) return env.ASSETS.fetch(url.origin + url.pathname.slice(0, -5));

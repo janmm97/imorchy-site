@@ -317,10 +317,9 @@ export const FEATURES = [
 export const NAV_JS = '<script type="module" src="/js/nav.mjs"></script>';
 export { BEACON };
 export const SHELL_SCRIPTS = [NAV_JS, BEACON];
-// The early-access cap (Jan): "a small first group, approved by hand" until he flips this. build() stamps it into
-// every <span data-cap> of the hand pages, so --check fails if one drifts.
-export const CAP_20 = false;
-export const CAP_COPY = CAP_20 ? "capped at 20" : "a small first group, approved by hand";
+// The line above the final CTA (Grant's launch copy, 2026-11-24). build() stamps it into every <span data-cap>
+// of the hand pages, so --check fails if one drifts.
+export const CAP_COPY = "Plans from $19 a month";
 const cur = (href, p) => (href === p ? ' aria-current="page"' : "");
 const HEADER_TAG = /[ \t]*<header class="nav"[\s\S]*?<\/header>/g;
 export function header(p, site = siteDir) {
@@ -344,7 +343,7 @@ ${items}              </ul>
           </ul>
         </nav>
         <div class="nav-end">
-          <a class="btn btn-sm" href="/go/early-access?from=nav">Get early access</a>
+          <a class="btn btn-sm" href="/go/start?from=nav">Get started</a>
           <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn">${icon("menu")}<span class="t">Menu</span><span class="sr"> (site menu)</span></button>
           <a class="menu nojs-only" href="#site-footer">Menu</a>
         </div>
@@ -429,7 +428,8 @@ ${MARK}
 ${ld({ "@context": "https://schema.org", ...data, url: ORIGIN + p })}
     </script>
     <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/InstrumentSerif-Regular-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/InstrumentSans-Variable-latin.woff2" as="font" type="font/woff2" crossorigin />
 ${STYLE_LINKS}
     <link rel="stylesheet" href="/css/blog.css" />
   </head>
@@ -499,11 +499,11 @@ ${html}
       <aside class="cta-card" aria-labelledby="cta-h">
         <div class="wrap">
           <div class="band glass">
-            <span class="label">Early access · <span data-cap>${CAP_COPY}</span></span>
+            <span class="label"><span data-cap>${CAP_COPY}</span></span>
             <h2 id="cta-h">Run routine work with agents, <span class="hl">keep the final say.</span></h2>
             <p class="lede">Orchy AI asks before it sends, posts or deletes. For VAs and agencies with several clients.</p>
-            <a class="btn" href="/go/early-access?from=blog">Get early access ${icon("arr", "ic arr")}</a>
-            <p class="note">Orchy is in beta. We approve every sign-up by hand.</p>
+            <a class="btn" href="/go/start?from=blog">Get started ${icon("arr", "ic arr")}</a>
+            <p class="note">Billed monthly. AI credit included in every plan.</p>
           </div>
         </div>
       </aside>

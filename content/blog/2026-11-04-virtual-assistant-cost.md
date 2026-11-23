@@ -97,4 +97,4 @@ HireTalent.ph's 2026 guide lists $880 to $1,056 a month for beginners, $1,144 to
 
 Price the hours you need, not the headline rate: the same task can cost very different amounts depending on how you hire. Then look at which of those hours are routine reading, sorting and drafting. Those are the ones an agent can take on, with you approving whatever goes out.
 
-If you handle several clients and want to see how that works, [Get Started](https://app.imorchy.dev). Orchy AI is in invite-only early access.
+If you handle several clients and want to see how that works, [Get started](https://app.imorchy.dev). Plans start at $19 a month.
