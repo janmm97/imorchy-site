@@ -427,7 +427,8 @@ ${MARK}
 ${ld({ "@context": "https://schema.org", ...data, url: ORIGIN + p })}
     </script>
     <link rel="icon" href="/assets/orchy-icon-64.png" type="image/png" sizes="64x64" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/InstrumentSerif-Regular-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/InstrumentSans-Variable-latin.woff2" as="font" type="font/woff2" crossorigin />
 ${STYLE_LINKS}
     <link rel="stylesheet" href="/css/blog.css" />
   </head>

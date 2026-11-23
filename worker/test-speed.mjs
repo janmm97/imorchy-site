@@ -44,6 +44,13 @@ if (hero) {
 }
 const css = read("styles.css");
 assert.equal((css.match(/@font-face/g) || []).length, (css.match(/font-display:\s*swap/g) || []).length);
+// v4 kit: every downloaded face (url(...)) swaps; local() size-adjusted fallbacks download nothing, so they need no swap.
+for (const f of ["css/tokens.css", "css/components.css", "css/home.css", "css/blog.css", "css/demos-home.css"]) {
+  for (const face of read(f).match(/@font-face\s*\{[^}]*\}/g) || []) {
+    if (/url\(/.test(face)) assert.match(face, /font-display:\s*swap/, `${f}: ${face.slice(0, 80)}`);
+  }
+}
+assert.match(read("css/tokens.css"), /@font-face\{font-family:"Instrument Serif"[^}]*url\(/, "the display serif is self-hosted");
 ok("hero image (if any) preloaded ahead of the CSS; every font uses font-display: swap");
 
 // ── v4 home: no WebGL, no hero bundle, and no script that blocks rendering ──

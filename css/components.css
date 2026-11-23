@@ -32,6 +32,9 @@ img{display:block;max-width:100%}
 
 /* ---------- type ---------- */
 h1,h2,h3{font-family:var(--font-sans);font-weight:500;letter-spacing:var(--ls-head);line-height:var(--lh-head);text-wrap:balance}
+/* display headings: Instrument Serif 400; the champagne .hl phrase is set in the italic */
+h1,h2{font-family:var(--font-display);font-weight:400;letter-spacing:var(--ls-display);line-height:var(--lh-display)}
+h1 .hl,h2 .hl{font-style:italic}
 h1{font-size:var(--fs-h1)}
 h2{font-size:var(--fs-h2)}
 h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
@@ -98,7 +101,7 @@ h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
 .card{border-radius:var(--r-xl);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:border-color var(--t-fast),transform var(--t) var(--ease)}
 .card .vis{min-height:220px;border-bottom:1px solid var(--c-edge-soft);background:#00000024;padding:18px;display:flex;flex-direction:column;justify-content:center}
 .card .txt{padding:20px 22px 24px;display:flex;flex-direction:column;gap:6px;flex:1}
-.card h2,.card h3{font-size:20px;overflow-wrap:anywhere}
+.card h2,.card h3{font:500 20px/var(--lh-head) var(--font-sans);letter-spacing:var(--ls-head);overflow-wrap:anywhere}
 .card p{color:var(--c-muted);font-size:var(--fs-small)}
 .card .more{margin-top:auto;padding-top:14px;display:inline-flex;align-items:center;gap:8px;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-ivory)}
 a.card:hover,a.card.is-hover{border-color:var(--c-edge-hi);transform:translateY(-2px)}
@@ -390,3 +393,13 @@ html:not(.js) .js-only,html.js .nojs-only{display:none}
 [data-scene].run .dots3 i{animation:dot 1s var(--ease) infinite}[data-scene].run .dots3 i:nth-child(2){animation-delay:.15s}[data-scene].run .dots3 i:nth-child(3){animation-delay:.3s}
 .pause[hidden]{display:none}
 .ic.sm{width:11px;height:11px}
+
+/* v1.5 premium finish (Sadie, 2026-11-24): a lit 1 px glass edge on the outer glass and the nav. It's a gradient ring
+   drawn by ::after and masked to the border box: bright at the top-left, gone by the middle. Static (no motion); hidden when
+   transparency is reduced or the page runs solid. */
+.glass::after,.nav::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(150deg,#ffffff4d,#ffffff14 28%,#ffffff00 55%,#e9d2a41f 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+@media (prefers-reduced-transparency:reduce){.glass::after,.nav::after{display:none}}
+html.solid .glass::after,html.solid .nav::after{display:none}
