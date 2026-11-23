@@ -338,6 +338,7 @@ export function header(p, site = siteDir) {
 ${items}              </ul>
             </li>
             <li><a class="nav-link" href="/#how">How it works</a></li>
+            <li><a class="nav-link" href="/pricing"${cur("/pricing", p)}>Pricing</a></li>
             <li><a class="nav-link" href="/blog"${cur("/blog", p)}>Blog</a></li>
           </ul>
         </nav>
@@ -356,7 +357,7 @@ export const FOOTER_COLUMNS = [
   {
     id: "f-prod",
     heading: "Product",
-    links: [["How it works", "/#how"], ["Client workspaces", "/client-workspaces"], ["Approvals", "/approvals"], ["Agents & Builder", "/agents"], ["Apps (One)", "/apps"]],
+    links: [["How it works", "/#how"], ["Client workspaces", "/client-workspaces"], ["Approvals", "/approvals"], ["Agents & Builder", "/agents"], ["Apps (One)", "/apps"], ["Pricing", "/pricing"]],
   },
   { id: "f-sec", heading: "Security", links: [["Security", "/security"], ["Data privacy", "/data-privacy"], ["DPA", "/dpa"]] },
   { id: "f-co", heading: "Company", links: [["Blog", "/blog"], ["Changelog", "/changelog"]] },

@@ -110,6 +110,22 @@ for (const gone of ["local", "claude-code-orchestrator"]) assert.ok(!pages.inclu
 assert.ok(pages.length >= 3, "home plus the answer pages are checked");
 ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts but the shell's, in the sitemap, linked from home");
 
+// ── /pricing (Jan, 2026-11-20): a content page with the three plans as text (no price schema: the offers check above),
+// hero and final CTAs through /go/start, launch copy only, no direct app or checkout link, in the nav and the footer ──
+{
+  const html = contentPage("pricing");
+  assert.ok(jsonLd(html).some((n) => n["@type"] === "FAQPage"), "pricing: FAQPage JSON-LD");
+  const ctas = [...html.matchAll(/href="\/go\/start\?from=([a-z0-9-]+)"/g)].map((m) => m[1]);
+  assert.ok(ctas.includes("pricing-hero") && ctas.includes("pricing-final"), "pricing: hero and final CTAs go through /go/start");
+  const body = html.slice(html.indexOf("</header>")); // the nav is stamped by build.mjs
+  assert.doesNotMatch(body, /early.access|by hand|open soon|own AI key/i, "pricing: launch copy, no early access, hand approval or own key");
+  assert.ok(!/app\.imorchy\.dev|polar\.sh|checkout/i.test(html), "pricing: no app, Polar or checkout link before paid plans open");
+  for (const plan of ["Solo", "Team", "Agency"]) assert.ok(html.includes(`<h2 id="p-${plan.toLowerCase()}">${plan}</h2>`), `pricing: the ${plan} plan`);
+  assert.ok(header("/").includes('href="/pricing"'), "pricing: in the header nav");
+  assert.ok(FOOTER_COLUMNS.find((c) => c.heading === "Product").links.some(([, h]) => h === "/pricing"), "pricing: in the footer's Product column");
+  ok("pricing: content page, three plans, FAQPage, no price schema, CTAs through /go/start, launch copy, in the nav and footer");
+}
+
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft
 // markers, headings in order, every table in a labelled, focusable scroll box (readable at 360px), linked from the footer ──
 // (2026-11-11) v2 texts add the DPA at /dpa, linked from Data Privacy. (2026-11-18, v4 kit footer) Legal is Privacy · Terms;
@@ -166,7 +182,7 @@ ok(`one logo: all ${pages.length} pages use orchy-icon-64.png as their only tab 
 
 // ── one footer (Jan, 2026-11-03): every shipped page has build.mjs's shared footer, the same on all of them except
 // the back link and aria-current, and every site link in it resolves to a page in the sitemap or a built file ──
-const SHIPPED = ["index", ...ANSWER, "changelog", ...Object.keys(LEGAL)];
+const SHIPPED = ["index", ...ANSWER, "pricing", "changelog", ...Object.keys(LEGAL)];
 for (const slug of SHIPPED) assert.ok(pages.includes(`${slug}.html`), `${slug}.html exists`);
 const pathOf = (page) => (page === "index.html" ? "/" : "/" + page.replace(/\.html$/, ""));
 const locs = [...fs.readFileSync(SITE + "sitemap.xml", "utf8").matchAll(/<loc>https:\/\/imorchy\.dev([^<]*)<\/loc>/g)].map((m) => m[1]);

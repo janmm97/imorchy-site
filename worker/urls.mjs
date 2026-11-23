@@ -23,6 +23,7 @@ export const PAGES = [
   { path: "/agents", type: "text/html", profile: "page", markers: ["<h1>Build your own <span class=\"hl\">team of agents.</span></h1>"] },
   { path: "/apps", type: "text/html", profile: "page", markers: ["<h1>Agents that work in <span class=\"hl\">your clients' own apps.</span></h1>"] },
   { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>A separate AI workspace for <span class=\"hl\">each client you work for.</span></h1>"] },
+  { path: "/pricing", type: "text/html", profile: "page", markers: ["<h1>Simple monthly plans for people who <span class=\"hl\">work for several clients.</span></h1>", 'href="/go/start?from=pricing-hero"'] },
   { path: "/robots.txt", type: "text/plain", markers: ["Sitemap: https://imorchy.dev/sitemap.xml"] },
   { path: "/sitemap.xml", type: "application/xml", markers: ["<urlset"] },
   // llms.txt (Ruby): a plain-text summary for AI search; not in the sitemap.
