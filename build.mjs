@@ -337,6 +337,7 @@ export function header(p, site = siteDir) {
               <ul class="fmenu glass" id="fmenu">
 ${items}              </ul>
             </li>
+            <li><a class="nav-link" href="/ai-agents-for-business"${cur("/ai-agents-for-business", p)}>AI agents</a></li>
             <li><a class="nav-link" href="/#how">How it works</a></li>
             <li><a class="nav-link" href="/pricing"${cur("/pricing", p)}>Pricing</a></li>
             <li><a class="nav-link" href="/blog"${cur("/blog", p)}>Blog</a></li>
@@ -357,7 +358,7 @@ export const FOOTER_COLUMNS = [
   {
     id: "f-prod",
     heading: "Product",
-    links: [["How it works", "/#how"], ["Client workspaces", "/client-workspaces"], ["Approvals", "/approvals"], ["Agents & Builder", "/agents"], ["Apps (One)", "/apps"], ["Pricing", "/pricing"]],
+    links: [["AI agents", "/ai-agents-for-business"], ["How it works", "/#how"], ["Client workspaces", "/client-workspaces"], ["Approvals", "/approvals"], ["Agents & Builder", "/agents"], ["Apps (One)", "/apps"], ["Pricing", "/pricing"]],
   },
   { id: "f-sec", heading: "Security", links: [["Security", "/security"], ["Data privacy", "/data-privacy"], ["DPA", "/dpa"]] },
   { id: "f-co", heading: "Company", links: [["Blog", "/blog"], ["Changelog", "/changelog"]] },
@@ -391,7 +392,7 @@ export function footer(p, site = siteDir) {
         <div class="fcols">
           <div class="fb">
             <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
-            <p class="tagline">AI workspaces for people who work for several clients.</p>
+            <p class="tagline">AI agents for day-to-day work, by team.</p>
           </div>
 ${cols.join("")}        </div>
         <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>

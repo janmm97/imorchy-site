@@ -1,13 +1,22 @@
 [
-  { "path": "/", "lastmod": "2026-11-17" },
-  { "path": "/approvals", "lastmod": "2026-11-17" },
+  { "path": "/", "lastmod": "2026-11-23" },
+  { "path": "/approvals", "lastmod": "2026-11-23" },
   { "path": "/client-workspaces", "lastmod": "2026-11-17" },
   { "path": "/agents", "lastmod": "2026-11-17" },
   { "path": "/apps", "lastmod": "2026-11-17" },
   { "path": "/privacy", "lastmod": "2026-11-17" },
   { "path": "/terms", "lastmod": "2026-11-17" },
-  { "path": "/security", "lastmod": "2026-11-17" },
+  { "path": "/security", "lastmod": "2026-11-23" },
   { "path": "/data-privacy", "lastmod": "2026-11-17" },
   { "path": "/dpa", "lastmod": "2026-11-17" },
-  { "path": "/pricing", "lastmod": "2026-11-20" }
+  { "path": "/pricing", "lastmod": "2026-11-20" },
+  { "path": "/ai-agents-for-business", "lastmod": "2026-11-23" },
+  { "path": "/ai-employees", "lastmod": "2026-11-23" },
+  { "path": "/ai-agents-for-marketing", "lastmod": "2026-11-23" },
+  { "path": "/ai-agents-for-operations", "lastmod": "2026-11-23" },
+  { "path": "/ai-agents-for-it", "lastmod": "2026-11-23" },
+  { "path": "/ai-agents-for-finance", "lastmod": "2026-11-23" },
+  { "path": "/ai-agents-for-sales", "lastmod": "2026-11-23" },
+  { "path": "/compare/openai-dots-vs-grok-bot", "lastmod": "2026-11-23" },
+  { "path": "/alternatives/grok-bot", "lastmod": "2026-11-23" }
 ]
