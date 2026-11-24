@@ -147,6 +147,7 @@ await import("./test-speed.mjs");
 await import("./test-deploy.mjs");
 await import("./test-deploy-api.mjs");
 await import("./test-urls.mjs");
+await import("./test-app-count.mjs");
 
 // The committed generated files (sitemap.xml, and any blog/changelog pages) match a fresh build of site/content.
 const said = [];

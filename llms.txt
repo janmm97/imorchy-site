@@ -4,7 +4,7 @@
 
 Key facts:
 - Hosted only, at OVHcloud in Canada, with one isolated container per customer.
-- Through One, Orchy can connect to 1,000+ apps (for example Gmail, Google Calendar and LinkedIn).
+- Through One, Orchy can connect to 1,100+ apps (for example Gmail, Google Calendar and LinkedIn).
 - AI runs on Orchy's own OpenRouter account, paid from the AI credit included in every plan. There is no bring-your-own AI key.
 - Sign-up is open, with no waiting list. Plans are paid monthly and billed through Polar.
 - Orchy is live. Plans are Solo $19, Team $59 and Agency $129 a month, each with AI credit included.
