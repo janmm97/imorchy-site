@@ -127,6 +127,8 @@ h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
 .plans:has(#bill-y:checked) .plan .yr{display:contents}
 .plans:has(#bill-y:checked) .plan .mo{display:none}
 .plan .mo{display:contents}
+.plan .plan-cta{margin-top:auto;padding-top:14px}
+.plan .plan-cta .btn{width:100%;justify-content:center}
 @media (max-width:1100px){.plans4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .card .more{margin-top:auto;padding-top:14px;display:inline-flex;align-items:center;gap:8px;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-ivory)}
 a.card:hover,a.card.is-hover{border-color:var(--c-edge-hi);transform:translateY(-2px)}

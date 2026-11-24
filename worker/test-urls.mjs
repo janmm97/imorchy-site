@@ -324,6 +324,11 @@ for (const hop of ["/go/start", "/go/early-access"]) {
     ["", "https://app.imorchy.dev/"],
     ["?from=" + encodeURIComponent("https://evil.example/"), "https://app.imorchy.dev/"],
     ["?from=" + "a".repeat(41), "https://app.imorchy.dev/"],
+    // a plan card's choice goes on to the app's plan picker; anything else is dropped
+    ["?from=pricing-pro&plan=pro&interval=year", "https://app.imorchy.dev/?from=pricing-pro&plan=pro&interval=year"],
+    ["?from=pricing-solo&plan=solo", "https://app.imorchy.dev/?from=pricing-solo&plan=solo"],
+    ["?plan=enterprise&interval=year", "https://app.imorchy.dev/"],
+    ["?plan=pro&interval=" + encodeURIComponent("year&next=https://evil.example/"), "https://app.imorchy.dev/?plan=pro"],
   ]) {
     const res = await get("https://imorchy.dev" + hop + query);
     assert.equal(res.status, 302, hop + query);

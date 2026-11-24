@@ -121,6 +121,8 @@ ok("answer pages: one H1, unique title and description, self-canonical, og image
   assert.doesNotMatch(body, /early.access|by hand|open soon|own AI key/i, "pricing: launch copy, no early access, hand approval or own key");
   assert.ok(!/app\.imorchy\.dev|polar\.sh|checkout/i.test(html), "pricing: no app, Polar or checkout link on the page");
   for (const plan of ["Starter", "Solo", "Pro", "Business"]) assert.ok(html.includes(`<h2 id="p-${plan.toLowerCase()}">${plan}</h2>`), `pricing: the ${plan} plan`);
+  for (const plan of ["starter", "solo", "pro", "business"]) assert.ok(html.includes(`href="/go/start?from=pricing-${plan}&amp;plan=${plan}&amp;interval=month"`), `pricing: ${plan} card links to the app's plan picker`);
+  assert.ok(!html.includes("plan=starter&amp;interval=year"), "pricing: Starter is monthly only");
   assert.ok(header("/").includes('href="/pricing"'), "pricing: in the header nav");
   assert.ok(FOOTER_COLUMNS.find((c) => c.heading === "Product").links.some(([, h]) => h === "/pricing"), "pricing: in the footer's Product column");
   ok("pricing: content page, four plans, FAQPage, no price schema, CTAs through /go/start, launch copy, in the nav and footer");
