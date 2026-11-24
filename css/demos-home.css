@@ -49,6 +49,47 @@
 .dh .capsteps li{border-top:1px solid var(--c-hl);padding-top:12px;font-size:14px;color:var(--c-ivory)}
 .dh .capsteps b{display:block;font:500 12px var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-hl);margin-bottom:4px}
 
+/* s2 · build / schedule / huddle (Stella, 2026-11-24): three small loops in place of the testimonials, on the same
+   js/demos.mjs timeline. The markup is the end state (no JS, reduced motion). Reveals are opacity/transform only and
+   every element keeps its box while hidden, so nothing shifts. .pre is the "before" half of a stacked swap
+   (8:59 -> 9:00, Running -> Ran, Approve -> Approved): hidden in the still frame. */
+.dm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.dm{display:flex;flex-direction:column}
+.dm .panel{flex:1;display:flex;flex-direction:column;min-height:500px}
+.dm h3{margin:18px 0 6px;font:500 15px/1.35 var(--font-mono);color:var(--c-ivory)}
+.dm>p:not(.sr){font-size:14px;line-height:1.55;color:var(--c-muted);padding-right:48px}
+.dm .chat{gap:8px}
+.dm .chip{white-space:normal;height:auto;min-height:28px;padding:5px 9px 5px 7px;line-height:1.3}
+.dm .bubble{font-size:13.5px}
+.dm .reply{font-size:13.5px}
+.dm-swap,.dm-clock,.dm-state{display:inline-grid}
+.dm-swap>*,.dm-clock>*,.dm-state>*{grid-area:1/1}
+[data-scene]:not(.run) .pre{visibility:hidden}
+.dm-note{font:400 11.5px/1.4 var(--font-mono);color:var(--c-muted)}
+.dm-ask{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--c-edge-hi);border-radius:var(--r-md);background:var(--sheet);font-size:13px}
+.dm-btn{padding:7px 10px;border-radius:var(--r-xs);background:var(--c-ivory);color:var(--c-ink);font:600 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;text-align:center}
+/* schedule */
+.dm-clock{margin-left:auto;color:var(--c-ivory);text-align:right}
+.dm-list{padding:14px;display:flex;flex-direction:column;gap:8px}
+.dm-job{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:11px 12px;border:1px solid var(--c-edge-soft);border-radius:var(--r-sm);background:var(--in);font-size:13px}
+.dm-name{font-weight:600}
+.dm-when{display:inline-flex;align-items:center;gap:6px;font:500 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--c-hl);white-space:nowrap}
+.dm-task{color:var(--c-muted)}
+.dm-state{justify-items:end;align-items:center;font:400 11px/1.3 var(--font-mono);color:var(--c-muted);white-space:nowrap}
+.dm-state .dots3{vertical-align:middle;margin-left:2px}
+.dm-hist{margin:auto 14px 14px;border:1px solid var(--c-edge-soft);border-radius:var(--r-md);overflow:hidden}
+.dm-hh{padding:10px 12px;border-bottom:1px solid var(--c-edge-soft);font:500 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted)}
+.dm-hrow{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:9px 12px;border-bottom:1px solid var(--c-edge-soft);font-size:12.5px;line-height:1.45}
+.dm-hrow:last-child{border-bottom:0}
+.dm-hrow b{font-weight:600}
+.dm-t{font:500 11px/1.65 var(--font-mono);color:var(--c-muted);white-space:nowrap}
+/* huddle */
+.dm-talk{flex:1;padding:14px;display:flex;flex-direction:column;gap:8px}
+.dm-msg{max-width:94%;padding:8px 11px;border:1px solid var(--c-edge-soft);border-radius:4px 14px 14px 14px;background:var(--in);font-size:13px;line-height:1.45}
+.dm-role{display:block;margin-bottom:3px;font:500 10.5px/1.3 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-hl)}
+.dm-sum{margin-top:auto;padding:12px;border:1px solid var(--c-edge-hi);border-radius:var(--r-md);background:var(--sheet);font-size:13px;line-height:1.45}
+.dm-wait{display:flex;gap:8px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--c-edge-soft);font:400 11.5px/1.4 var(--font-mono);color:var(--c-hl)}
+
 @media (max-width:1100px){
   .dh-how .stage{grid-template-columns:1fr 260px 1fr;gap:34px}
 }
@@ -63,4 +104,7 @@
   .dh .row{height:40px;padding:0 10px}
   .dh .row .v{display:none}
   .dh .capsteps{grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .dm-grid{grid-template-columns:minmax(0,1fr);gap:40px;max-width:560px;margin:0 auto}
+  .dm .panel{min-height:0}
+  .dm .chat{min-height:0}
 }

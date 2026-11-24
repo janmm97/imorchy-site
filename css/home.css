@@ -14,28 +14,10 @@
 .demo{padding:8px 0 112px}
 .demo>.wrap>.label{display:block;color:var(--c-muted);padding-top:24px;border-top:1px solid var(--c-edge-soft)}
 
-/* testimonials */
-.quotes{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
-.quotes li{grid-column:span 2;display:flex;border:1px solid var(--c-edge-soft);border-radius:var(--r-lg);background:var(--glass-sheen),var(--in);box-shadow:var(--glass-shine)}
-.quotes li:nth-child(n+4){grid-column:span 3}
-.quotes figure{display:flex;flex-direction:column;justify-content:space-between;gap:22px;width:100%;padding:26px 26px 22px}
-.quotes blockquote p{font-size:15px;line-height:1.6}
-.quotes blockquote p::before{content:"\201C"}
-.quotes blockquote p::after{content:"\201D"}
-.quotes figcaption{font:500 12px/1.2 var(--font-mono);letter-spacing:.06em;color:var(--c-muted);padding-top:14px;border-top:1px solid var(--c-edge-soft)}
-
 @media (max-width:900px){
   .hero{min-height:0;justify-content:flex-start;padding:56px 0 64px}
   .hero h1{font-size:clamp(19px,calc((100vw - 2 * var(--gutter)) / 14.1),54px)} /* "Build agents with access" is 24 x (0.6 - 0.03)em = 13.68em in JetBrains Mono (measured 0.6em a character): line 1 stays inside the gutters down to 300px */
   .hero .lede{margin:20px auto 26px}
   .hero::before{-webkit-mask:linear-gradient(transparent 45%,#000);mask:linear-gradient(transparent 45%,#000)}
   .demo{padding:0 0 76px}
-  .quotes{grid-template-columns:1fr 1fr;gap:14px}
-  .quotes li,.quotes li:nth-child(n+4){grid-column:span 1}
-  .quotes li:last-child{grid-column:1/-1}
-  .quotes figure{padding:22px 20px 18px}
-}
-@media (max-width:620px){
-  .quotes{grid-template-columns:1fr}
-  .quotes blockquote p{font-size:14px}
 }
