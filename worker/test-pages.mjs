@@ -110,7 +110,7 @@ for (const gone of ["local", "claude-code-orchestrator"]) assert.ok(!pages.inclu
 assert.ok(pages.length >= 3, "home plus the answer pages are checked");
 ok("answer pages: one H1, unique title and description, self-canonical, og image, FAQPage, no scripts but the shell's, in the sitemap, linked from home");
 
-// ── /pricing (Jan, 2026-11-20): a content page with the three plans as text (no price schema: the offers check above),
+// ── /pricing (Jan, 2026-11-20): a content page with the four plans as text (2026-11-24) (no price schema: the offers check above),
 // hero and final CTAs through /go/start, launch copy only, no direct app or checkout link, in the nav and the footer ──
 {
   const html = contentPage("pricing");
@@ -120,10 +120,12 @@ ok("answer pages: one H1, unique title and description, self-canonical, og image
   const body = html.slice(html.indexOf("</header>")); // the nav is stamped by build.mjs
   assert.doesNotMatch(body, /early.access|by hand|open soon|own AI key/i, "pricing: launch copy, no early access, hand approval or own key");
   assert.ok(!/app\.imorchy\.dev|polar\.sh|checkout/i.test(html), "pricing: no app, Polar or checkout link on the page");
-  for (const plan of ["Solo", "Team", "Agency"]) assert.ok(html.includes(`<h2 id="p-${plan.toLowerCase()}">${plan}</h2>`), `pricing: the ${plan} plan`);
+  for (const plan of ["Starter", "Solo", "Pro", "Business"]) assert.ok(html.includes(`<h2 id="p-${plan.toLowerCase()}">${plan}</h2>`), `pricing: the ${plan} plan`);
+  for (const plan of ["starter", "solo", "pro", "business"]) assert.ok(html.includes(`href="/go/start?from=pricing-${plan}&amp;plan=${plan}&amp;interval=month"`), `pricing: ${plan} card links to the app's plan picker`);
+  assert.ok(!html.includes("plan=starter&amp;interval=year"), "pricing: Starter is monthly only");
   assert.ok(header("/").includes('href="/pricing"'), "pricing: in the header nav");
   assert.ok(FOOTER_COLUMNS.find((c) => c.heading === "Product").links.some(([, h]) => h === "/pricing"), "pricing: in the footer's Product column");
-  ok("pricing: content page, three plans, FAQPage, no price schema, CTAs through /go/start, launch copy, in the nav and footer");
+  ok("pricing: content page, four plans, FAQPage, no price schema, CTAs through /go/start, launch copy, in the nav and footer");
 }
 
 // ── the legal pages (Jan, 2026-11-04): the approved text as plain HTML, indexable, no scripts but JSON-LD, no draft

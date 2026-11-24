@@ -108,12 +108,28 @@ h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
 .plan .txt{padding:28px 26px 30px;gap:10px}
 .plan .price{display:flex;align-items:baseline;gap:8px;color:var(--c-ivory)}
 .plan .price b{font-size:44px;font-weight:500;letter-spacing:-.02em;line-height:1}
-.plan .price span{font:400 var(--fs-note)/1 var(--font-mono);color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em}
+.plan .price b+span{font:400 var(--fs-note)/1 var(--font-mono);color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em}
 .plan .sum{font:500 var(--fs-label-sm)/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-ivory)}
 .plan .incl{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px;padding-top:16px;border-top:1px solid var(--c-edge-soft);font-size:var(--fs-small);color:var(--c-muted)}
 .plan .incl li{display:grid;grid-template-columns:16px 1fr;gap:10px;align-items:start}
 .plan .incl .ic{width:16px;height:16px;margin-top:3px;stroke-width:1.7}
 .plans-notes{max-width:var(--measure);margin:28px auto 0;text-align:center;display:flex;flex-direction:column;gap:10px}
+.plans4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.plans4 .plan .txt{padding:24px 20px 26px}
+.plans4 .plan .price b{font-size:38px}
+/* monthly / yearly: CSS only (script-src 'self'); without :has() the monthly prices show */
+.bill{position:relative;display:flex;justify-content:center;gap:4px;width:max-content;max-width:100%;margin:0 auto 16px;padding:4px;border:1px solid var(--c-edge);border-radius:999px}
+.bill label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;cursor:pointer;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted)}
+.bill label span{color:var(--c-hl)}
+.bill input:checked+label{background:var(--c-edge-soft);color:var(--c-ivory)}
+.bill input:focus-visible+label{outline:2px solid var(--c-hl);outline-offset:2px}
+.plan .yr{display:none}
+.plans:has(#bill-y:checked) .plan .yr{display:contents}
+.plans:has(#bill-y:checked) .plan .mo{display:none}
+.plan .mo{display:contents}
+.plan .plan-cta{margin-top:auto;padding-top:14px}
+.plan .plan-cta .btn{width:100%;justify-content:center}
+@media (max-width:1100px){.plans4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .card .more{margin-top:auto;padding-top:14px;display:inline-flex;align-items:center;gap:8px;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--c-ivory)}
 a.card:hover,a.card.is-hover{border-color:var(--c-edge-hi);transform:translateY(-2px)}
 a.card:hover .more .ic,a.card.is-hover .more .ic{transform:translateX(3px)}

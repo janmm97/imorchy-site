@@ -38,6 +38,9 @@ const RETIRED = /^\/(?:local|claude-code-orchestrator)(?:\.html|\/)?$/;
 /** Where the "Get started" CTA lands (sign-up). `from` (the page section) is passed on so the app can count sign-ups per CTA. */
 export const SIGN_UP = "https://app.imorchy.dev/";
 const SECTION = /^[a-z0-9-]{1,40}$/;
+/** A plan card's choice, passed on so the app preselects it (orchy-ai planChoice checks it again). */
+const PLAN = /^(starter|solo|pro|business)$/;
+const INTERVAL = /^(month|year)$/;
 /** /go/start is the CTA hop; /go/early-access stays as an alias so old links and posts keep working. */
 const CTA_HOPS = new Set(["/go/start", "/go/early-access"]);
 
@@ -46,6 +49,11 @@ function signUp(url) {
   const to = new URL(SIGN_UP);
   const from = url.searchParams.get("from");
   if (from && SECTION.test(from)) to.searchParams.set("from", from);
+  const plan = url.searchParams.get("plan"), interval = url.searchParams.get("interval");
+  if (plan && PLAN.test(plan)) {
+    to.searchParams.set("plan", plan);
+    if (interval && INTERVAL.test(interval)) to.searchParams.set("interval", interval);
+  }
   return new Response(null, { status: 302, headers: { Location: to.href, "Cache-Control": "no-store" } });
 }
 

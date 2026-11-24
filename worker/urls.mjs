@@ -23,7 +23,7 @@ export const PAGES = [
   { path: "/agents", type: "text/html", profile: "page", markers: ["<h1>Build your own <span class=\"hl\">team of agents.</span></h1>"] },
   { path: "/apps", type: "text/html", profile: "page", markers: ["<h1>Agents that work in <span class=\"hl\">your clients' own apps.</span></h1>"] },
   { path: "/client-workspaces", type: "text/html", profile: "page", markers: ["<h1>A separate AI workspace for <span class=\"hl\">each client you work for.</span></h1>"] },
-  { path: "/pricing", type: "text/html", profile: "page", markers: ["<h1>Simple monthly plans for people who <span class=\"hl\">work for several clients.</span></h1>", 'href="/go/start?from=pricing-hero"'] },
+  { path: "/pricing", type: "text/html", profile: "page", markers: ["<h1>Simple plans for people who <span class=\"hl\">work for several clients.</span></h1>", 'href="/go/start?from=pricing-hero"'] },
   // AI agents by team and comparison pages (2026-11-24).
   { path: "/ai-agents-for-business", type: "text/html", profile: "page", markers: ["<h1>AI agents for business that <span class=\"hl\">work in your apps</span></h1>", 'href="/go/start?from=ai-agents-for-business-hero"'] },
   { path: "/ai-employees", type: "text/html", profile: "page", markers: ["<h1>AI employees that <span class=\"hl\">check with you first</span></h1>", 'href="/go/start?from=ai-employees-hero"'] },
