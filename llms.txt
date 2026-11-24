@@ -5,7 +5,8 @@
 Key facts:
 - Hosted only, at OVHcloud in Canada, with one isolated container per customer.
 - Through One, Orchy can connect to 1,000+ apps (for example Gmail, Google Calendar and LinkedIn).
-- AI runs on Orchy's included key, paid from the AI credit in every plan.
+- AI runs on Orchy's own OpenRouter account, paid from the AI credit included in every plan. There is no bring-your-own AI key.
+- Sign-up is open, with no waiting list. Plans are paid monthly and billed through Polar.
 - Orchy is live. Plans are Solo $19, Team $59 and Agency $129 a month, each with AI credit included.
 - Orchy holds no security certifications such as SOC 2 or ISO 27001.
 - Orchy is a product of One Systems, Inc.
@@ -15,6 +16,7 @@ Key facts:
 - [Approvals](https://imorchy.dev/approvals): what Orchy asks about before it acts, and how you approve or deny
 - [Agents and the Agent Builder](https://imorchy.dev/agents): set up agents for a job in plain words
 - [Apps through One](https://imorchy.dev/apps): connect each client's apps and choose what each agent may use
+- [Pricing](https://imorchy.dev/pricing): paid monthly plans, AI credit and the 14-day refund rule
 - [Security](https://imorchy.dev/security): hosting, isolation, included AI, deletion and sub-processors
 
 ## Legal

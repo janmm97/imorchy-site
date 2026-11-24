@@ -119,7 +119,7 @@ ok("answer pages: one H1, unique title and description, self-canonical, og image
   assert.ok(ctas.includes("pricing-hero") && ctas.includes("pricing-final"), "pricing: hero and final CTAs go through /go/start");
   const body = html.slice(html.indexOf("</header>")); // the nav is stamped by build.mjs
   assert.doesNotMatch(body, /early.access|by hand|open soon|own AI key/i, "pricing: launch copy, no early access, hand approval or own key");
-  assert.ok(!/app\.imorchy\.dev|polar\.sh|checkout/i.test(html), "pricing: no app, Polar or checkout link before paid plans open");
+  assert.ok(!/app\.imorchy\.dev|polar\.sh|checkout/i.test(html), "pricing: no app, Polar or checkout link on the page");
   for (const plan of ["Solo", "Team", "Agency"]) assert.ok(html.includes(`<h2 id="p-${plan.toLowerCase()}">${plan}</h2>`), `pricing: the ${plan} plan`);
   assert.ok(header("/").includes('href="/pricing"'), "pricing: in the header nav");
   assert.ok(FOOTER_COLUMNS.find((c) => c.heading === "Product").links.some(([, h]) => h === "/pricing"), "pricing: in the footer's Product column");
