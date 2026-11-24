@@ -3,7 +3,7 @@
 // Pages, videos and /google*.html run the Worker first; static files skip it (site/worker/routes.mjs).
 import { withSecurityHeaders } from "./headers.mjs";
 import { byteRange } from "./range.mjs";
-import { liveAppCount, withAppCount } from "./appcount.mjs";
+import { forAppCount, liveAppCount, withAppCount } from "./appcount.mjs";
 
 /** Videos live in R2 (MEDIA), under their site path: too big for static assets and kept out of git. Safari won't play an mp4 without byte ranges, so Range gets a 206. */
 async function video(request, env, url) {
@@ -67,8 +67,9 @@ export default {
   // Pages and llms.txt carry One's live app count when it differs from the one they were written with (appcount.mjs).
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    const routed = await route(request, env, url);
-    const res = withSecurityHeaders(await withAppCount(routed, request, url, () => liveAppCount(ctx)), url);
+    const live = await liveAppCount(ctx);
+    const req = forAppCount(request, url, live);
+    const res = withSecurityHeaders(await withAppCount(await route(req, env, url), req, url, live), url);
     // The workers.dev preview (deploy.mjs --preview binds PREVIEW) must never be indexed next to imorchy.dev.
     if (env.PREVIEW) res.headers.set("X-Robots-Tag", "noindex, nofollow");
     return res;

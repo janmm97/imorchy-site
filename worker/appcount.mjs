@@ -43,10 +43,14 @@ export function resetAppCount() {
 
 async function refresh(fetchImpl, cache, now) {
   const value = await fetchAppCount(fetchImpl);
-  const ttl = value ? TTL_S : RETRY_S;
-  memo = { value, until: now() + ttl * 1000 };
+  // A failed lookup keeps the last good count and tries again in 10 minutes; it never overwrites the cached count.
+  if (!value) {
+    memo = { value: memo.value, until: now() + RETRY_S * 1000 };
+    return;
+  }
+  memo = { value, until: now() + TTL_S * 1000 };
   try {
-    await cache?.put(CACHE_KEY, new Response(value ?? "", { headers: { "Cache-Control": `max-age=${ttl}` } }));
+    await cache?.put(CACHE_KEY, new Response(value, { headers: { "Cache-Control": `max-age=${TTL_S}` } }));
   } catch {}
 }
 
@@ -72,21 +76,31 @@ export async function liveAppCount(ctx, deps = {}) {
   return memo.value;
 }
 
+/** The live text when it should replace APP_COUNT_BASE, else null. */
+export function shownAppCount(live) {
+  return typeof live === "string" && SHAPE.test(live) && live !== APP_COUNT_BASE ? live : null;
+}
+
 /**
- * Swaps APP_COUNT_BASE for the live text in a 200 GET text/html answer or /llms.txt; any other answer is returned as is.
- * getLive is only called for those answers, so redirects, videos and static files never look the count up.
+ * While a live count is shown, a GET page request goes to the assets without If-None-Match / If-Modified-Since, so a
+ * browser holding a page from before the count changed gets it again (200, rewritten) rather than a 304 that keeps
+ * the old count. Videos keep their conditionals.
  */
-export async function withAppCount(res, request, url, getLive) {
-  if (request.method !== "GET" || res.status !== 200 || !res.body) return res;
+export function forAppCount(request, url, live) {
+  if (!shownAppCount(live) || request.method !== "GET" || url.pathname.endsWith(".mp4")) return request;
+  if (!request.headers.has("If-None-Match") && !request.headers.has("If-Modified-Since")) return request;
+  const headers = new Headers(request.headers);
+  headers.delete("If-None-Match");
+  headers.delete("If-Modified-Since");
+  return new Request(request, { headers });
+}
+
+/** Swaps APP_COUNT_BASE for the live text in a 200 GET text/html answer or /llms.txt; any other answer is returned as is. */
+export async function withAppCount(res, request, url, live) {
+  live = shownAppCount(live);
+  if (!live || request.method !== "GET" || res.status !== 200 || !res.body) return res;
   const type = (res.headers.get("Content-Type") || "").toLowerCase();
   if (!type.startsWith("text/html") && url.pathname !== "/llms.txt") return res;
-  let live;
-  try {
-    live = await getLive();
-  } catch {
-    return res;
-  }
-  if (!live || !SHAPE.test(live) || live === APP_COUNT_BASE) return res;
   const text = await res.text();
   const headers = new Headers(res.headers);
   if (!text.includes(APP_COUNT_BASE)) return new Response(text, { status: res.status, statusText: res.statusText, headers });
