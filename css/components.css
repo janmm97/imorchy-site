@@ -108,7 +108,7 @@ h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
 .plan .txt{padding:28px 26px 30px;gap:10px}
 .plan .price{display:flex;align-items:baseline;gap:8px;color:var(--c-ivory)}
 .plan .price b{font-size:44px;font-weight:500;letter-spacing:-.02em;line-height:1}
-.plan .price span{font:400 var(--fs-note)/1 var(--font-mono);color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em}
+.plan .price b+span{font:400 var(--fs-note)/1 var(--font-mono);color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em}
 .plan .sum{font:500 var(--fs-label-sm)/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-ivory)}
 .plan .incl{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px;padding-top:16px;border-top:1px solid var(--c-edge-soft);font-size:var(--fs-small);color:var(--c-muted)}
 .plan .incl li{display:grid;grid-template-columns:16px 1fr;gap:10px;align-items:start}
@@ -118,7 +118,7 @@ h3{font-size:var(--fs-h3);letter-spacing:var(--ls-h3);line-height:1.2}
 .plans4 .plan .txt{padding:24px 20px 26px}
 .plans4 .plan .price b{font-size:38px}
 /* monthly / yearly: CSS only (script-src 'self'); without :has() the monthly prices show */
-.bill{display:flex;justify-content:center;gap:4px;width:max-content;max-width:100%;margin:0 auto 16px;padding:4px;border:1px solid var(--c-edge);border-radius:999px}
+.bill{position:relative;display:flex;justify-content:center;gap:4px;width:max-content;max-width:100%;margin:0 auto 16px;padding:4px;border:1px solid var(--c-edge);border-radius:999px}
 .bill label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;cursor:pointer;font:500 var(--fs-label-sm)/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted)}
 .bill label span{color:var(--c-hl)}
 .bill input:checked+label{background:var(--c-edge-soft);color:var(--c-ivory)}
