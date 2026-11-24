@@ -317,19 +317,83 @@
   </div>
 </section>
 
-<section class="sec" id="voices" aria-labelledby="voices-h">
+<section class="sec" id="see-it-work" aria-labelledby="see-h">
   <div class="wrap">
     <div class="sec-head center">
-      <h2 id="voices-h">What our users say</h2>
-      <p class="lede">Quoted with their permission.</p>
+      <span class="label">In the app · sample data</span>
+      <h2 id="see-h">Build, schedule and huddle</h2>
+      <p class="lede">Three short loops with sample data: Orchy builds an agent and does a task, a task runs on a schedule, and agents talk a decision through.</p>
     </div>
-    <ul class="quotes">
-      <li><figure><blockquote><p>I run five clients out of one chat now. I type one sentence and Orchy sends it to the right workspace, so I only step in when something needs my sign-off.</p></blockquote><figcaption>Miko S.J.</figcaption></figure></li>
-      <li><figure><blockquote><p>Every client has its own accounts and nothing leaks between them. That was the one thing I was scared of with AI agents, and it's the reason I trust Orchy.</p></blockquote><figcaption>Gerald M.</figcaption></figure></li>
-      <li><figure><blockquote><p>I used to spend my mornings logging into five inboxes. Now I just read what Orchy says got done overnight.</p></blockquote><figcaption>Paul C.</figcaption></figure></li>
-      <li><figure><blockquote><p>I don't know what an API is and I don't need to. I tell Orchy what I want, tap Approve when it asks, and read the result.</p></blockquote><figcaption>Mark F.</figcaption></figure></li>
-      <li><figure><blockquote><p>Talking to Orchy feels like messaging a helpful assistant, and the little character honestly makes it fun to use.</p></blockquote><figcaption>Jerard A.</figcaption></figure></li>
-    </ul>
+    <div class="dm-grid">
+      <article class="dh dm scene" data-scene id="demo-home-build" aria-labelledby="dm1-h">
+        <p class="sr">Example with sample data: you ask Orchy for an agent that logs new leads from Gmail in Google Sheets and posts a summary in Slack. The Agent Builder creates the Lead agent and connects it to Gmail, Google Sheets and Slack through One, which reaches 1,100+ apps. The agent reads 4 new leads, adds 4 rows to the sheet and asks before posting in Slack. You approve and the summary is posted.</p>
+        <div class="panel glass" aria-hidden="true">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span>Orchy · <b>Agent Builder</b></div>
+          <div class="chat">
+            <div class="bubble" data-at="0.3">Make an agent that logs new leads from Gmail in Google Sheets and posts a summary in Slack.</div>
+            <div class="steps">
+              <span class="chip" data-at="1.3"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg>builder · <b>Lead agent created</b></span>
+              <span class="chip" data-at="2.1"><svg class="ic" viewBox="0 0 16 16"><path d="M6 10l4-4M5 7.5 3.6 8.9a2.3 2.3 0 0 0 3.3 3.3L8.3 11M11 8.5l1.4-1.4a2.3 2.3 0 0 0-3.3-3.3L7.7 5.2"/></svg>one · <b>Gmail, Sheets, Slack</b></span>
+            </div>
+            <p class="dm-note" data-at="2.7">Connected through One: 1,100+ apps.</p>
+            <div class="steps">
+              <span class="chip" data-at="3.5"><span class="sq"></span>gmail · <b>read 4 new leads</b></span>
+              <span class="chip" data-at="4.3"><span class="sq"></span>google sheets · <b>add 4 rows</b></span>
+              <span class="chip" data-at="5.1"><span class="sq"></span>slack · <b>post summary</b><svg class="ic" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg></span>
+            </div>
+            <div class="dm-ask" data-at="5.9"><span>Post the summary in #sales?</span><span class="dm-btn dm-swap" data-cls="lit" data-at="6.6" data-off="7.3"><span class="pre" data-at="5.9" data-off="7.3">Approve</span><span data-at="7.3">Approved</span></span></div>
+            <p class="reply" data-at="8.1">Done. 4 leads are in the sheet and the summary is posted in #sales.</p>
+          </div>
+        </div>
+        <h3 id="dm1-h">Build an agent, then run a task</h3>
+        <p>Describe the job. Orchy builds the agent, connects it to your apps through One and does the task. Posting waits for your OK.</p>
+        <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
+      </article>
+      <article class="dh dm scene" data-scene id="demo-home-schedule" aria-labelledby="dm2-h">
+        <p class="sr">Example with sample data: the Inbox agent runs on weekdays at 9:00 and the Report agent daily at 8:30. At 9:00 on Monday the Inbox agent starts by itself, sorts 14 new emails and drafts 5 replies. The result appears at the top of History, and the replies wait for your OK before they are sent.</p>
+        <div class="panel glass" aria-hidden="true">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span>Orchy · <b>Schedules</b><span class="dm-clock"><span class="pre" data-at="0.2" data-off="2.0">Mon 8:59</span><span data-at="2.0">Mon 9:00</span></span></div>
+          <div class="dm-list">
+            <div class="dm-job" data-cls="lit" data-at="2.2" data-off="5.6">
+              <span class="dm-name">Inbox agent</span><span class="dm-when"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3.2l2 1.3"/></svg>Weekdays 9:00</span>
+              <span class="dm-task">Sort new email, draft replies</span>
+              <span class="dm-state"><span class="pre" data-at="2.4" data-off="4.8">Running <span class="dots3"><i></i><i></i><i></i></span></span><span data-at="4.8">Ran 9:00</span></span>
+            </div>
+            <div class="dm-job">
+              <span class="dm-name">Report agent</span><span class="dm-when"><svg class="ic" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3.2l2 1.3"/></svg>Daily 8:30</span>
+              <span class="dm-task">Update the KPI sheet</span>
+              <span class="dm-state">Ran 8:30</span>
+            </div>
+          </div>
+          <div class="dm-hist">
+            <div class="dm-hh">History</div>
+            <div class="dm-hrow" data-at="5.4"><span class="dm-t">Mon 9:00</span><span><b>Inbox agent</b> · 14 emails sorted, 5 replies drafted. Waiting for your OK to send.</span></div>
+            <div class="dm-hrow"><span class="dm-t">Mon 8:30</span><span><b>Report agent</b> · KPI sheet updated in Google Sheets.</span></div>
+            <div class="dm-hrow"><span class="dm-t">Fri 9:00</span><span><b>Inbox agent</b> · 9 emails sorted, 3 replies drafted.</span></div>
+          </div>
+        </div>
+        <h3 id="dm2-h">Put a task on a schedule</h3>
+        <p>Give an agent a schedule like "weekdays 9:00". At that time it runs its task by itself and the result appears in History.</p>
+        <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
+      </article>
+      <article class="dh dm scene" data-scene id="demo-home-huddle" aria-labelledby="dm3-h">
+        <p class="sr">Example with sample data: Orchy opens a huddle on whether the launch post goes out on Tuesday or Thursday. The Marketing lead argues for Tuesday. The Copywriter pushes back because the linked guide isn't drafted, and the Social producer needs two days for the clips. The Marketing lead agrees to Thursday with a Tuesday teaser. Orchy writes up the plan, and nothing runs until you approve it.</p>
+        <div class="panel glass" aria-hidden="true">
+          <div class="bar"><span class="dots"><i></i><i></i><i></i></span>Huddle · <b>Launch post day</b></div>
+          <div class="dm-talk">
+            <div class="dm-msg" data-at="0.3"><span class="dm-role">Orchy · lead</span>Tuesday or Thursday for the launch post? Talk it through, then I'll write it up.</div>
+            <div class="dm-msg" data-at="1.4"><span class="dm-role">Marketing lead</span>Tuesday 10:00. It leaves the rest of the week for follow-ups.</div>
+            <div class="dm-msg" data-at="2.6"><span class="dm-role">Copywriter</span>Thursday. The post links to the guide, and the guide isn't drafted yet.</div>
+            <div class="dm-msg" data-at="3.8"><span class="dm-role">Social producer</span>Thursday too. I need two days to cut the clips.</div>
+            <div class="dm-msg" data-at="5.0"><span class="dm-role">Marketing lead</span>Fair. Thursday 10:00, with a teaser on Tuesday.</div>
+            <div class="dm-sum" data-at="6.2"><span class="dm-role">Orchy · write-up</span>Launch post Thursday 10:00, teaser Tuesday. Copywriter drafts the guide first.<span class="dm-wait"><svg class="ic" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>Waiting for your approval. Nothing runs yet.</span></div>
+          </div>
+        </div>
+        <h3 id="dm3-h">Huddle on a decision</h3>
+        <p>Orchy opens a huddle. Agents argue it out from their roles, then the lead writes up what they agreed. Nothing runs until you approve.</p>
+        <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
+      </article>
+    </div>
   </div>
 </section>
 

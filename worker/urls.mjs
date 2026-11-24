@@ -15,7 +15,7 @@ export const PAGES = [
     markers: [
       '<h1>A team of AI agents <span class="hl">that works in your apps</span></h1>',
       'href="/go/start?from=hero"',
-      "What our users say",
+      "Build, schedule and huddle",
       '"@type": "FAQPage"',
     ],
   },
