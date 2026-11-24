@@ -319,7 +319,7 @@ export { BEACON };
 export const SHELL_SCRIPTS = [NAV_JS, BEACON];
 // The line above the final CTA (Grant's launch copy, 2026-11-24). build() stamps it into every <span data-cap>
 // of the hand pages, so --check fails if one drifts.
-export const CAP_COPY = "Plans from $19 a month";
+export const CAP_COPY = "Plans from $9 a month";
 const cur = (href, p) => (href === p ? ' aria-current="page"' : "");
 const HEADER_TAG = /[ \t]*<header class="nav"[\s\S]*?<\/header>/g;
 export function header(p, site = siteDir) {
@@ -504,7 +504,7 @@ ${html}
             <h2 id="cta-h">Run routine work with agents, <span class="hl">keep the final say.</span></h2>
             <p class="lede">Orchy AI asks before it sends, posts or deletes. For VAs and agencies with several clients.</p>
             <a class="btn" href="/go/start?from=blog">Get started ${icon("arr", "ic arr")}</a>
-            <p class="note">Billed monthly. AI credit included in every plan.</p>
+            <p class="note">Monthly or yearly. AI credit included in every plan.</p>
           </div>
         </div>
       </aside>
