@@ -1,303 +1,36 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Connect AI agents to 1,100+ apps through One | Orchy AI</title>
-    <meta name="description" content="Through One, Orchy can connect to 1,100+ apps. Connect the apps each client uses, like Gmail, Google Calendar and LinkedIn, and agents work there." />
-    <meta name="theme-color" content="#080a0d" />
-    <link rel="canonical" href="https://imorchy.dev/apps" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Orchy AI" />
-    <meta property="og:url" content="https://imorchy.dev/apps" />
-    <meta property="og:title" content="Agents that work in your clients' own apps | Orchy AI" />
-    <meta property="og:description" content="1,100+ apps through One. Connect each client's apps to that client's workspace and choose what each agent may use." />
-    <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Orchy AI: AI workspace for VAs, freelancers and agencies" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Agents that work in your clients' own apps | Orchy AI" />
-    <meta name="twitter:description" content="1,100+ apps through One. Connect each client's apps to that client's workspace and choose what each agent may use." />
-    <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
-    <meta name="twitter:image:alt" content="Orchy AI: AI workspace for VAs, freelancers and agencies" />
-    <link rel="icon" type="image/png" href="/assets/orchy-icon-64.png" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/JetBrainsMono-Bold.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/components.css" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebPage",
-            "@id": "https://imorchy.dev/apps#webpage",
-            "url": "https://imorchy.dev/apps",
-            "name": "Connect AI agents to 1,100+ apps through One | Orchy AI",
-            "description": "Through One, Orchy can connect to 1,100+ apps. Connect the apps each client uses, like Gmail, Google Calendar and LinkedIn, and agents work there.",
-            "isPartOf": {
-              "@id": "https://imorchy.dev/#website"
-            },
-            "about": {
-              "@id": "https://imorchy.dev/#org"
-            }
-          },
-          {
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://imorchy.dev/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Apps (One)",
-                "item": "https://imorchy.dev/apps"
-              }
-            ]
-          },
-          {
-            "@type": "FAQPage",
-            "@id": "https://imorchy.dev/apps#faq",
-            "url": "https://imorchy.dev/apps",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "Which apps does Orchy work with?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Through One, Orchy can connect to 1,100+ apps. You connect the apps each client uses to that client's workspace."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Can an agent use an app I haven't connected?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "No. Orchy checks every app call against the workspace's connections and the agent's access."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Do I connect every client's accounts separately?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes. Each workspace has its own connections, so a client's accounts stay with that client's workspace."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Will an agent send email without asking me?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "By default Orchy asks before it sends. You approve or turn it down, and a change to Gmail forwarding always asks."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Who runs One?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "One Systems, Inc., the company behind Orchy. In hosted Orchy, One is part of our service."
-                }
-              }
-            ]
-          }
-        ]
-      }
-    </script>
-  </head>
-  <body>
-    <a class="skip" href="#main">Skip to content</a>
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></symbol>
-  <symbol id="i-ask" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></symbol>
-  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></symbol>
-  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"/></symbol>
-  <symbol id="i-chev" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
-  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
-  <symbol id="i-ws" viewBox="0 0 16 16"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></symbol>
-  <symbol id="i-agent" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></symbol>
-  <symbol id="i-apps" viewBox="0 0 16 16"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></symbol>
-  <symbol id="i-file" viewBox="0 0 16 16"><path d="M4 1.8h5.2L12.5 5v9.2h-8.5z"/><path d="M9 2v3.2h3.3M6.3 8.5h3.6M6.3 11h3.6"/></symbol>
-  <symbol id="i-mem" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.6 3.6"/></symbol>
-  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M8 14.5s-4.5-4.4-4.5-8a4.5 4.5 0 0 1 9 0c0 3.6-4.5 8-4.5 8z"/><circle cx="8" cy="6.5" r="1.6"/></symbol>
-  <symbol id="i-key" viewBox="0 0 16 16"><circle cx="5" cy="8" r="2.8"/><path d="M7.8 8h6.2M12 8v2.4M10 8v1.8"/></symbol>
-  <symbol id="i-box" viewBox="0 0 16 16"><path d="M2.5 5L8 2.2 13.5 5v6L8 13.8 2.5 11z"/><path d="M2.5 5L8 7.8 13.5 5M8 7.8v6"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/></symbol>
-  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.3 3.3"/></symbol>
-</svg>
-    <header class="nav" id="top">
-      <div class="bar-in">
-        <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
-        <nav aria-label="Main">
-          <ul class="nav-list" id="navlist">
-            <li>
-              <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
-              <a class="nav-link nojs-only" href="#site-footer">Features</a>
-              <ul class="fmenu glass" id="fmenu">
-              <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
-              <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
-              <li><a href="/agents"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span>Agents &amp; Agent Builder</a></li>
-              <li><a href="/apps" aria-current="page"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></svg></span>Apps (One)</a></li>
-              <li><a href="/security"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
-              </ul>
-            </li>
-            <li><a class="nav-link" href="/ai-agents-for-business">AI agents</a></li>
-            <li><a class="nav-link" href="/#how">How it works</a></li>
-            <li><a class="nav-link" href="/pricing">Pricing</a></li>
-            <li><a class="nav-link" href="/blog">Blog</a></li>
-          </ul>
-        </nav>
-        <div class="nav-end">
-          <a class="btn btn-sm" href="/go/start?from=nav">Get started</a>
-          <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5h11M2.5 11h11"/></svg><span class="t">Menu</span><span class="sr"> (site menu)</span></button>
-          <a class="menu nojs-only" href="#site-footer">Menu</a>
-        </div>
-      </div>
-      <script type="module" src="/js/nav.mjs"></script>
-      <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
-    </header>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Agent Integrations: 1,100+ Apps Through One | Orchy</title>
+<link rel="preload" href="/shared/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/shared/fonts/JetBrainsMono-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/shared/orchy-main-128.webp" type="image/webp">
+<link rel="stylesheet" href="/shared/site.css">
+<meta name="description" content="Connect Orchy's AI agents to Gmail, Google Calendar, Slack, Notion, GitHub, Stripe and 1,100+ apps through One. Choose what each agent may use.">
+<link rel="canonical" href="https://imorchy.dev/apps">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Orchy AI"><meta property="og:title" content="AI Agent Integrations: 1,100+ Apps Through One | Orchy"><meta property="og:description" content="Connect Orchy's AI agents to Gmail, Google Calendar, Slack, Notion, GitHub, Stripe and 1,100+ apps through One. Choose what each agent may use."><meta property="og:url" content="https://imorchy.dev/apps"><meta property="og:image" content="https://imorchy.dev/shared/og/apps.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@OrchyAI"><meta name="twitter:title" content="AI Agent Integrations: 1,100+ Apps Through One | Orchy"><meta name="twitter:description" content="Connect Orchy's AI agents to Gmail, Google Calendar, Slack, Notion, GitHub, Stripe and 1,100+ apps through One. Choose what each agent may use."><meta name="twitter:image" content="https://imorchy.dev/shared/og/apps.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://imorchy.dev/#org","name":"Orchy AI","url":"https://imorchy.dev/","logo":"https://imorchy.dev/shared/orchy-main-500.webp","sameAs":["https://www.facebook.com/OrchyAI/","https://x.com/OrchyAI","https://www.instagram.com/orchyai/","https://www.youtube.com/@orchy-ai"]},{"@type":"WebSite","@id":"https://imorchy.dev/#site","name":"Orchy AI","url":"https://imorchy.dev/","publisher":{"@id":"https://imorchy.dev/#org"}},{"@type":"WebPage","@id":"https://imorchy.dev/apps#page","url":"https://imorchy.dev/apps","name":"AI Agent Integrations: 1,100+ Apps Through One | Orchy","description":"Connect Orchy's AI agents to Gmail, Google Calendar, Slack, Notion, GitHub, Stripe and 1,100+ apps through One. Choose what each agent may use.","isPartOf":{"@id":"https://imorchy.dev/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://imorchy.dev/"},{"@type":"ListItem","position":2,"name":"Apps","item":"https://imorchy.dev/apps"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which apps does Orchy work with?","acceptedAnswer":{"@type":"Answer","text":"1,100+ apps through One, including Gmail, Google Calendar, Slack, Notion, GitHub and Stripe."}},{"@type":"Question","name":"Can an AI agent work in Gmail and Slack?","acceptedAnswer":{"@type":"Answer","text":"Yes. Connect them and agents read, sort and draft there. Sending waits for your approval."}},{"@type":"Question","name":"Do I need a separate One account?","acceptedAnswer":{"@type":"Answer","text":"No. One is part of Orchy, so you connect apps from inside your workspace."}},{"@type":"Question","name":"Can I limit which apps an agent uses?","acceptedAnswer":{"@type":"Answer","text":"Yes. You choose each agent's apps and access, per client workspace."}}]}]}</script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a><header class="gnav"><div class="gbar"><a class="brand" href="/" aria-label="Orchy home"><img src="/shared/orchy-main-128.webp" alt="" width="28" height="28"><span>ORCHY</span></a>
+<nav class="gmenu" aria-label="Main"><ul role="list"><li class="dd"><button type="button" class="nl" aria-expanded="false" aria-controls="dd-product">Product<svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg></button><ul class="ddp" id="dd-product" role="list"><li><a href="/#how"><b>How it works</b><span>Ask, assign, approve, done</span></a></li><li><a href="/approvals"><b>Approvals</b><span>You say yes before it goes out</span></a></li><li><a href="/client-workspaces"><b>Client workspaces</b><span>One workspace for each client</span></a></li><li><a href="/security"><b>Hosting and security</b><span>Run for you at OVHcloud</span></a></li></ul></li><li class="dd"><button type="button" class="nl" aria-expanded="false" aria-controls="dd-agents">Agents<svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg></button><ul class="ddp wide" id="dd-agents" role="list"><li><a href="/ai-agents-for-marketing"><b>Marketing</b><span>Posts, calendars, briefs</span></a></li><li><a href="/ai-agents-for-operations"><b>Operations</b><span>Inbox, replies, scheduling</span></a></li><li><a href="/ai-agents-for-it"><b>IT</b><span>Issues, PR notes, runbooks</span></a></li><li><a href="/ai-agents-for-finance"><b>Finance</b><span>Invoices, reminders, reports</span></a></li><li><a href="/ai-agents-for-sales"><b>Sales</b><span>Leads, outreach, follow-ups</span></a></li><li><a href="/agents"><b>Build your own</b><span>Describe the job in plain words</span></a></li></ul></li><li><a class="nl" href="/apps">Apps</a></li><li><a class="nl" href="/pricing">Pricing</a></li><li><a class="nl" href="/#faq">FAQ</a></li></ul></nav>
+<div class="gact"><a class="nl gsign" href="https://app.imorchy.dev/">Sign in</a><a class="btn btn-primary btn-nav" href="/go/start?from=nav"><span>Get started</span></a><button type="button" class="gburger" aria-expanded="false" aria-controls="gsheet" aria-label="Open menu"><i></i><i></i></button></div></div>
+<nav class="gsheet" id="gsheet" aria-label="Main (mobile)" hidden><p class="gs-h">Product</p><ul role="list"><li><a href="#how"><b>How it works</b><span>Ask, assign, approve, done</span></a></li><li><a href="/approvals"><b>Approvals</b><span>You say yes before it goes out</span></a></li><li><a href="/client-workspaces"><b>Client workspaces</b><span>One workspace for each client</span></a></li><li><a href="/security"><b>Hosting and security</b><span>Run for you at OVHcloud</span></a></li></ul><p class="gs-h">Agents</p><ul role="list" class="two"><li><a href="/ai-agents-for-marketing"><b>Marketing</b></a></li><li><a href="/ai-agents-for-operations"><b>Operations</b></a></li><li><a href="/ai-agents-for-it"><b>IT</b></a></li><li><a href="/ai-agents-for-finance"><b>Finance</b></a></li><li><a href="/ai-agents-for-sales"><b>Sales</b></a></li><li><a href="/agents"><b>Build your own</b></a></li></ul><ul role="list" class="flat"><li><a href="/apps"><b>Apps</b></a></li><li><a href="/pricing"><b>Pricing</b></a></li><li><a href="/#faq"><b>FAQ</b></a></li><li><a href="https://app.imorchy.dev/"><b>Sign in</b></a></li></ul><a class="btn btn-primary" href="/go/start?from=nav-mobile"><span>Get started</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></nav></header>
 <main id="main">
-<section class="phero">
-  <div class="wrap">
-    <p class="crumb label"><span>Features</span><span aria-hidden="true">/</span><span>Apps (One)</span></p>
-    <h1>Agents that work in <span class="hl">your clients' own apps.</span></h1>
-    <p class="lede">Through One, Orchy can connect to 1,100+ apps. You connect the ones each client uses, and agents work there instead of in a separate tool.</p>
-    <div class="cta-stack"><a class="btn" href="/go/start?from=apps-hero">Get started<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Plans from $9 a month, with AI credit included.</p></div>
-  </div>
-</section>
+<section class="hero phero spot" aria-labelledby="h-hero"><div class="wrap hero-in"><div><nav aria-label="Breadcrumb"><ol class="crumbs"><li><a href="/">Home</a></li><li><a href="/apps" aria-current="page">Apps</a></li></ol></nav><h1 id="h-hero" class="rv">AI integrations for 1,100+ apps</h1><p class="lede rv">Orchy's AI integrations cover 1,100+ apps through One, including Gmail, Slack, Notion, GitHub and Stripe. You choose what each agent may use.</p><div class="cta-row"><a class="btn btn-primary" href="/go/start?from=apps"><span>Connect your apps</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="btn btn-ghost" href="/pricing"><span>See pricing</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div><ul class="trust" role="list"><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Asks before it acts</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>1,100+ apps</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Hosted for you</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>From $9 a month</li></ul></div></div></section>
+<section class="media-sec" aria-labelledby="s-your-apps-around-one-ai-team"><div class="wrap"><div class="sec-h center rv"><h2 class="h2" id="s-your-apps-around-one-ai-team">Your apps, around one AI team</h2><p class="lede">Real logins. Real work. Your approval.</p></div><div class="stage rv"><video muted loop playsinline preload="none" poster="/shared/media/apps-orbit-poster.webp" width="1600" height="1000" aria-hidden="true"><source src="/shared/media/apps-orbit.webm" type="video/webm"><source src="/shared/media/apps-orbit.mp4" type="video/mp4"></video><span class="sr">App logos orbit Orchy.</span><span class="cap-tag" aria-hidden="true">1,100+ apps</span><button class="pause" type="button" aria-pressed="false" aria-label="Pause video" data-noun="video"><svg class="i-pause" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="1.5" width="3" height="9" rx="1"/><rect x="7" y="1.5" width="3" height="9" rx="1"/></svg><svg class="i-play" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z"/></svg></button></div></div></section>
+<section aria-labelledby="s-connect-the-apps-you-use"><div class="wrap split2"><div class="rv"><h2 class="h2" id="s-connect-the-apps-you-use">Connect the apps you use</h2><p class="lede">Gmail, Google Calendar, Slack, Notion, GitHub, Stripe and 1,100+ more through One.</p></div><div class="rv"><div class="wall-tools rv"><label class="sr" for="wf">Search apps</label><input id="wf" type="search" placeholder="Search apps, e.g. Slack" data-filter="wall" autocomplete="off"><output id="wall-n" aria-live="polite">32 shown</output></div><ul class="wall" id="wall" role="list"><li data-n="airtable"><span class="mark" aria-hidden="true"><img src="/shared/logos/airtable.svg" alt="" width="22" height="22" loading="lazy"></span><span>Airtable</span></li><li data-n="asana"><span class="mark" aria-hidden="true"><img src="/shared/logos/asana.svg" alt="" width="22" height="22" loading="lazy"></span><span>Asana</span></li><li data-n="calendly"><span class="mark" aria-hidden="true"><img src="/shared/logos/calendly.svg" alt="" width="22" height="22" loading="lazy"></span><span>Calendly</span></li><li data-n="canva"><span class="mark" aria-hidden="true"><img src="/shared/logos/canva.svg" alt="" width="22" height="22" loading="lazy"></span><span>Canva</span></li><li data-n="discord"><span class="mark" aria-hidden="true"><img src="/shared/logos/discord.svg" alt="" width="22" height="22" loading="lazy"></span><span>Discord</span></li><li data-n="dropbox"><span class="mark" aria-hidden="true"><img src="/shared/logos/dropbox.svg" alt="" width="22" height="22" loading="lazy"></span><span>Dropbox</span></li><li data-n="facebook"><span class="mark" aria-hidden="true"><img src="/shared/logos/facebook.svg" alt="" width="22" height="22" loading="lazy"></span><span>Facebook</span></li><li data-n="figma"><span class="mark" aria-hidden="true"><img src="/shared/logos/figma.svg" alt="" width="22" height="22" loading="lazy"></span><span>Figma</span></li><li data-n="github"><span class="mark" aria-hidden="true"><img src="/shared/logos/github.svg" alt="" width="22" height="22" loading="lazy"></span><span>GitHub</span></li><li data-n="gmail"><span class="mark" aria-hidden="true"><img src="/shared/logos/gmail.svg" alt="" width="22" height="22" loading="lazy"></span><span>Gmail</span></li><li data-n="google calendar"><span class="mark" aria-hidden="true"><img src="/shared/logos/googlecalendar.svg" alt="" width="22" height="22" loading="lazy"></span><span>Google Calendar</span></li><li data-n="google drive"><span class="mark" aria-hidden="true"><img src="/shared/logos/googledrive.svg" alt="" width="22" height="22" loading="lazy"></span><span>Google Drive</span></li><li data-n="google sheets"><span class="mark" aria-hidden="true"><img src="/shared/logos/googlesheets.svg" alt="" width="22" height="22" loading="lazy"></span><span>Google Sheets</span></li><li data-n="hubspot"><span class="mark" aria-hidden="true"><img src="/shared/logos/hubspot.svg" alt="" width="22" height="22" loading="lazy"></span><span>HubSpot</span></li><li data-n="instagram"><span class="mark" aria-hidden="true"><img src="/shared/logos/instagram.svg" alt="" width="22" height="22" loading="lazy"></span><span>Instagram</span></li><li data-n="jira"><span class="mark" aria-hidden="true"><img src="/shared/logos/jira.svg" alt="" width="22" height="22" loading="lazy"></span><span>Jira</span></li><li data-n="linkedin"><span class="mark" aria-hidden="true"><img src="/shared/logos/linkedin.svg" alt="" width="22" height="22" loading="lazy"></span><span>LinkedIn</span></li><li data-n="mailchimp"><span class="mark" aria-hidden="true"><img src="/shared/logos/mailchimp.svg" alt="" width="22" height="22" loading="lazy"></span><span>Mailchimp</span></li><li data-n="notion"><span class="mark" aria-hidden="true"><img src="/shared/logos/notion.svg" alt="" width="22" height="22" loading="lazy"></span><span>Notion</span></li><li data-n="quickbooks"><span class="mark" aria-hidden="true"><img src="/shared/logos/quickbooks.svg" alt="" width="22" height="22" loading="lazy"></span><span>QuickBooks</span></li><li data-n="salesforce"><span class="mark" aria-hidden="true"><img src="/shared/logos/salesforce.svg" alt="" width="22" height="22" loading="lazy"></span><span>Salesforce</span></li><li data-n="shopify"><span class="mark" aria-hidden="true"><img src="/shared/logos/shopify.svg" alt="" width="22" height="22" loading="lazy"></span><span>Shopify</span></li><li data-n="slack"><span class="mark" aria-hidden="true"><img src="/shared/logos/slack.svg" alt="" width="22" height="22" loading="lazy"></span><span>Slack</span></li><li data-n="stripe"><span class="mark" aria-hidden="true"><img src="/shared/logos/stripe.svg" alt="" width="22" height="22" loading="lazy"></span><span>Stripe</span></li><li data-n="telegram"><span class="mark" aria-hidden="true"><img src="/shared/logos/telegram.svg" alt="" width="22" height="22" loading="lazy"></span><span>Telegram</span></li><li data-n="trello"><span class="mark" aria-hidden="true"><img src="/shared/logos/trello.svg" alt="" width="22" height="22" loading="lazy"></span><span>Trello</span></li><li data-n="whatsapp"><span class="mark" aria-hidden="true"><img src="/shared/logos/whatsapp.svg" alt="" width="22" height="22" loading="lazy"></span><span>WhatsApp</span></li><li data-n="wordpress"><span class="mark" aria-hidden="true"><img src="/shared/logos/wordpress.svg" alt="" width="22" height="22" loading="lazy"></span><span>WordPress</span></li><li data-n="x"><span class="mark" aria-hidden="true"><img src="/shared/logos/x.svg" alt="" width="22" height="22" loading="lazy"></span><span>X</span></li><li data-n="xero"><span class="mark" aria-hidden="true"><img src="/shared/logos/xero.svg" alt="" width="22" height="22" loading="lazy"></span><span>Xero</span></li><li data-n="youtube"><span class="mark" aria-hidden="true"><img src="/shared/logos/youtube.svg" alt="" width="22" height="22" loading="lazy"></span><span>YouTube</span></li><li data-n="zoom"><span class="mark" aria-hidden="true"><img src="/shared/logos/zoom.svg" alt="" width="22" height="22" loading="lazy"></span><span>Zoom</span></li></ul><p class="wall-more rv">Plus 1,100+ more through One, built into Orchy.</p></div></div></section>
 
-<section class="sec" aria-label="Example: connecting an app and setting agent access" style="padding-top:0">
-  <div class="wrap">
-    <div class="scene" data-scene id="demo-apps">
-      <p class="sr">Example with a made-up client. In the Connections window for Birch Bookkeeping, a search for Gmail finds it and Gmail is connected next to Google Calendar. The Inbox agent gets Gmail at read access and the Scheduling agent gets Google Calendar at full access.</p>
-      <div class="frame glass" aria-hidden="true">
-        <div class="fbar"><span class="dots"><i></i><i></i><i></i></span><b>Example</b><span>· Connections · Birch Bookkeeping</span></div>
-        <div class="fbody split">
-          <div class="conn">
-            <div class="search"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span class="ph gone" data-cls="gone" data-at="1">Search 1,100+ apps</span><span class="typed" data-type="1.1 0.8">Gmail</span></div>
-            <ul class="rules"><li class="ask" data-cls="ask" data-at="2.8"><span class="dot" aria-hidden="true"></span>&nbsp;Gmail<span class="st"><span class="a">Connect</span><span class="b">Connected</span></span></li><li class="ask"><span class="dot" aria-hidden="true"></span>&nbsp;Google Calendar<span class="st">Connected</span></li></ul>
-          </div>
-          <div class="access">
-            <span class="label">Agent access</span>
-            <ul class="rules">
-              <li data-at="3.6"><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>&nbsp;Inbox agent · Gmail<span class="seg"><span class="cur" data-cls="cur" data-at="4.4">Read</span><span>Full</span></span></li>
-              <li><svg class="ic" aria-hidden="true"><use href="#i-agent"/></svg>&nbsp;Scheduling agent · Google Calendar<span class="seg"><span>Read</span><span class="cur">Full</span></span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <button class="pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5l7 4.5-7 4.5z" fill="currentColor"/></svg></button>
-    </div>
-    <p class="scene-cap">Each client's apps connect to that client's workspace, with read or full access per agent.</p>
-  </div>
-</section>
-
-<section class="sec sec-text" aria-labelledby="s1">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><span class="label">01</span><h2 id="s1">Connect each client's apps to that client</h2></div>
-      <div><p class="lede">Search the app list in Connections and connect the apps a client uses. Connections belong to a workspace, so one client's Gmail stays with that client.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec sec-text" aria-labelledby="s2">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><span class="label">02</span><h2 id="s2">Start with the apps you use most</h2></div>
-      <div><p class="lede">Hosted Orchy suggests Gmail, Google Calendar and GitHub first, each with a starter task to try.</p><div class="chips start"><span class="chip"><span class="dot" aria-hidden="true"></span>Gmail</span><span class="chip"><span class="dot" aria-hidden="true"></span>Google Calendar</span><span class="chip"><span class="dot" aria-hidden="true"></span>GitHub</span></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" aria-label="How app access works">
-  <div class="wrap">
-    <div class="cards">
-      <a class="card glass" href="/agents">
-        <div class="vis"><ul class="rules"><li><span class="dot" aria-hidden="true"></span>&nbsp;Inbox agent · Gmail<span class="st">Read</span></li><li><span class="dot" aria-hidden="true"></span>&nbsp;Scheduling agent<span class="st">Full</span></li><li class="ask">Another app<span class="st">Asks first</span></li></ul></div>
-        <div class="txt"><span class="label">03</span><h2 id="s3">Choose what each agent may use</h2><p>You give each agent its apps at read or full access. If it reaches for another app in the workspace, Orchy asks you first. When the Agent Builder creates an agent, it picks the apps and you confirm them.</p><span class="more">Agents and the Agent Builder<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></span></div>
-      </a>
-      <article class="card glass" aria-labelledby="s4">
-        <div class="vis"><ul class="rules"><li>Every app call<span class="st">Checked</span></li><li>Read access<span class="st">Reads only</span></li><li class="ask">Gmail forwarding or filter<span class="st">Every time</span></li><li class="ask">GitHub change<span class="st">Asks first</span></li></ul></div>
-        <div class="txt"><span class="label">04</span><h2 id="s4">Checked on every call</h2><p>Orchy checks every app call against the workspace's connections and the agent's access, and read-only access can only read. By default, sending, money, calendar changes, deleting and sharing ask you first.</p><p>Some changes always ask. A change to Gmail forwarding or a Gmail filter asks every time, and so does any change in GitHub on hosted Orchy unless you chose "always allow" for that action.</p></div>
-      </article>
-      <a class="card glass" href="/security">
-        <div class="vis"><ul class="rules"><li>One<span class="st">One Systems, Inc.</span></li><li>Orchy<span class="st">One Systems, Inc.</span></li><li class="ask">Privacy policy · DPA<span class="st">Cover One</span></li></ul></div>
-        <div class="txt"><span class="label">05</span><h2 id="s5">One is part of Orchy</h2><p>One is the service Orchy uses to connect your apps. It is run by One Systems, Inc., the company behind Orchy, so our privacy policy and data processing agreement cover it.</p><span class="more">Security and privacy<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></span></div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="sec" aria-labelledby="faq">
-  <div class="wrap">
-    <div class="sec-head center"><span class="label">Questions</span><h2 id="faq">FAQ</h2></div>
-    <div class="faq">
-      <details><summary>Which apps does Orchy work with?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Through One, Orchy can connect to 1,100+ apps. You connect the apps each client uses to that client's workspace.</p></div></details>
-      <details><summary>Can an agent use an app I haven't connected?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>No. Orchy checks every app call against the workspace's connections and the agent's access.</p></div></details>
-      <details><summary>Do I connect every client's accounts separately?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>Yes. Each workspace has its own connections, so a client's accounts stay with that client's workspace.</p></div></details>
-      <details><summary>Will an agent send email without asking me?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>By default Orchy asks before it sends. You approve or turn it down, and a change to Gmail forwarding always asks.</p></div></details>
-      <details><summary>Who runs One?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>One Systems, Inc., the company behind Orchy. In hosted Orchy, One is part of our service.</p></div></details>
-    </div>
-  </div>
-</section>
-
-<section class="final" aria-labelledby="cta">
-  <div class="wrap">
-    <div class="band glass">
-      <span class="label">Get started</span>
-      <h2 id="cta">Work where your clients <span class="hl">already work.</span></h2>
-      <p class="lede">Connect their apps. Approve what goes out.</p>
-      <div class="cta-stack"><a class="btn" href="/go/start?from=apps-final">Get started<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">Plans from $9 a month, with AI credit included.</p></div>
-    </div>
-  </div>
-</section>
+<section aria-labelledby="s-what-you-get"><div class="wrap"><div class="sec-h rv"><h2 class="h2" id="s-what-you-get">What you get</h2></div><ul class="bento" role="list"><li class="bx rv w4"><span class="ico-box"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" rx="3"/><path d="M3.5 9.5h17M9.5 9.5V20"/></svg></span><h3>Each client's apps stay theirs</h3><p>Connect apps inside each client workspace. One client's logins never reach another's.</p></li><li class="bx rv "><span class="ico-box"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" rx="3"/><circle cx="12" cy="4.5" r="1.2"/><path d="M12 5.7V8M9.5 12.5v1.5M14.5 12.5v1.5M2.5 12.5v3M21.5 12.5v3"/></svg></span><h3>Choose what each agent uses</h3><p>Give the Finance agent Stripe and Sheets. Give Marketing Notion and Slack.</p></li><li class="bx rv "><span class="ico-box"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" rx="3"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></span><h3>Approvals on every action</h3><p>Actions that send, post, pay or delete still wait for your Approve, in every app.</p></li><li class="bx rv w4"><span class="ico-box"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v4M15 3v4M12 16.5V21"/><path d="M6.5 7h11v4a5.5 5.5 0 01-11 0z"/></svg></span><h3>One is part of Orchy</h3><p>No extra account to manage. Connections come with your Orchy plan.</p></li></ul></div></section>
+<section id="faq" aria-labelledby="h-faq"><div class="wrap"><div class="sec-h center rv"><h2 class="h2" id="h-faq">Questions, answered</h2></div><div class="faq"><details><summary>Which apps does Orchy work with?</summary><p class="ans">1,100+ apps through One, including Gmail, Google Calendar, Slack, Notion, GitHub and Stripe.</p></details><details><summary>Can an AI agent work in Gmail and Slack?</summary><p class="ans">Yes. Connect them and agents read, sort and draft there. Sending waits for your approval.</p></details><details><summary>Do I need a separate One account?</summary><p class="ans">No. One is part of Orchy, so you connect apps from inside your workspace.</p></details><details><summary>Can I limit which apps an agent uses?</summary><p class="ans">Yes. You choose each agent's apps and access, per client workspace.</p></details></div></div></section>
+<section class="final f5" aria-labelledby="h-final"><div class="wrap"><div class="fc rv">
+<div class="fc-text"><h2 class="h2" id="h-final">Hand off the work. Approve what goes out.</h2><p class="lede">Tell Orchy a task once, in plain words. It does the work in your apps and waits for your yes.</p>
+<div class="fc-btns"><a class="btn btn-primary" href="/go/start?from=final"><span>Get started</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="btn btn-ghost" href="/pricing"><span>See pricing</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+<ul class="fc-notes" role="list"><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Monthly or yearly</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>AI credits in every plan</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Hosted for you</li></ul></div>
+<div class="fc-art" aria-hidden="true"><div class="ap ap0"><div class="ap-h"><span class="ap-a">Finance agent</span><span class="ap-s">Stripe · Gmail</span></div><p>Send 2 reminders from Gmail?</p><div class="ap-b"><span class="x">Deny</span><span class="y">Approve</span></div></div><div class="ap ap1"><div class="ap-h"><span class="ap-a">Marketing agent</span><span class="ap-s">Notion · Slack</span></div><p>Share 3 drafts in Slack #marketing?</p><div class="ap-b"><span class="x">Deny</span><span class="y">Approve</span></div></div><div class="ap ap2"><div class="ap-h"><span class="ap-a">Operations agent</span><span class="ap-s">Gmail · Calendar</span></div><p>Send 6 replies from Gmail?</p><div class="ap-b"><span class="x">Deny</span><span class="y"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Approved</span></div></div></div>
+</div></div></section>
 </main>
-    <footer class="site" id="site-footer">
-      <div class="wrap">
-        <div class="fcols">
-          <div class="fb">
-            <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
-            <p class="tagline">AI agents for day-to-day work, by team.</p>
-          </div>
-          <nav aria-labelledby="f-prod"><h2 id="f-prod">Product</h2><ul>
-            <li><a href="/ai-agents-for-business">AI agents</a></li>
-            <li><a href="/#how">How it works</a></li>
-            <li><a href="/client-workspaces">Client workspaces</a></li>
-            <li><a href="/approvals">Approvals</a></li>
-            <li><a href="/agents">Agents &amp; Builder</a></li>
-            <li><a href="/apps" aria-current="page">Apps (One)</a></li>
-            <li><a href="/pricing">Pricing</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
-            <li><a href="/security">Security</a></li>
-            <li><a href="/data-privacy">Data privacy</a></li>
-            <li><a href="/dpa">DPA</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-co"><h2 id="f-co">Company</h2><ul>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/changelog">Changelog</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-leg"><h2 id="f-leg">Legal</h2><ul>
-            <li><a href="/privacy">Privacy</a></li>
-            <li><a href="/terms">Terms</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-fol"><h2 id="f-fol">Follow</h2><ul>
-            <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr"> (opens in a new tab)</span></a></li>
-            <li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X<span class="sr"> (opens in a new tab)</span></a></li>
-            <li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr"> (opens in a new tab)</span></a></li>
-            <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube<span class="sr"> (opens in a new tab)</span></a></li>
-          </ul></nav>
-        </div>
-        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
-      </div>
-    </footer>
-  </body>
-</html>
+<footer class="foot"><div class="wrap"><div class="foot-in"><div class="foot-brand"><a class="brand" href="/" aria-label="Orchy home"><img src="/shared/orchy-main-128.webp" alt="" width="32" height="32"><span>ORCHY</span></a><p class="tag">AI agents for day-to-day work, by team.</p></div><nav aria-labelledby="fh0"><h2 id="fh0">Product</h2><ul role="list"><li><a href="/#how">How it works</a></li><li><a href="/ai-employees">AI employees</a></li><li><a href="/agents">Agent builder</a></li><li><a href="/approvals">Approvals</a></li><li><a href="/apps">Apps</a></li><li><a href="/client-workspaces">Client workspaces</a></li><li><a href="/pricing">Pricing</a></li></ul></nav><nav aria-labelledby="fh1"><h2 id="fh1">AI agents</h2><ul role="list"><li><a href="/ai-agents-for-business">For business</a></li><li><a href="/ai-agents-for-operations">Operations</a></li><li><a href="/ai-agents-for-marketing">Marketing</a></li><li><a href="/ai-agents-for-finance">Finance</a></li><li><a href="/ai-agents-for-it">IT</a></li><li><a href="/ai-agents-for-sales">Sales</a></li></ul></nav><nav aria-labelledby="fh2"><h2 id="fh2">Security</h2><ul role="list"><li><a href="/security">Security</a></li><li><a href="/data-privacy">Data privacy</a></li><li><a href="/dpa">DPA</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></nav><nav aria-labelledby="fh3"><h2 id="fh3">Company</h2><ul role="list"><li><a href="/blog">Blog</a></li><li><a href="/changelog">Changelog</a></li><li><a href="/alternatives/grok-bot">Grok Bot alternatives</a></li><li><a href="/compare/openai-dots-vs-grok-bot">Dots vs Grok Bot</a></li><li><a href="https://app.imorchy.dev/">Sign in</a></li></ul></nav><nav aria-labelledby="fh4"><h2 id="fh4">Follow</h2><ul role="list"><li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr"> (opens in a new tab)</span></a></li><li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X<span class="sr"> (opens in a new tab)</span></a></li><li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr"> (opens in a new tab)</span></a></li><li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube<span class="sr"> (opens in a new tab)</span></a></li></ul></nav></div><div class="base"><span>© Orchy AI 2026</span><span>Hosted for you · Asks before it acts</span></div></div></footer>
+<script src="/shared/demo.js" defer></script>
+<script src="/shared/site.js" defer></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
+</body></html>

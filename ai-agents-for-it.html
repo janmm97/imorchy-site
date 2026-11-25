@@ -1,269 +1,48 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy</title>
-    <meta name="description" content="AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete. Get started." />
-    <meta name="theme-color" content="#080a0d" />
-    <link rel="canonical" href="https://imorchy.dev/ai-agents-for-it" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Orchy AI" />
-    <meta property="og:url" content="https://imorchy.dev/ai-agents-for-it" />
-    <meta property="og:title" content="AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy" />
-    <meta property="og:description" content="AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete. Get started." />
-    <meta property="og:image" content="https://imorchy.dev/assets/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Orchy AI: a team of AI agents that works in your apps" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy" />
-    <meta name="twitter:description" content="AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete. Get started." />
-    <meta name="twitter:image" content="https://imorchy.dev/assets/og-image.png" />
-    <meta name="twitter:image:alt" content="Orchy AI: a team of AI agents that works in your apps" />
-    <link rel="icon" type="image/png" href="/assets/orchy-icon-64.png" />
-    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/JetBrainsMono-Bold.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/components.css" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebPage",
-            "@id": "https://imorchy.dev/ai-agents-for-it#webpage",
-            "url": "https://imorchy.dev/ai-agents-for-it",
-            "name": "AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy",
-            "description": "AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete. Get started.",
-            "isPartOf": {
-              "@id": "https://imorchy.dev/#website"
-            },
-            "about": {
-              "@id": "https://imorchy.dev/#org"
-            }
-          },
-          {
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://imorchy.dev/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "AI agents",
-                "item": "https://imorchy.dev/ai-agents-for-business"
-              },
-              {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "IT",
-                "item": "https://imorchy.dev/ai-agents-for-it"
-              }
-            ]
-          },
-          {
-            "@type": "FAQPage",
-            "@id": "https://imorchy.dev/ai-agents-for-it#faq",
-            "url": "https://imorchy.dev/ai-agents-for-it",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "What is an AI agent for IT?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "It is an AI agent that does IT-team tasks in your apps: triaging GitHub issues, writing PR review notes and runbooks, and summarising security alerts. In Orchy it asks before it posts, sends, changes or deletes."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Can an AI agent review pull requests?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "It can read a pull request and write review notes for a human reviewer. Posting the notes waits for your approval, and a person decides whether to merge."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Can an AI agent change my systems?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "You choose the access. Give an agent read-only access to summarise and draft, or full access for the apps you want it to work in. Even with full access, Orchy asks before it sends, posts, pays, changes a calendar, deletes or shares by default."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Does Orchy monitor my systems?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "No. Orchy's agents work on tasks you give them, such as summarising an alert you share. Orchy isn't a monitoring tool."
-                }
-              }
-            ]
-          }
-        ]
-      }
-    </script>
-  </head>
-  <body>
-    <a class="skip" href="#main">Skip to content</a>
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></symbol>
-  <symbol id="i-ask" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></symbol>
-  <symbol id="i-arr" viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></symbol>
-  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"/></symbol>
-  <symbol id="i-chev" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
-  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
-  <symbol id="i-ws" viewBox="0 0 16 16"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></symbol>
-  <symbol id="i-agent" viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></symbol>
-  <symbol id="i-apps" viewBox="0 0 16 16"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></symbol>
-  <symbol id="i-file" viewBox="0 0 16 16"><path d="M4 1.8h5.2L12.5 5v9.2h-8.5z"/><path d="M9 2v3.2h3.3M6.3 8.5h3.6M6.3 11h3.6"/></symbol>
-  <symbol id="i-mem" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.6 3.6"/></symbol>
-  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M8 14.5s-4.5-4.4-4.5-8a4.5 4.5 0 0 1 9 0c0 3.6-4.5 8-4.5 8z"/><circle cx="8" cy="6.5" r="1.6"/></symbol>
-  <symbol id="i-key" viewBox="0 0 16 16"><circle cx="5" cy="8" r="2.8"/><path d="M7.8 8h6.2M12 8v2.4M10 8v1.8"/></symbol>
-  <symbol id="i-box" viewBox="0 0 16 16"><path d="M2.5 5L8 2.2 13.5 5v6L8 13.8 2.5 11z"/><path d="M2.5 5L8 7.8 13.5 5M8 7.8v6"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/></symbol>
-  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.3"/><path d="M10.2 10.2l3.3 3.3"/></symbol>
-</svg>
-    <header class="nav" id="top">
-      <div class="bar-in">
-        <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
-        <nav aria-label="Main">
-          <ul class="nav-list" id="navlist">
-            <li>
-              <button class="nav-link js-only" type="button" aria-expanded="false" aria-controls="fmenu" id="fbtn">Features<svg class="ic chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
-              <a class="nav-link nojs-only" href="#site-footer">Features</a>
-              <ul class="fmenu glass" id="fmenu">
-              <li><a href="/client-workspaces"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="5" height="5" rx="1"/><rect x="9" y="2.5" width="5" height="5" rx="1"/><rect x="2" y="9.5" width="5" height="4" rx="1"/><rect x="9" y="9.5" width="5" height="4" rx="1"/></svg></span>Client workspaces</a></li>
-              <li><a href="/approvals"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4M8 11.4v.1"/></svg></span>Approvals</a></li>
-              <li><a href="/agents"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="2.6"/><path d="M3 14c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg></span>Agents &amp; Agent Builder</a></li>
-              <li><a href="/apps"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2"/><circle cx="11.5" cy="4.5" r="2"/><circle cx="4.5" cy="11.5" r="2"/><circle cx="11.5" cy="11.5" r="2"/></svg></span>Apps (One)</a></li>
-              <li><a href="/security"><span class="mk"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span>Security</a></li>
-              </ul>
-            </li>
-            <li><a class="nav-link" href="/ai-agents-for-business">AI agents</a></li>
-            <li><a class="nav-link" href="/#how">How it works</a></li>
-            <li><a class="nav-link" href="/pricing">Pricing</a></li>
-            <li><a class="nav-link" href="/blog">Blog</a></li>
-          </ul>
-        </nav>
-        <div class="nav-end">
-          <a class="btn btn-sm" href="/go/start?from=nav">Get started</a>
-          <button class="menu js-only" type="button" aria-expanded="false" aria-controls="navlist" id="mbtn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5h11M2.5 11h11"/></svg><span class="t">Menu</span><span class="sr"> (site menu)</span></button>
-          <a class="menu nojs-only" href="#site-footer">Menu</a>
-        </div>
-      </div>
-      <script type="module" src="/js/nav.mjs"></script>
-      <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
-    </header>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy</title>
+<link rel="preload" href="/shared/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/shared/fonts/JetBrainsMono-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/shared/orchy-main-128.webp" type="image/webp">
+<link rel="stylesheet" href="/shared/site.css">
+<meta name="description" content="AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete anything. Get started.">
+<link rel="canonical" href="https://imorchy.dev/ai-agents-for-it">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Orchy AI"><meta property="og:title" content="AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy"><meta property="og:description" content="AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete anything. Get started."><meta property="og:url" content="https://imorchy.dev/ai-agents-for-it"><meta property="og:image" content="https://imorchy.dev/shared/og/ai-agents-for-it.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@OrchyAI"><meta name="twitter:title" content="AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy"><meta name="twitter:description" content="AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete anything. Get started."><meta name="twitter:image" content="https://imorchy.dev/shared/og/ai-agents-for-it.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://imorchy.dev/#org","name":"Orchy AI","url":"https://imorchy.dev/","logo":"https://imorchy.dev/shared/orchy-main-500.webp","sameAs":["https://www.facebook.com/OrchyAI/","https://x.com/OrchyAI","https://www.instagram.com/orchyai/","https://www.youtube.com/@orchy-ai"]},{"@type":"WebSite","@id":"https://imorchy.dev/#site","name":"Orchy AI","url":"https://imorchy.dev/","publisher":{"@id":"https://imorchy.dev/#org"}},{"@type":"WebPage","@id":"https://imorchy.dev/ai-agents-for-it#page","url":"https://imorchy.dev/ai-agents-for-it","name":"AI Agents for IT Teams: Issues, Runbooks, Reviews | Orchy","description":"AI agents for IT teams that triage GitHub issues, write PR review notes and runbooks, and ask before they change or delete anything. Get started.","isPartOf":{"@id":"https://imorchy.dev/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://imorchy.dev/"},{"@type":"ListItem","position":2,"name":"AI agents","item":"https://imorchy.dev/ai-agents-for-business"},{"@type":"ListItem","position":3,"name":"IT","item":"https://imorchy.dev/ai-agents-for-it"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What can an AI agent do for IT?","acceptedAnswer":{"@type":"Answer","text":"Triage issues, draft PR review notes and write runbooks. In Orchy, any change or delete waits for your approval."}},{"@type":"Question","name":"Does it merge code or change systems on its own?","acceptedAnswer":{"@type":"Answer","text":"No. It drafts and suggests. Changes wait for a person's Approve."}},{"@type":"Question","name":"Which IT tools does it work with?","acceptedAnswer":{"@type":"Answer","text":"GitHub, Slack and Notion, plus other apps available through One."}}]}]}</script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a><header class="gnav"><div class="gbar"><a class="brand" href="/" aria-label="Orchy home"><img src="/shared/orchy-main-128.webp" alt="" width="28" height="28"><span>ORCHY</span></a>
+<nav class="gmenu" aria-label="Main"><ul role="list"><li class="dd"><button type="button" class="nl" aria-expanded="false" aria-controls="dd-product">Product<svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg></button><ul class="ddp" id="dd-product" role="list"><li><a href="/#how"><b>How it works</b><span>Ask, assign, approve, done</span></a></li><li><a href="/approvals"><b>Approvals</b><span>You say yes before it goes out</span></a></li><li><a href="/client-workspaces"><b>Client workspaces</b><span>One workspace for each client</span></a></li><li><a href="/security"><b>Hosting and security</b><span>Run for you at OVHcloud</span></a></li></ul></li><li class="dd"><button type="button" class="nl" aria-expanded="false" aria-controls="dd-agents">Agents<svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3"/></svg></button><ul class="ddp wide" id="dd-agents" role="list"><li><a href="/ai-agents-for-marketing"><b>Marketing</b><span>Posts, calendars, briefs</span></a></li><li><a href="/ai-agents-for-operations"><b>Operations</b><span>Inbox, replies, scheduling</span></a></li><li><a href="/ai-agents-for-it"><b>IT</b><span>Issues, PR notes, runbooks</span></a></li><li><a href="/ai-agents-for-finance"><b>Finance</b><span>Invoices, reminders, reports</span></a></li><li><a href="/ai-agents-for-sales"><b>Sales</b><span>Leads, outreach, follow-ups</span></a></li><li><a href="/agents"><b>Build your own</b><span>Describe the job in plain words</span></a></li></ul></li><li><a class="nl" href="/apps">Apps</a></li><li><a class="nl" href="/pricing">Pricing</a></li><li><a class="nl" href="/#faq">FAQ</a></li></ul></nav>
+<div class="gact"><a class="nl gsign" href="https://app.imorchy.dev/">Sign in</a><a class="btn btn-primary btn-nav" href="/go/start?from=nav"><span>Get started</span></a><button type="button" class="gburger" aria-expanded="false" aria-controls="gsheet" aria-label="Open menu"><i></i><i></i></button></div></div>
+<nav class="gsheet" id="gsheet" aria-label="Main (mobile)" hidden><p class="gs-h">Product</p><ul role="list"><li><a href="#how"><b>How it works</b><span>Ask, assign, approve, done</span></a></li><li><a href="/approvals"><b>Approvals</b><span>You say yes before it goes out</span></a></li><li><a href="/client-workspaces"><b>Client workspaces</b><span>One workspace for each client</span></a></li><li><a href="/security"><b>Hosting and security</b><span>Run for you at OVHcloud</span></a></li></ul><p class="gs-h">Agents</p><ul role="list" class="two"><li><a href="/ai-agents-for-marketing"><b>Marketing</b></a></li><li><a href="/ai-agents-for-operations"><b>Operations</b></a></li><li><a href="/ai-agents-for-it"><b>IT</b></a></li><li><a href="/ai-agents-for-finance"><b>Finance</b></a></li><li><a href="/ai-agents-for-sales"><b>Sales</b></a></li><li><a href="/agents"><b>Build your own</b></a></li></ul><ul role="list" class="flat"><li><a href="/apps"><b>Apps</b></a></li><li><a href="/pricing"><b>Pricing</b></a></li><li><a href="/#faq"><b>FAQ</b></a></li><li><a href="https://app.imorchy.dev/"><b>Sign in</b></a></li></ul><a class="btn btn-primary" href="/go/start?from=nav-mobile"><span>Get started</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></nav></header>
 <main id="main">
-<section class="phero">
-  <div class="wrap">
-    <p class="crumb label"><a href="/ai-agents-for-business">AI agents</a><span aria-hidden="true">/</span><span>IT</span></p>
-    <h1>AI agents for <span class="hl">IT teams</span></h1>
-    <p class="lede">Orchy's IT agents read, summarise and draft in GitHub, Slack and Notion. Anything that changes, sends or deletes waits for your approval.</p>
-    <div class="cta-stack"><a class="btn" href="/go/start?from=ai-agents-for-it-hero">Get started<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">AI usage comes with your plan. <a href="/pricing">See pricing</a></p></div>
-  </div>
-</section>
-<section class="sec sec-text" aria-labelledby="s1">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><span class="label">01</span><h2 id="s1">What an AI agent does for IT</h2></div>
-      <div><p class="lede">An IT agent handles the reading and writing around the work. It reads new issues and pull requests, summarises alerts and drafts the docs. You decide what changes. When the next step is to post, send, change or delete, it stops and asks you.</p><a class="more" href="/approvals">How approvals work<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a><a class="more" href="/agents">Build an IT agent in plain words<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a><a class="more" href="/ai-agents-for-business">AI agents for business<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></div>
-    </div>
-  </div>
-</section>
-<section class="sec" aria-label="IT tasks">
-  <div class="wrap">
-    <div class="cards">
-      <article class="card glass" aria-labelledby="s2"><div class="txt"><span class="label">02</span><h2 id="s2">GitHub issue triage</h2><ul><li>Reads new issues and groups them by topic</li><li>Drafts labels, a short summary and a suggested owner</li><li>Drafts a reply to the reporter</li></ul><p>Posting a comment or changing an issue waits for your approval.</p></div></article>
-      <article class="card glass" aria-labelledby="s3"><div class="txt"><span class="label">03</span><h2 id="s3">PR review notes</h2><p>The agent reads a pull request and writes review notes: what changed, what looks risky and what to check. The notes are a starting point for a human reviewer. Posting them waits for your approval.</p></div></article>
-      <article class="card glass" aria-labelledby="s4"><div class="txt"><span class="label">04</span><h2 id="s4">Runbooks and docs</h2><ul><li>Runbooks drafted from how your team handles an incident or a routine job</li><li>Docs updated in Notion when something changes</li><li>Onboarding notes for a new teammate</li></ul></div></article>
-      <article class="card glass" aria-labelledby="s5"><div class="txt"><span class="label">05</span><h2 id="s5">Alerts and access requests</h2><ul><li>A plain summary of a security alert: what it says, what it affects and what to check</li><li>A drafted access request or access review note, ready for the approver</li></ul><p>The agent doesn't grant access or change settings on its own, and Orchy doesn't promise to catch or stop threats.</p></div></article>
-    </div>
-  </div>
-</section>
-<section class="sec sec-text" aria-labelledby="s6">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><span class="label">06</span><h2 id="s6">Your apps, connected through One</h2></div>
-      <div><p class="lede">Connect GitHub, Slack, Notion, Gmail, Google Calendar, Google Sheets and Stripe, plus 1,100+ more apps through One. Give each agent read or full access to only the apps it needs. A read-only agent can summarise without being able to change anything.</p><a class="more" href="/apps">See connected apps<svg class="ic" aria-hidden="true"><use href="#i-arr"/></svg></a></div>
-    </div>
-  </div>
-</section>
-<section class="sec sec-text" aria-labelledby="s7">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><span class="label">07</span><h2 id="s7">Example tasks</h2></div>
-      <div><p class="lede">Type any of these in plain words. These are example prompts, not results.</p><ul class="lede"><li>Triage this week's new issues in our repo and draft a label and a reply for each.</li><li>Write review notes for this pull request.</li><li>Draft a runbook for restoring the staging database from these notes.</li><li>Summarise this security alert for the team channel.</li><li>Draft an access request for the new contractor.</li></ul></div>
-    </div>
-  </div>
-</section>
-<section class="sec" aria-labelledby="faq">
-  <div class="wrap">
-    <div class="sec-head center"><span class="label">Questions</span><h2 id="faq">FAQ</h2></div>
-    <div class="faq">
-      <details><summary>What is an AI agent for IT?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>It is an AI agent that does IT-team tasks in your apps: triaging GitHub issues, writing PR review notes and runbooks, and summarising security alerts. In Orchy it asks before it posts, sends, changes or deletes.</p></div></details>
-      <details><summary>Can an AI agent review pull requests?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>It can read a pull request and write review notes for a human reviewer. Posting the notes waits for your approval, and a person decides whether to merge.</p></div></details>
-      <details><summary>Can an AI agent change my systems?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>You choose the access. Give an agent read-only access to summarise and draft, or full access for the apps you want it to work in. Even with full access, Orchy asks before it sends, posts, pays, changes a calendar, deletes or shares by default.</p></div></details>
-      <details><summary>Does Orchy monitor my systems?<svg class="ic pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="ans"><p>No. Orchy's agents work on tasks you give them, such as summarising an alert you share. Orchy isn't a monitoring tool.</p></div></details>
-    </div>
-  </div>
-</section>
-<section class="final" aria-labelledby="cta">
-  <div class="wrap">
-    <div class="band glass">
-      <span class="label">Get started</span>
-      <h2 id="cta">Hand off the paperwork. <span class="hl">Approve every change.</span></h2>
-      <p class="lede">Describe the job in plain words. The agent drafts, and you approve what goes out.</p>
-      <div class="cta-stack"><a class="btn" href="/go/start?from=ai-agents-for-it-final">Get started<svg class="ic arr" aria-hidden="true"><use href="#i-arr"/></svg></a><p class="note">AI usage comes with your plan. <a href="/pricing">See pricing</a></p></div>
-    </div>
-  </div>
-</section>
+<section class="hero phero spot" aria-labelledby="h-hero"><div class="wrap hero-in"><div><nav aria-label="Breadcrumb"><ol class="crumbs"><li><a href="/">Home</a></li><li><a href="/ai-agents-for-business">AI agents</a></li><li><a href="/ai-agents-for-it" aria-current="page">IT</a></li></ol></nav><h1 id="h-hero" class="rv">AI agents for IT teams</h1><p class="lede rv">Orchy's IT agent triages GitHub issues, writes PR review notes and runbooks, and asks before it changes or deletes anything.</p><div class="cta-row"><a class="btn btn-primary" href="/go/start?from=ai-agents-for-it"><span>Get started</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="btn btn-ghost" href="/security"><span>See security</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div><ul class="trust" role="list"><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Asks before it acts</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>1,100+ apps</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Hosted for you</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>From $9 a month</li></ul></div></div></section>
+<section class="media-sec" aria-labelledby="s-the-it-agent-at-work"><div class="wrap"><div class="sec-h center rv"><h2 class="h2" id="s-the-it-agent-at-work">The IT agent at work</h2><p class="lede">Your apps. Its drafts. Your yes.</p></div><div class="stage rv"><video muted loop playsinline preload="none" poster="/shared/media/role-it-poster.webp" width="1600" height="1000" aria-hidden="true"><source src="/shared/media/role-it.webm" type="video/webm"><source src="/shared/media/role-it.mp4" type="video/mp4"></video><span class="sr">IT agent working in GitHub, Jira, Slack, Discord, Notion.</span><span class="cap-tag" aria-hidden="true">IT agent</span><button class="pause" type="button" aria-pressed="false" aria-label="Pause video" data-noun="video"><svg class="i-pause" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="1.5" width="3" height="9" rx="1"/><rect x="7" y="1.5" width="3" height="9" rx="1"/></svg><svg class="i-play" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z"/></svg></button></div></div></section>
+<section aria-labelledby="s-github-issues-triaged"><div class="wrap split2"><div class="rv"><h2 class="h2" id="s-github-issues-triaged">GitHub issues, triaged</h2><p class="lede">Labels, groups and summarises new issues so the team sees what matters.</p></div><div class="demo" id="demo" data-start="IT" role="group" aria-labelledby="demo-h">
+<div class="demo-top"><p class="demo-lbl" id="demo-h"><i aria-hidden="true"></i><span class="dl-x">Interactive demo · </span>pick an agent</p><button class="dpause" type="button" aria-pressed="false" aria-label="Pause demo"><svg class="i-pause" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="1.5" width="3" height="9" rx="1"/><rect x="7" y="1.5" width="3" height="9" rx="1"/></svg><svg class="i-play" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z"/></svg></button></div>
+<div class="ask"><span class="ask-you">You</span><span class="ask-t" id="ask-t">Triage this week’s new GitHub issues</span><span class="caret" aria-hidden="true"></span></div>
+<div class="agents" role="radiogroup" aria-label="Agent"><button type="button" role="radio" class="ag" data-a="Operations" aria-checked="false" tabindex="-1" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l2.2-7.2A1.5 1.5 0 016.6 4.7h10.8a1.5 1.5 0 011.4 1.1L21 13v5a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 18z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/></svg><span>Operations</span></button><button type="button" role="radio" class="ag" data-a="Marketing" aria-checked="false" tabindex="-1" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4a1 1 0 001 1h2l6 4V5L7 9H5a1 1 0 00-1 1z"/><path d="M17 9a4 4 0 010 6"/></svg><span>Marketing</span></button><button type="button" role="radio" class="ag" data-a="Finance" aria-checked="false" tabindex="-1" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>Finance</span></button><button type="button" role="radio" class="ag" data-a="IT" aria-checked="true" tabindex="0" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg><span>IT</span></button><button type="button" role="radio" class="ag" data-a="Sales" aria-checked="false" tabindex="-1" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18l5-5 3.5 3.5L20 9"/><path d="M15 9h5v5"/></svg><span>Sales</span></button></div>
+<svg class="wires w1" aria-hidden="true"></svg>
+<div class="hub"><img src="/shared/orchy-main-128.webp" alt="" width="20" height="20"><b>Orchy</b><span>checks each app’s access</span></div>
+<svg class="wires w2" aria-hidden="true"></svg>
+<ul class="apps5" role="list" aria-label="Connected apps"><li data-app="gmail"><span class="ai"><img src="/shared/logos/gmail.svg" alt="" width="28" height="28"></span><span class="an">Gmail</span><span class="acc">—</span></li><li data-app="google-calendar"><span class="ai"><img src="/shared/logos/google-calendar.svg" alt="" width="28" height="28"></span><span class="an">Calendar</span><span class="acc">—</span></li><li data-app="slack"><span class="ai"><img src="/shared/logos/slack.svg" alt="" width="28" height="28"></span><span class="an">Slack</span><span class="acc">—</span></li><li data-app="notion"><span class="ai"><img src="/shared/logos/notion.svg" alt="" width="28" height="28"></span><span class="an">Notion</span><span class="acc">—</span></li><li data-app="github"><span class="ai"><img src="/shared/logos/github.svg" alt="" width="28" height="28"></span><span class="an">GitHub</span><span class="acc">—</span></li><li data-app="stripe"><span class="ai"><img src="/shared/logos/stripe.svg" alt="" width="28" height="28"></span><span class="an">Stripe</span><span class="acc">—</span></li></ul>
+<p class="cap" id="cap">IT reads the new issues, sorts them by urgency and writes a short summary.</p>
+<div class="gate"><span class="gate-q" id="gate-q">Post the summary in Slack #dev?</span><span class="gate-b"><button type="button" class="gbtn deny">Deny</button><button type="button" class="gbtn ok"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Approve</button></span></div>
+<ol class="log" role="list" aria-label="Activity log"><li class="yes"><span>OPERATIONS · GMAIL · READ</span><b>ALLOWED</b></li><li class="yes"><span>OPERATIONS · CALENDAR · READ</span><b>ALLOWED</b></li><li class="wait"><span>OPERATIONS · GMAIL · SEND</span><b>WAITING FOR YOU</b></li></ol>
+<p class="demo-foot">Sample tasks. Agents only reach the apps you give them, and Orchy asks before anything goes out.</p>
+</div></div></section>
+
+<section aria-labelledby="s-what-you-get"><div class="wrap"><div class="sec-h rv"><h2 class="h2" id="s-what-you-get">What you get</h2></div><ul class="bento" role="list"><li class="bx rv w4 tall"><span class="ico-box"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 7l-5 5 5 5M15.5 7l5 5-5 5M13.5 5l-3 14"/></svg></span><h3>PR review notes, drafted</h3><p>Writes a first-pass review note on each pull request for a person to check.</p></li><li class="bx rv "><span class="ico-box"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 7l-5 5 5 5M15.5 7l5 5-5 5M13.5 5l-3 14"/></svg></span><h3>Runbooks and docs kept current</h3><p>Drafts runbooks and updates docs from issues and changes.</p></li><li class="bx rv "><span class="ico-box"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" rx="3"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></span><h3>Every change waits for you</h3><p>Changing, closing or deleting anything waits for your Approve.</p></li></ul></div></section>
+<section id="faq" aria-labelledby="h-faq"><div class="wrap"><div class="sec-h center rv"><h2 class="h2" id="h-faq">Questions, answered</h2></div><div class="faq"><details><summary>What can an AI agent do for IT?</summary><p class="ans">Triage issues, draft PR review notes and write runbooks. In Orchy, any change or delete waits for your approval.</p></details><details><summary>Does it merge code or change systems on its own?</summary><p class="ans">No. It drafts and suggests. Changes wait for a person's Approve.</p></details><details><summary>Which IT tools does it work with?</summary><p class="ans">GitHub, Slack and Notion, plus other apps available through One.</p></details></div></div></section>
+<section class="final f5" aria-labelledby="h-final"><div class="wrap"><div class="fc rv">
+<div class="fc-text"><h2 class="h2" id="h-final">Hand off the work. Approve what goes out.</h2><p class="lede">Tell Orchy a task once, in plain words. It does the work in your apps and waits for your yes.</p>
+<div class="fc-btns"><a class="btn btn-primary" href="/go/start?from=final"><span>Get started</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="btn btn-ghost" href="/pricing"><span>See pricing</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+<ul class="fc-notes" role="list"><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Monthly or yearly</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>AI credits in every plan</li><li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Hosted for you</li></ul></div>
+<div class="fc-art" aria-hidden="true"><div class="ap ap0"><div class="ap-h"><span class="ap-a">Finance agent</span><span class="ap-s">Stripe · Gmail</span></div><p>Send 2 reminders from Gmail?</p><div class="ap-b"><span class="x">Deny</span><span class="y">Approve</span></div></div><div class="ap ap1"><div class="ap-h"><span class="ap-a">Marketing agent</span><span class="ap-s">Notion · Slack</span></div><p>Share 3 drafts in Slack #marketing?</p><div class="ap-b"><span class="x">Deny</span><span class="y">Approve</span></div></div><div class="ap ap2"><div class="ap-h"><span class="ap-a">Operations agent</span><span class="ap-s">Gmail · Calendar</span></div><p>Send 6 replies from Gmail?</p><div class="ap-b"><span class="x">Deny</span><span class="y"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Approved</span></div></div></div>
+</div></div></section>
 </main>
-    <footer class="site" id="site-footer">
-      <div class="wrap">
-        <div class="fcols">
-          <div class="fb">
-            <a class="brand" href="/" aria-label="Orchy home"><img src="/assets/orchy-main-128.webp" alt="" width="28" height="28" /><span>ORCHY</span></a>
-            <p class="tagline">AI agents for day-to-day work, by team.</p>
-          </div>
-          <nav aria-labelledby="f-prod"><h2 id="f-prod">Product</h2><ul>
-            <li><a href="/ai-agents-for-business">AI agents</a></li>
-            <li><a href="/#how">How it works</a></li>
-            <li><a href="/client-workspaces">Client workspaces</a></li>
-            <li><a href="/approvals">Approvals</a></li>
-            <li><a href="/agents">Agents &amp; Builder</a></li>
-            <li><a href="/apps">Apps (One)</a></li>
-            <li><a href="/pricing">Pricing</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-sec"><h2 id="f-sec">Security</h2><ul>
-            <li><a href="/security">Security</a></li>
-            <li><a href="/data-privacy">Data privacy</a></li>
-            <li><a href="/dpa">DPA</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-co"><h2 id="f-co">Company</h2><ul>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/changelog">Changelog</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-leg"><h2 id="f-leg">Legal</h2><ul>
-            <li><a href="/privacy">Privacy</a></li>
-            <li><a href="/terms">Terms</a></li>
-          </ul></nav>
-          <nav aria-labelledby="f-fol"><h2 id="f-fol">Follow</h2><ul>
-            <li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr"> (opens in a new tab)</span></a></li>
-            <li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X<span class="sr"> (opens in a new tab)</span></a></li>
-            <li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr"> (opens in a new tab)</span></a></li>
-            <li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube<span class="sr"> (opens in a new tab)</span></a></li>
-          </ul></nav>
-        </div>
-        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
-      </div>
-    </footer>
-  </body>
-</html>
+<footer class="foot"><div class="wrap"><div class="foot-in"><div class="foot-brand"><a class="brand" href="/" aria-label="Orchy home"><img src="/shared/orchy-main-128.webp" alt="" width="32" height="32"><span>ORCHY</span></a><p class="tag">AI agents for day-to-day work, by team.</p></div><nav aria-labelledby="fh0"><h2 id="fh0">Product</h2><ul role="list"><li><a href="/#how">How it works</a></li><li><a href="/ai-employees">AI employees</a></li><li><a href="/agents">Agent builder</a></li><li><a href="/approvals">Approvals</a></li><li><a href="/apps">Apps</a></li><li><a href="/client-workspaces">Client workspaces</a></li><li><a href="/pricing">Pricing</a></li></ul></nav><nav aria-labelledby="fh1"><h2 id="fh1">AI agents</h2><ul role="list"><li><a href="/ai-agents-for-business">For business</a></li><li><a href="/ai-agents-for-operations">Operations</a></li><li><a href="/ai-agents-for-marketing">Marketing</a></li><li><a href="/ai-agents-for-finance">Finance</a></li><li><a href="/ai-agents-for-it">IT</a></li><li><a href="/ai-agents-for-sales">Sales</a></li></ul></nav><nav aria-labelledby="fh2"><h2 id="fh2">Security</h2><ul role="list"><li><a href="/security">Security</a></li><li><a href="/data-privacy">Data privacy</a></li><li><a href="/dpa">DPA</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></nav><nav aria-labelledby="fh3"><h2 id="fh3">Company</h2><ul role="list"><li><a href="/blog">Blog</a></li><li><a href="/changelog">Changelog</a></li><li><a href="/alternatives/grok-bot">Grok Bot alternatives</a></li><li><a href="/compare/openai-dots-vs-grok-bot">Dots vs Grok Bot</a></li><li><a href="https://app.imorchy.dev/">Sign in</a></li></ul></nav><nav aria-labelledby="fh4"><h2 id="fh4">Follow</h2><ul role="list"><li><a href="https://www.facebook.com/OrchyAI/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr"> (opens in a new tab)</span></a></li><li><a href="https://x.com/OrchyAI" target="_blank" rel="noopener noreferrer">X<span class="sr"> (opens in a new tab)</span></a></li><li><a href="https://www.instagram.com/orchyai/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr"> (opens in a new tab)</span></a></li><li><a href="https://www.youtube.com/@orchy-ai" target="_blank" rel="noopener noreferrer">YouTube<span class="sr"> (opens in a new tab)</span></a></li></ul></nav></div><div class="base"><span>© Orchy AI 2026</span><span>Hosted for you · Asks before it acts</span></div></div></footer>
+<script src="/shared/demo.js" defer></script>
+<script src="/shared/site.js" defer></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>
+</body></html>

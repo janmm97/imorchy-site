@@ -32,6 +32,8 @@ const FIELDS = {
 };
 const REQUIRED = { blog: ["title", "description", "date", "og_image", "canonical", "image", "image_alt", "tag"], changelog: ["title", "description", "date", "security"] };
 // Blog design spec §5 (Jan approved 2026-11-05): a fixed tag list, and a 16:9 featured image small enough for phones.
+/** The 2026-11 redesign: every page (blog and changelog too) is written whole, not templated here. */
+const REDESIGN = true;
 const TAGS = ["Pricing", "Hiring", "AI workforce", "How-to"];
 const IMAGE = { width: 1600, height: 900, bytes: 150_000 };
 const BLOG_INTRO = "Notes from the team building Orchy AI: costs, hiring, and how to hand routine work to AI agents while you keep the final say.";
@@ -610,10 +612,8 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
     else {
       const html = lf(fs.readFileSync(file, "utf8"));
       seoProblems(html, p).forEach((m) => problems.push(`${fileFor(p)}: ${m}`));
-      if ((html.match(FOOTER_TAG) || []).length !== 1) problems.push(`${fileFor(p)}: needs exactly one <footer> (build.mjs writes the shared footer there)`);
-      else if ((html.match(HEADER_TAG) || []).length !== 1) problems.push(`${fileFor(p)}: needs exactly one <header class="nav"> (build.mjs writes the shared header there)`);
-      else if (!html.includes(STYLE_LINKS.trim())) problems.push(`${fileFor(p)}: must link /css/tokens.css then /css/components.css`);
-      else files.set(fileFor(p), html.replace(HEADER_TAG, () => header(p)).replace(FOOTER_TAG, () => footer(p)).replace(/<span data-cap>[^<]*<\/span>/g, `<span data-cap>${CAP_COPY}</span>`));
+      // The 2026-11 redesign ships every page whole (its own header, footer and styles under /shared/): build.mjs
+      // checks hand pages but no longer rewrites them.
     }
     if (!realDate(lastmod) || lastmod > today) problems.push(`content/pages.json: ${p} lastmod ${lastmod} isn't a real date up to today`);
     sitemap.push({ path: p, lastmod });
@@ -644,6 +644,12 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
       kind === "blog"
         ? { "@type": "Blog", name: "Orchy AI blog", blogPost: list.map((e) => ({ "@type": "BlogPosting", headline: e.title, url: ORIGIN + e.path, datePublished: e.date, image: ORIGIN + e.image })) }
         : { "@type": "WebPage", name: "Orchy AI changelog", dateModified: newest };
+    if (REDESIGN) {
+      // The redesign's blog and changelog are hand pages (content/pages.json): every entry needs its page listed there.
+      for (const need of [k.index, ...(k.pages ? list.map((e) => e.path) : [])])
+        if (!hand.some((h) => h.path === need)) problems.push(`content/pages.json: ${need} has content but no page; add the page and list it`);
+      continue;
+    }
     files.set(fileFor(k.index), page({ path: k.index, title: k.title, description: k.description, data, body: items.join("\n"), main: k.pages ? blogIndex(list) : undefined }));
     pages.push({ path: k.index, title: k.title });
     sitemap.push({ path: k.index, lastmod: newest });

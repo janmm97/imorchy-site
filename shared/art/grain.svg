@@ -1,0 +1,2 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320"><title>Fine grain</title><desc>Tileable monochrome noise, ivory at low alpha. Repeat as a background-image over charcoal.</desc>
+<filter id="n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 .99  0 0 0 0 .98  0 0 0 .55 -.18"/></filter><rect width="320" height="320" filter="url(#n)" opacity=".5"/></svg>
