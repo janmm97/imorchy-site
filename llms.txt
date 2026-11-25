@@ -3,7 +3,7 @@
 > Orchy AI is a hosted AI workspace for virtual assistants, freelancers and small agencies who work for several clients. Each client gets a separate workspace with its own apps, agents and files. You describe a task in plain words, the right agent does it in that client's apps, and Orchy asks for your approval before anything is sent, posted, paid, changed on a calendar, deleted or shared.
 
 Key facts:
-- Hosted only, at OVHcloud in Canada, with one isolated container per customer.
+- Hosted only, at OVHcloud, with one isolated container per customer.
 - Through One, Orchy can connect to 1,100+ apps (for example Gmail, Google Calendar and LinkedIn).
 - AI runs on Orchy's own OpenRouter account, paid from the AI credit included in every plan. There is no bring-your-own AI key.
 - Sign-up is open, with no waiting list. Plans are paid monthly or yearly and billed through Polar.

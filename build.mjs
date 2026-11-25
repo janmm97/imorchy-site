@@ -395,7 +395,7 @@ export function footer(p, site = siteDir) {
             <p class="tagline">AI agents for day-to-day work, by team.</p>
           </div>
 ${cols.join("")}        </div>
-        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
+        <div class="fbot"><span>© Orchy AI 2026</span></div>
       </div>
     </footer>`;
 }
