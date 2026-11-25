@@ -3,6 +3,7 @@
 // from it, the Worker swaps the text on the way out. One's API is never on the page's critical path: the count is
 // read from memory or the Cache API, and a miss refreshes it in the background (ctx.waitUntil) while the page goes
 // out unchanged. Any error, timeout, odd answer or count outside 1000..5000 leaves the page as it is.
+import { videoExt } from "./media.mjs";
 
 /** The count every page is written with. Change it here and in the pages together (test-app-count.mjs checks). */
 export const APP_COUNT_BASE = "1,100+";
@@ -84,10 +85,10 @@ export function shownAppCount(live) {
 /**
  * While a live count is shown, a GET page request goes to the assets without If-None-Match / If-Modified-Since, so a
  * browser holding a page from before the count changed gets it again (200, rewritten) rather than a 304 that keeps
- * the old count. Videos keep their conditionals.
+ * the old count. Videos (.mp4 and .webm, any case) keep their conditionals.
  */
 export function forAppCount(request, url, live) {
-  if (!shownAppCount(live) || request.method !== "GET" || url.pathname.endsWith(".mp4")) return request;
+  if (!shownAppCount(live) || request.method !== "GET" || videoExt(url.pathname)) return request;
   if (!request.headers.has("If-None-Match") && !request.headers.has("If-Modified-Since")) return request;
   const headers = new Headers(request.headers);
   headers.delete("If-None-Match");
