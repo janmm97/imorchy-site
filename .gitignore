@@ -1,3 +1,7 @@
 node_modules/
 assets/video.mp4
 .env
+
+# Redesign clips (mp4 + webm) live in R2 (orchy-site-media), never in git; posters stay.
+shared/media/*.mp4
+shared/media/*.webm

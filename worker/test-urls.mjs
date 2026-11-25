@@ -198,9 +198,11 @@ try {
     "legend: Wage | +30% costs\ncolumns: Job | Wage | Page\nrows:\n  - label: A & B | v: 36.82 | src: [bls.gov](https://www.bls.gov/oes/tables.htm)\n```\n";
   put("content/blog/2026-10-31-first-post.md", "---\ntitle: First <post>\ndescription: A test post.\ndate: 2026-10-31\nupdated: 2026-11-01\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n" + IMG + "takeaways:\n  - One.\n  - Two.\n---\n# Why\n\nText with `code`, **bold**, [a link](/approvals) and [bad](javascript:alert(1)).\n\n<script>alert(1)</script>\n\n- one\n- two\n\n" + CHART);
   put("content/changelog/2026-10-31-v1.md", "---\ntitle: v1\ndescription: The first release.\ndate: 2026-10-31\nsecurity: false\n---\nFirst release.\n");
-  const out = build(fx, { today: "2026-11-02" });
+  // 2026-11 redesign (the default): the blog and changelog are hand pages, so content without its listed page is a problem.
+  assert.match(build(fx, { today: "2026-11-02" }).problems.join(" | "), /\/blog has content but no page/);
+  const out = build(fx, { today: "2026-11-02", redesign: false });
   assert.deepEqual(out.problems, []);
-  assert.deepEqual([...out.files.keys()].sort(), ["blog.html", "blog/first-post.html", "changelog.html", "feed.xml", "index.html", "sitemap.xml"]);
+  assert.deepEqual([...out.files.keys()].sort(), ["blog.html", "blog/first-post.html", "changelog.html", "feed.xml", "sitemap.xml"]); // hand pages ship whole (2026-11 redesign)
   assert.deepEqual(out.pages.map((p) => p.path), ["/blog", "/blog/first-post", "/changelog"]);
   const mapped = [...out.files.get("sitemap.xml").matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)/g)].map((m) => m[1].slice(ORIGIN.length) + " " + m[2]);
   assert.deepEqual(mapped, ["/ 2026-10-30", "/blog 2026-11-01", "/blog/first-post 2026-11-01", "/changelog 2026-10-31"], "lastmod = updated || date; an index takes its newest entry");
@@ -222,7 +224,7 @@ try {
   assert.ok(post.includes('$36.82 <small>→ ~$48</small>') && post.includes('id="chart-1-d">Wages. A &amp; B: $36.82, about $48 with +30% costs.</p>'));
   assert.ok(post.includes('<summary>See the numbers</summary>') && post.includes('<td><a href="https://www.bls.gov/oes/tables.htm">bls.gov</a></td>') && !post.includes("<canvas"));
   assert.match(out.files.get("feed.xml"), /<updated>2026-11-01T00:00:00Z<\/updated>\n  <author>/);
-  assert.deepEqual(build(fx, { today: "2026-11-02" }).files, out.files, "the same sources give the same bytes");
+  assert.deepEqual(build(fx, { today: "2026-11-02", redesign: false }).files, out.files, "the same sources give the same bytes");
   for (const [rel, text] of out.files) put(rel, text);
   assert.deepEqual(staleFiles(fx, out.files), []);
   put("blog/first-post.html", post.replace("Why", "Who"));
@@ -230,7 +232,7 @@ try {
   assert.deepEqual(staleFiles(fx, out.files), ["blog/first-post.html", "blog/old.html (its source is gone: delete it)"]);
   // The command line: write mode rewrites the stale page but still exits 1 on the orphan, as --check does.
   const said = [];
-  const say = { log: (m) => said.push(m), error: (m) => said.push(m) };
+  const say = { log: (m) => said.push(m), error: (m) => said.push(m), redesign: false };
   assert.equal(cli(fx, [], say), 1, "write mode exits 1 on an orphaned output");
   assert.match(said.join("\n"), /blog\/old\.html \(its source is gone: delete it\)/);
   assert.equal(fs.readFileSync(path.join(fx, "blog/first-post.html"), "utf8"), post, "write mode rewrote the stale page");
@@ -242,7 +244,7 @@ try {
   put("assets/blog/x.webp", webp(800, 450));
   put("content/blog/2026-10-30-second.md", X(IMG).replace(/\/x\b/, "/second").replace("first-post", "second"));
   put("assets/blog/second.webp", webp(1600, 900));
-  const two = build(fx, { today: "2026-11-02" });
+  const two = build(fx, { today: "2026-11-02", redesign: false });
   assert.deepEqual(two.problems, []);
   assert.match(two.files.get("blog.html"), /class="lead-card"[\s\S]*href="\/blog\/first-post"[\s\S]*id="more-h">More posts[\s\S]*class="card"[\s\S]*href="\/blog\/second"/);
   assert.match(two.files.get("blog/first-post.html"), /id="more-h">More posts[\s\S]*href="\/blog\/second"/);
@@ -258,7 +260,7 @@ try {
     ["content/changelog/Fix.md", "x", /name it/],
     ["content/changelog/2026-10-30-pr.md", "---\ntitle: P\ndescription: D\ndate: 2026-10-30\nsecurity: false\n---\n- A fix. (PR #12)\n", /no PR numbers/],
     ["content/changelog/2026-10-30-pull.md", "---\ntitle: P\ndescription: D\ndate: 2026-10-30\nsecurity: false\n---\n- [A fix](https://github.com/x/y/pull/3)\n", /no PR numbers or \/pull\/ links/],
-    ["index.html", "<!doctype html><title>x</title>", /index\.html: needs exactly one <footer>/],
+    // (The redesign ships hand pages whole, so build.mjs no longer needs a <footer> slot; test-pages checks the shared chrome.)
     ["content/pages.json", '[{ "path": "/gone", "lastmod": "2026-10-30" }]', /\/gone has no page file/],
     ["content/pages.json", '{ "path": "/" }', /content\/pages\.json: must be a list/],
     ["content/blog/2026-10-29-first-post.md", "---\ntitle: F\ndescription: D\ndate: 2026-10-29\nog_image: /assets/og-image.png\ncanonical: https://imorchy.dev/blog/first-post\n---\n", /duplicate slug: blog\/first-post/],
@@ -273,13 +275,13 @@ try {
   ]) {
     const before = fs.existsSync(path.join(fx, file)) ? fs.readFileSync(path.join(fx, file)) : null;
     put(file, text);
-    assert.match(build(fx, { today: "2026-11-02" }).problems.join(" | "), why, file);
+    assert.match(build(fx, { today: "2026-11-02", redesign: false }).problems.join(" | "), why, file);
     before ? fs.writeFileSync(path.join(fx, file), before) : fs.rmSync(path.join(fx, file));
   }
   // A UTF-8 BOM (Windows editors) is ignored in a source and in pages.json.
   assert.equal(parseSource("\uFEFF---\ntitle: X\n---\nBody\n").meta.title, "X");
   put("content/pages.json", '\uFEFF[{ "path": "/", "lastmod": "2026-10-30" }]');
-  assert.deepEqual(build(fx, { today: "2026-11-02" }).problems, [], "pages.json with a BOM");
+  assert.deepEqual(build(fx, { today: "2026-11-02", redesign: false }).problems, [], "pages.json with a BOM");
   // A pasted U+2028 in a list item used to stop the item from matching, and markdown() never advanced.
   assert.match(markdown("- a\u2028b\n- c"), /<li>a\u2028b<\/li>\s*<li>c<\/li>/);
   // A link needs https://, a site path or #: a browser reads //host, /\host and \\host as off-site, so they stay text.
@@ -297,7 +299,7 @@ try {
   assert.equal(markdown("| a | b |\nno rule"), "<p>| a | b | no rule</p>");
   fs.rmSync(path.join(fx, "content", "blog"), { recursive: true });
   fs.rmSync(path.join(fx, "content", "changelog"), { recursive: true });
-  assert.deepEqual([...build(fx, { today: "2026-11-02" }).files.keys()], ["index.html", "sitemap.xml"], "no content: only the sitemap and the footer stamped on the hand-written page");
+  assert.deepEqual([...build(fx, { today: "2026-11-02", redesign: false }).files.keys()], ["sitemap.xml"], "no content: only the sitemap (hand pages ship whole)");
 } finally {
   fs.rmSync(fx, { recursive: true, force: true });
 }
@@ -352,8 +354,13 @@ for (const href of ctas) {
   assert.match(u.searchParams.get("from") || "", CTA.from, href);
 }
 assert.ok(ctas.includes(`${CTA.path}?from=hero`), "the hero CTA says from=hero");
-assert.doesNotMatch(home, /href="https?:\/\/(?:app\.imorchy\.dev|calendly\.com)/, "no direct app or booking link on /");
-ok(`/: ${ctas.length} "Get started" CTAs, each ${CTA.path}?from=<section> (hero: from=hero); no direct app or calendly link`);
+// 2026-11 redesign: the nav and footer carry a "Sign in" link to the app's root for existing users; sign-up and booking still go through /go/start.
+assert.doesNotMatch(home, /href="https?:\/\/calendly\.com/, "no direct booking link on /");
+const appLinks = [...home.matchAll(/<a\b[^>]*\bhref="https?:\/\/app\.imorchy\.dev[^"]*"[^>]*>.*?<\/a>/g)].map((m) => m[0]);
+assert.equal(appLinks.length, [...home.matchAll(/href="https?:\/\/app\.imorchy\.dev/g)].length, "/: every app link is an <a>");
+for (const link of appLinks)
+  assert.match(link, /href="https:\/\/app\.imorchy\.dev\/"[^>]*>(?:<b>)?Sign in(?:<\/b>)?<\/a>$/, `/: a direct app link is only Sign in, to the app root: ${link}`);
+ok(`/: ${ctas.length} "Get started" CTAs, each ${CTA.path}?from=<section> (hero: from=hero); no direct sign-up or calendly link (Sign in goes to the app root)`);
 
 // ── nothing loads from a host outside the allowlist (scripts, styles, images, fonts, frames, media, imports) ──
 const outside = (text, allowed) =>
@@ -361,7 +368,7 @@ const outside = (text, allowed) =>
     .map((m) => new URL(m[1], ORIGIN).host)
     .filter((h) => h !== new URL(ORIGIN).host && !allowed.includes(h));
 for (const page of PAGES.filter((p) => p.profile && exists(p.path))) assert.deepEqual(outside(read(fileFor(page.path)), LOAD_HOSTS), [], page.path);
-assert.deepEqual(outside(read("styles.css"), []), [], "styles.css");
+for (const css of ["shared/site.css", "shared/blog.css"]) assert.deepEqual(outside(read(css), []), [], css); // 2026-11 redesign: the stylesheets live in shared/
 assert.deepEqual(outside('<img src="https://example.com/x.png">', []), ["example.com"], "the scan sees an outside load");
 ok("no page or stylesheet loads from a host outside the allowlist (static.cloudflareinsights.com, the beacon)");
 

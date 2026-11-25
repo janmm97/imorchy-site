@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" preserveAspectRatio="xMidYMid slice"><title>Ember field</title><desc>Charcoal background with soft copper, oxblood, teal and cream glows.</desc>
+<defs><radialGradient id="a" cx="78%" cy="18%" r="48%"><stop offset="0" stop-color="#B87333" stop-opacity=".30"/><stop offset="1" stop-color="#B87333" stop-opacity="0"/></radialGradient>
+<radialGradient id="b" cx="14%" cy="82%" r="50%"><stop offset="0" stop-color="#7A2E2A" stop-opacity=".34"/><stop offset="1" stop-color="#7A2E2A" stop-opacity="0"/></radialGradient>
+<radialGradient id="c" cx="48%" cy="108%" r="46%"><stop offset="0" stop-color="#3E5F64" stop-opacity=".30"/><stop offset="1" stop-color="#3E5F64" stop-opacity="0"/></radialGradient>
+<radialGradient id="d" cx="62%" cy="38%" r="22%"><stop offset="0" stop-color="#E9D8B4" stop-opacity=".07"/><stop offset="1" stop-color="#E9D8B4" stop-opacity="0"/></radialGradient>
+<radialGradient id="v" cx="50%" cy="50%" r="75%"><stop offset=".55" stop-color="#1C1C1C" stop-opacity="0"/><stop offset="1" stop-color="#1C1C1C" stop-opacity=".55"/></radialGradient></defs>
+<rect width="1920" height="1080" fill="#1C1C1C"/><rect width="1920" height="1080" fill="url(#a)"/><rect width="1920" height="1080" fill="url(#b)"/><rect width="1920" height="1080" fill="url(#c)"/><rect width="1920" height="1080" fill="url(#d)"/><rect width="1920" height="1080" fill="url(#v)"/></svg>

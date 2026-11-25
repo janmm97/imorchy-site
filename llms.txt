@@ -1,31 +1,35 @@
 # Orchy AI
 
-> Orchy AI is a hosted AI workspace for virtual assistants, freelancers and small agencies who work for several clients. Each client gets a separate workspace with its own apps, agents and files. You describe a task in plain words, the right agent does it in that client's apps, and Orchy asks for your approval before anything is sent, posted, paid, changed on a calendar, deleted or shared.
+> Orchy is a hosted AI workspace. A team of AI agents (Operations, Marketing, Finance, IT, Sales and custom agents) does work in your apps, like Gmail, Google Calendar, Slack, Notion, GitHub and Stripe, and asks before anything is sent, posted, paid, deleted or shared.
 
-Key facts:
-- Hosted only, at OVHcloud in Canada, with one isolated container per customer.
-- Through One, Orchy can connect to 1,100+ apps (for example Gmail, Google Calendar and LinkedIn).
-- AI runs on Orchy's own OpenRouter account, paid from the AI credit included in every plan. There is no bring-your-own AI key.
-- Sign-up is open, with no waiting list. Plans are paid monthly or yearly and billed through Polar.
-- Orchy is live. Plans are Starter $9, Solo $19, Pro $39 and Business $99 a month, each with AI credit included. Solo, Pro and Business can be paid yearly for the price of 10 months.
-- Orchy holds no security certifications such as SOC 2 or ISO 27001.
-- Orchy is a product of One Systems, Inc.
+- Built for virtual assistants, agencies and small teams. Each client gets a separate workspace with its own apps, agents and files.
+- Hosted for you at OVHcloud, one isolated container per customer. Nothing to install.
+- 1,100+ apps through One, which is part of Orchy.
+- AI runs on Orchy's own account and is paid from the AI credits in your plan. There is no separate AI key to bring.
+- Plans: Starter $9/month (1 seat, 100 AI credits, monthly only); Solo $19/month or $190/year (1 seat, 300 credits); Pro $39/month or $390/year (2 seats, 800 credits); Business $99/month or $990/year (5 seats, 2,000 credits). Yearly = 2 months free. Warning at 80% of credits, pause at 100%, no rollover. 14-day refund from first payment if no AI credits have been used.
+- No SOC 2 or ISO 27001 certification today.
+- Orchy is a product of One Systems, Inc. Sign in: https://app.imorchy.dev/
 
 ## Product
-- [Client workspaces](https://imorchy.dev/client-workspaces): one workspace per client, with its own apps, agents and files
-- [Approvals](https://imorchy.dev/approvals): what Orchy asks about before it acts, and how you approve or deny
-- [Agents and the Agent Builder](https://imorchy.dev/agents): set up agents for a job in plain words
-- [Apps through One](https://imorchy.dev/apps): connect each client's apps and choose what each agent may use
-- [Pricing](https://imorchy.dev/pricing): four plans paid monthly or yearly, AI credit and the 14-day refund rule
-- [Security](https://imorchy.dev/security): hosting, isolation, included AI, deletion and sub-processors
+- [AI employees](https://imorchy.dev/ai-employees): the agent team and what each role does
+- [AI agent builder](https://imorchy.dev/agents): build an agent by describing the job in plain words
+- [Approvals](https://imorchy.dev/approvals): human in the loop by default; what agents ask about first
+- [Apps](https://imorchy.dev/apps): 1,100+ integrations through One
+- [Client workspaces](https://imorchy.dev/client-workspaces): one workspace per client
+- [Security](https://imorchy.dev/security): hosting, isolation, deletion
+- [Pricing](https://imorchy.dev/pricing): plans and AI credits
+
+## AI agents by team
+- [AI agents for business](https://imorchy.dev/ai-agents-for-business)
+- [Operations](https://imorchy.dev/ai-agents-for-operations), [Marketing](https://imorchy.dev/ai-agents-for-marketing), [Finance](https://imorchy.dev/ai-agents-for-finance), [IT](https://imorchy.dev/ai-agents-for-it), [Sales](https://imorchy.dev/ai-agents-for-sales)
+
+## Comparisons
+- [Grok Bot alternatives](https://imorchy.dev/alternatives/grok-bot)
+- [OpenAI Dots vs Grok Bot](https://imorchy.dev/compare/openai-dots-vs-grok-bot)
 
 ## Legal
-- [Privacy Policy](https://imorchy.dev/privacy)
-- [Terms of Use](https://imorchy.dev/terms)
-- [Data Processing Agreement](https://imorchy.dev/dpa)
-- [Data Privacy and sub-processors](https://imorchy.dev/data-privacy)
+- [Privacy Policy](https://imorchy.dev/privacy), [Terms of Use](https://imorchy.dev/terms), [DPA](https://imorchy.dev/dpa), [Data privacy and sub-processors](https://imorchy.dev/data-privacy)
 
 ## Optional
-- [Blog](https://imorchy.dev/blog)
-- [Changelog](https://imorchy.dev/changelog)
+- [Blog](https://imorchy.dev/blog), [Virtual assistant cost in 2026](https://imorchy.dev/blog/virtual-assistant-cost), [Changelog](https://imorchy.dev/changelog)
 - [Get started](https://imorchy.dev/go/start?from=llms)

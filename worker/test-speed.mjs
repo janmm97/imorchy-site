@@ -1,6 +1,6 @@
-// Offline checks for the mobile-speed budget: first paint never waits on the big SVG art, every image has a size,
-// the hero art is preloaded, the 3D squad boots late and only on desktop, and the character SVGs keep the
-// mask-then-colour PNG pair that js/art.mjs reads. Run by test.mjs (part of `npm test`). No network.
+// Offline checks for the mobile-speed budget: every image is sized and small, icons and preloads stay small,
+// the only web font is self-hosted JetBrains Mono (Regular + Bold, swap, preloaded), and no page loads WebGL or a
+// render-blocking script. 2026-11 redesign: the kit lives under shared/. Run by test.mjs (part of `npm test`). No network.
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -9,10 +9,19 @@ const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
 const read = (p) => fs.readFileSync(SITE + p, "utf8");
 const attr = (tag, name) => tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1];
-const local = (src) => SITE + src.replace(/^\//, "");
+const local = (src) => SITE + src.replace(/^\//, "").split(/[?#]/)[0];
 
-// ── no page paints with a heavy image: <img>, icons and image preloads stay small and sized ──
-const pages = fs.readdirSync(SITE).filter((f) => f.endsWith(".html") && !/^google[0-9a-f]+\.html$/.test(f));
+// every page: top level plus one folder down (blog/, compare/, alternatives/)
+const SKIP = new Set(["shared", "worker", "node_modules", "content", "assets", ".well-known", ".git"]);
+const pages = [];
+for (const e of fs.readdirSync(SITE, { withFileTypes: true })) {
+  if (e.isFile() && e.name.endsWith(".html") && !/^google[0-9a-f]+\.html$/.test(e.name)) pages.push(e.name);
+  else if (e.isDirectory() && !SKIP.has(e.name) && !e.name.startsWith("."))
+    for (const f of fs.readdirSync(SITE + e.name)) if (f.endsWith(".html")) pages.push(`${e.name}/${f}`);
+}
+assert.ok(pages.length >= 20, `found ${pages.length} pages`);
+
+// ── no page paints with a heavy image: <img>, icons and preloads stay small and sized ──
 const BUDGET = 64 * 1024;
 for (const page of pages) {
   const html = read(page);
@@ -24,60 +33,46 @@ for (const page of pages) {
   }
   for (const tag of html.match(/<link\b[^>]*rel="(?:icon|preload)"[^>]*>/gi) || []) {
     const href = attr(tag, "href");
-    // Preloaded fonts are subset to the characters the site uses (Latin-1, punctuation, arrows): 40 KB each.
+    // Preloaded fonts are subset to the characters the site uses: 40 KB each.
     const cap = attr(tag, "as") === "font" ? 40 * 1024 : BUDGET;
     assert.ok(fs.statSync(local(href)).size <= cap, `${page}: ${href} is over ${cap / 1024} KB`);
   }
 }
-ok(`every <img>, icon and image preload on ${pages.length} pages is sized and under ${BUDGET / 1024} KB`);
+ok(`every <img>, icon and preload on ${pages.length} pages is sized and under budget`);
 
-// ── v4 home: the LCP is the hero's text, so no hero image to preload; if one comes back, it must be preloaded ──
-const home = read("index.html");
-const hero = home.match(/<img[^>]*fetchpriority="high"[^>]*>/i)?.[0];
-const preload = home.match(/<link[^>]*rel="preload"[^>]*as="image"[^>]*>/i)?.[0];
-assert.equal(!!hero, !!preload, "a high-priority hero image and its preload come together");
-if (hero) {
-  assert.equal(attr(preload, "href"), attr(hero, "src"));
-  assert.equal(attr(preload, "imagesrcset"), attr(hero, "srcset"));
-  assert.equal(attr(preload, "imagesizes"), attr(hero, "sizes"));
-  assert.ok(home.indexOf(preload) < home.indexOf('rel="stylesheet"'), "the preload comes before the stylesheet");
-}
-const css = read("styles.css");
-assert.equal((css.match(/@font-face/g) || []).length, (css.match(/font-display:\s*swap/g) || []).length);
-// v4 kit: every downloaded face (url(...)) swaps; local() size-adjusted fallbacks download nothing, so they need no swap.
-for (const f of ["css/tokens.css", "css/components.css", "css/home.css", "css/blog.css", "css/demos-home.css"]) {
-  for (const face of read(f).match(/@font-face\s*\{[^}]*\}/g) || []) {
-    if (/url\(/.test(face)) assert.match(face, /font-display:\s*swap/, `${f}: ${face.slice(0, 80)}`);
+// ── home: the LCP is the hero text; a high-priority hero image (if one comes back) comes with its preload ──
+for (const page of ["index.html"]) {
+  const html = read(page);
+  const hero = html.match(/<img[^>]*fetchpriority="high"[^>]*>/i)?.[0];
+  const preload = html.match(/<link[^>]*rel="preload"[^>]*as="image"[^>]*>/i)?.[0];
+  assert.equal(!!hero, !!preload, `${page}: a high-priority hero image and its preload come together`);
+  if (hero) {
+    assert.equal(attr(preload, "href"), attr(hero, "src"), page);
+    assert.ok(html.indexOf(preload) < html.indexOf('rel="stylesheet"'), `${page}: the preload comes before the stylesheet`);
   }
 }
-// One typeface (Jan, 2026-11-24): JetBrains Mono, self-hosted Regular + Bold only, preloaded on every page; no other web font.
+
+// ── one typeface (Jan, 2026-11-24): JetBrains Mono, self-hosted Regular + Bold only, swap, preloaded on every page ──
 {
-  const tokens = read("css/tokens.css");
-  const urls = [...tokens.matchAll(/url\("([^"]+)"\)/g)].map((m) => m[1]).sort();
-  assert.deepEqual(urls, ["/fonts/JetBrainsMono-Bold.woff2", "/fonts/JetBrainsMono-Regular.woff2"], "only the two JetBrains Mono files are downloaded");
-  assert.match(tokens, /--font-sans:var\(--font-mono\)/, "body text is JetBrains Mono");
-  assert.match(tokens, /--font-display:var\(--font-mono\)/, "headings are JetBrains Mono");
-  assert.doesNotMatch(tokens + read("css/components.css"), /font-style:\s*italic/, "no italic: there is no italic file, and the browser must not fake one");
-  assert.match(read("css/components.css"), /body\{[^}]*font-synthesis:none/, "no synthetic italic or bold");
-  for (const f of fs.readdirSync(SITE + "fonts")) assert.match(f, /^(JetBrainsMono-(Regular|Bold)\.woff2|OFL-JetBrainsMono\.txt)$/, `unexpected font file ${f}`);
-  for (const page of pages) for (const w of ["Regular", "Bold"]) assert.match(read(page), new RegExp(`<link rel="preload" href="/fonts/JetBrainsMono-${w}\\.woff2" as="font" type="font/woff2" crossorigin />`), `${page} preloads JetBrains Mono ${w}`);
-  for (const f of ["fonts/JetBrainsMono-Regular.woff2", "fonts/JetBrainsMono-Bold.woff2"]) assert.ok(fs.statSync(SITE + f).size < 32 * 1024, `${f} under 32 KB`);
+  const css = read("shared/site.css");
+  const faces = css.match(/@font-face\s*\{[^}]*\}/g) || [];
+  assert.equal(faces.length, 2, "two @font-face rules");
+  for (const face of faces) assert.match(face, /font-display:\s*swap/, `swap: ${face.slice(0, 80)}`);
+  const urls = [...css.matchAll(/url\("?([^")]+\.woff2)"?\)/g)].map((m) => m[1]).sort();
+  assert.deepEqual(urls, ["/shared/fonts/JetBrainsMono-Bold.woff2", "/shared/fonts/JetBrainsMono-Regular.woff2"], "only the two JetBrains Mono files are downloaded");
+  assert.doesNotMatch(read("shared/blog.css"), /@font-face|url\([^)]*\.woff/, "blog.css downloads no other font");
+  for (const f of fs.readdirSync(SITE + "shared/fonts")) assert.match(f, /^(JetBrainsMono-(Regular|Bold)\.woff2|OFL-JetBrainsMono\.txt)$/, `unexpected font file ${f}`);
+  for (const w of ["Regular", "Bold"]) assert.ok(fs.statSync(SITE + `shared/fonts/JetBrainsMono-${w}.woff2`).size < 32 * 1024, `JetBrainsMono-${w} under 32 KB`);
+  for (const page of pages) for (const w of ["Regular", "Bold"])
+    assert.match(read(page), new RegExp(`<link rel="preload" href="/shared/fonts/JetBrainsMono-${w}\\.woff2" as="font" type="font/woff2" crossorigin\\s*/?>`), `${page} preloads JetBrains Mono ${w}`);
 }
-ok("hero image (if any) preloaded ahead of the CSS; every font uses font-display: swap");
+ok("every font is JetBrains Mono from /shared/fonts, under 32 KB, font-display: swap, and preloaded on every page");
 
-// ── v4 home: no WebGL, no hero bundle, and no script that blocks rendering ──
-for (const s of ["importmap", "three.module", "cdn.jsdelivr.net", "js/main.mjs", "<canvas"]) assert.ok(!home.includes(s), `index.html loads no ${s}`);
-for (const tag of home.match(/<script[^>]*src="[^"]*"[^>]*>/gi) || [])
-  assert.ok(/type="module"|defer|async/.test(tag), `index.html: ${tag} doesn't block rendering`);
-ok("the homepage loads no Three.js, importmap or hero bundle, and every script is deferred or a module");
-
-// ── js/art.mjs reads the first two embedded PNGs of each SVG: the mask (greyscale), then the colour render ──
-for (const svg of ["assets/orchy-main.svg", "assets/orchy_and_sugagents.svg"]) {
-  const pngs = [...read(svg).matchAll(/href="data:image\/png;base64,([^"]+)"/g)].map((m) => Buffer.from(m[1], "base64"));
-  assert.ok(pngs.length >= 2, `${svg}: two embedded PNGs`);
-  const [mask, color] = pngs.map((b) => ({ w: b.readUInt32BE(16), h: b.readUInt32BE(20), type: b[25] }));
-  assert.equal(mask.type, 0, `${svg}: first PNG is the greyscale mask`);
-  assert.equal(color.type, 2, `${svg}: second PNG is the RGB colour render`);
-  assert.deepEqual([mask.w, mask.h], [color.w, color.h], `${svg}: mask and colour are the same size`);
+// ── no WebGL, no import map, no render-blocking script on any page ──
+for (const page of pages) {
+  const html = read(page);
+  for (const s of ["importmap", "three.module", "cdn.jsdelivr.net", "<canvas"]) assert.ok(!html.includes(s), `${page} loads no ${s}`);
+  for (const tag of html.match(/<script[^>]*src="[^"]*"[^>]*>/gi) || [])
+    assert.ok(/type="module"|defer|async/.test(tag), `${page}: ${tag} doesn't block rendering`);
 }
-ok("both character SVGs keep the mask-then-colour PNG pair that art.mjs cuts the squad from");
+ok("no page loads Three.js, an import map or a canvas, and every script is deferred or a module");

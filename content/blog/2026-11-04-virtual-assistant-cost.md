@@ -34,7 +34,7 @@ rows:
   - label: Managed offshore agency | lo: 12 | hi: 19 | flag: monthly ÷ 160 h | text: $1,988 to $3,000 a month full time, an effective $12 to $19 an hour | src: [MyOutDesk, virtual assistant cost in 2026](https://www.myoutdesk.com/blog/virtual-assistant-cost/) (vendor-published)
   - label: Freelance platform | lo: 18 | hi: 35 | text: $18 to $35 an hour typical | src: Same MyOutDesk page, which cites the platform's own cost guide (vendor-published)
   - label: US-based agency | lo: 25 | hi: 50 | flag: monthly ÷ 160 h | text: $4,000 to $8,000 a month full time; $25 to $50 an hour at 160 hours a month (our conversion) | src: Same MyOutDesk page (vendor-published)
-  - label: Freelance, US & Canada specialists | lo: 50 | hi: 65 | text: $50 to $65 an hour | src: Same MyOutDesk page, which cites the platform's own cost guide (vendor-published)
+  - label: Freelance, North American specialists | lo: 50 | hi: 65 | text: $50 to $65 an hour | src: Same MyOutDesk page, which cites the platform's own cost guide (vendor-published)
 ```
 
 For a US local hire, the main public numbers come from the Bureau of Labor Statistics. These are median hourly wages for May 2025. They are wages only, so payroll tax, health insurance and paid leave come on top. We add about 30% as a rough estimate for those costs. That 30% is our estimate, not a BLS figure.
