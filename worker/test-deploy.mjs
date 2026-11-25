@@ -45,8 +45,8 @@ try {
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
 }
-assert.ok(IN_R2.has(".mp4") && !TYPES[".mp4"]);
-ok("videos (.mp4) are never uploaded as static assets, even with a local copy on disk: the Worker serves them from R2");
+assert.ok(IN_R2.has(".mp4") && !TYPES[".mp4"] && IN_R2.has(".webm") && !TYPES[".webm"]);
+ok("videos (.mp4, .webm) are never uploaded as static assets, even with a local copy on disk: the Worker serves them from R2");
 ok("build.mjs and content/ (the sources of the generated pages) are never uploaded");
 
 // Every local file a page, the stylesheet or a script names is uploaded too (the video comes from R2).
@@ -71,14 +71,14 @@ const workerFirst = (p) =>
   !RUN_WORKER_FIRST.some((r) => r.startsWith("!") && glob(r.slice(1)).test(p));
 const ANSWER_PAGES = ["/approvals", "/client-workspaces", "/claude-code-orchestrator", "/local"];
 const LEGAL = ["/privacy", "/terms", "/security", "/data-privacy", "/dpa", "/.well-known/security.txt"];
-for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/googlec22430d134477d04.html", "/BingSiteAuth.xml"])
+for (const p of ["/", ...ANSWER_PAGES, ...LEGAL, "/blog", "/blog/virtual-assistant-cost", "/sitemap.xml", "/robots.txt", "/assets/video.mp4", "/shared/media/home-film.mp4", "/shared/media/home-film.webm", "/googlec22430d134477d04.html", "/BingSiteAuth.xml"])
   assert.ok(workerFirst(p), `${p} should reach the Worker`);
 assert.equal(TYPES[".txt"], "text/plain; charset=utf-8", "security.txt is served as text/plain (RFC 9116)");
-for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png"])
+for (const p of ["/styles.css", "/js/main.mjs", "/fonts/JetBrainsMono-Bold.woff2", "/assets/orchy-main.svg", "/assets/logos/tools/github.svg", "/assets/og-image.png", "/assets/orchy-main-500.webp", "/assets/orchy-icon-64.png", "/shared/site.css", "/shared/site.js", "/shared/fonts/JetBrainsMono-Bold.woff2", "/shared/logos/slack.svg", "/shared/og/home.png", "/shared/media/home-film-poster.webp", "/shared/orchy-main-128.webp"])
   assert.ok(!workerFirst(p), `${p} should skip the Worker`);
 // Every file on disk: root pages (.html, .xml, .txt), blog posts and the compare and alternatives pages
 // (blog/, compare/, alternatives/ *.html), .well-known files and videos reach the Worker, every other file skips it.
-const page = (rel) => /^([^/]+\.(html|xml|txt)|(blog|compare|alternatives)\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || rel.endsWith(".mp4");
+const page = (rel) => /^([^/]+\.(html|xml|txt)|(blog|compare|alternatives)\/[^/]+\.html)$/.test(rel) || rel.startsWith(".well-known/") || /\.(mp4|webm)$/.test(rel);
 for (const rel of files) assert.equal(workerFirst("/" + rel), page(rel), `/${rel} should ${page(rel) ? "reach" : "skip"} the Worker`);
 const exts = [...new Set(files.filter((f) => f.startsWith("assets/")).map((f) => path.extname(f)))].sort();
 assert.ok(files.includes("BingSiteAuth.xml"), "Bing Webmaster verification file is in the repo root at its exact case");

@@ -12,9 +12,9 @@ const ok = (name) => console.log(`ok - ${name}`);
 const seen = [];
 // The video in R2: 5000 known bytes under its site path, with the fields the Worker reads from an R2 object.
 const VIDEO = Uint8Array.from({ length: 5000 }, (_, i) => i % 251);
-const media = { "assets/video.mp4": VIDEO };
+const media = { "assets/video.mp4": VIDEO, "shared/media/clip.webm": VIDEO.slice(0, 3000) };
 const r2 = [];
-const object = (key) => ({ key, size: media[key].length, httpEtag: '"v1"', uploaded: new Date("2026-10-31T00:00:00Z"), httpMetadata: { contentType: "video/mp4" } });
+const object = (key) => ({ key, size: media[key].length, httpEtag: '"v1"', uploaded: new Date("2026-10-31T00:00:00Z"), httpMetadata: key.endsWith(".webm") ? {} : { contentType: "video/mp4" } });
 const env = {
   ASSETS: {
     fetch: async (input) => {
@@ -134,6 +134,16 @@ res = await get("/assets/missing.mp4");
 assert.equal(res.status, 404);
 assert.equal(seen.length, seenBefore);
 ok("an .mp4 that isn't in R2 is a 404, and videos never touch the static assets");
+
+res = await get("/shared/media/clip.webm", "GET", undefined, { Range: "bytes=0-99" });
+assert.equal(res.status, 206);
+assert.equal(res.headers.get("Content-Type"), "video/webm");
+assert.equal(res.headers.get("Content-Range"), "bytes 0-99/3000");
+assert.equal((await res.arrayBuffer()).byteLength, 100);
+res = await get("/shared/media/missing.webm");
+assert.equal(res.status, 404);
+assert.equal(seen.length, seenBefore);
+ok("*.webm comes from R2 like *.mp4: 206 with Content-Range, video/webm when the object has no type, 404 when missing");
 
 // ── everything else ──
 res = await get("/styles.css");

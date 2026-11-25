@@ -8,6 +8,7 @@ export const TYPES = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".mjs": "text/javascript; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
   ".webp": "image/webp",
@@ -22,8 +23,10 @@ export const SKIP_DIRS = new Set(["worker", "content", ".git", ".github"]);
 export const skipDir = (rel, name) => SKIP_DIRS.has(rel) || name === "node_modules";
 // Videos are git-ignored and too big for static assets (25 MiB per file), so they're never uploaded: the Worker
 // serves them from the R2 bucket bound as MEDIA, under the same path (assets/video.mp4). serve.mjs reads the file
-// on disk for the local preview.
-export const IN_R2 = new Set([".mp4"]);
+// on disk for the local preview. The redesign gives each clip a .webm next to its .mp4: both come from R2.
+export const IN_R2 = new Set([".mp4", ".webm"]);
+/** The Content-Type for a video in R2 when its object has none set at upload. */
+export const VIDEO_TYPES = { ".mp4": "video/mp4", ".webm": "video/webm" };
 export const MEDIA_BUCKET = "orchy-site-media";
 
 // Every file to upload, as { rel, data, type }.
