@@ -6,6 +6,7 @@
 //   redirect before the Worker, so only its end is checked live; test-urls.mjs checks the Worker's one hop offline.)
 // - a Range request for the launch video answers 206 with Content-Range and video/mp4 (R2 and the Worker are wired).
 //   Until index.html enables the "Watch Launch Video" button, the video may not be in R2 yet: then a 404 is only a notice.
+// - /shared/media/home-film.mp4 and .webm (the redesign's clips, in R2) answer a Range request with 206 and their type.
 // - the live sitemap: every <loc> answers 200 itself, no Location, with its own URL as the canonical. On another
 //   domain (a staging copy) each <loc> is fetched there and must still name its https://imorchy.dev URL as canonical.
 // - /approvals/, /approvals.html and /index.html take one hop (301/307/308) to the clean URL, which answers 200.
@@ -66,6 +67,13 @@ const checks = [
     // Not in R2 yet, and the page doesn't offer it: say so, don't fail. Anything else (a 500 from a broken binding) still fails.
     notice: (res) => !videoOffered && res.status === 404 && "the launch video isn't in R2 yet (its button is still Coming soon)",
   },
+  // 2026-11 redesign: every page plays its clips from R2 under /shared/media/, an .mp4 and a .webm each. One of each must
+  // answer a Range request with 206, or Safari and the seek bar break. No notice here: the pages use them.
+  ...[["home-film.mp4", "video/mp4"], ["home-film.webm", "video/webm"]].map(([file, type]) => ({
+    name: `https://${domain}/shared/media/${file} answers a Range request with 206`,
+    run: () => fetch(`https://${domain}/shared/media/${file}`, { headers: { ...UA, Range: "bytes=0-99" }, redirect: "manual" }),
+    pass: (res) => res.status === 206 && /^bytes 0-99\/\d+$/.test(res.headers.get("Content-Range") || "") && res.headers.get("Content-Type") === type,
+  })),
   ...ONE_HOP.map(({ from, to }) => {
     const target = `https://${domain}${to}`;
     let problem = "";

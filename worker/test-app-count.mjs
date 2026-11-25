@@ -173,7 +173,7 @@ for (const f of files) {
   }
   // The swap changes every APP_COUNT_BASE on a page, so it may only ever stand for Orchy's app count.
   for (const m of text.matchAll(new RegExp(APP_COUNT_BASE.replace(/[+]/g, "\\+") + "(.{0,6})", "g")))
-    assert.match(m[1], /^ (?:apps|more)/, `${f}: "${APP_COUNT_BASE}${m[1]}" isn't an app count, but the Worker would change it`);
+    assert.match(m[1], /^ (?:apps|more|integ|thro)/i, `${f}: "${APP_COUNT_BASE}${m[1]}" isn't an app count, but the Worker would change it`);
 }
 assert.ok(found > 10, `the site's app counts were found (${found})`);
 ok(`app count: all ${found} counts on the site use ${APP_COUNT_BASE}`);

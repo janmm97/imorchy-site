@@ -27,8 +27,10 @@ const deployed = new Set(siteFiles(SITE).map((f) => f.rel));
 
 // ── (a) deploy.mjs uploads every file of the site ──
 for (const rel of files) assert.ok(deployed.has(rel), `deploy.mjs would skip ${rel}: add "${path.extname(rel)}" to TYPES in worker/files.mjs`);
-for (const dir of ["assets", "js", "fonts"]) assert.ok(files.some((f) => f.startsWith(dir + "/")), `${dir} has files`);
-ok(`deploy.mjs uploads all ${files.length} files of the site (assets, js, fonts, pages, sitemap, robots.txt)`);
+// 2026-11 redesign: the shared kit (CSS, JS, fonts, art, posters) lives under shared/.
+for (const dir of ["assets", "shared", "shared/fonts", "shared/art", "blog", "compare", "alternatives"]) assert.ok(files.some((f) => f.startsWith(dir + "/")), `${dir} has files`);
+for (const f of ["shared/site.css", "shared/site.js", "shared/demo.js"]) assert.ok(deployed.has(f), `deploy.mjs uploads ${f}`);
+ok(`deploy.mjs uploads all ${files.length} files of the site (assets, shared kit, fonts, pages, sitemap, robots.txt)`);
 
 // A video on disk (the local preview's copy) is never uploaded: a deploy can't need it, so CI can deploy without it.
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchy-site-"));
@@ -50,12 +52,12 @@ ok("videos (.mp4, .webm) are never uploaded as static assets, even with a local 
 ok("build.mjs and content/ (the sources of the generated pages) are never uploaded");
 
 // Every local file a page, the stylesheet or a script names is uploaded too (the video comes from R2).
-const LOCAL = /(?:https:\/\/imorchy\.dev)?\/?((?:assets|fonts|js)\/[\w./-]+\.\w+|styles\.css|favicon\.svg)/g;
+const LOCAL = /(?<![\w./-])(?:https:\/\/imorchy\.dev)?\/?((?:shared|assets|fonts|js)\/[\w./-]+\.\w+|styles\.css|favicon\.svg)/g;
 const sources = files.filter((f) => /\.(html|css|mjs)$/.test(f));
 let refs = 0;
 for (const src of sources) {
   for (const [, ref] of fs.readFileSync(path.join(SITE, src), "utf8").matchAll(LOCAL)) {
-    if (ref.endsWith(".mp4")) continue;
+    if (/\.(mp4|webm)$/.test(ref)) continue; // videos come from R2
     refs++;
     assert.ok(deployed.has(ref), `${src} points at ${ref}, which deploy.mjs doesn't upload`);
   }

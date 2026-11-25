@@ -397,7 +397,7 @@ export function footer(p, site = siteDir) {
             <p class="tagline">AI agents for day-to-day work, by team.</p>
           </div>
 ${cols.join("")}        </div>
-        <div class="fbot"><span>© Orchy AI 2026</span><span>Hosted in Canada</span></div>
+        <div class="fbot"><span>© Orchy AI 2026</span></div>
       </div>
     </footer>`;
 }
@@ -592,7 +592,7 @@ function entries(site, kind, today, problems) {
  * that fail the build, and a regression-list row (urls.mjs shape) for every generated page.
  */
 // "today" (only for the not-after-today check) is the UTC date, like CI's clock; a post dated tomorrow in UTC waits a day.
-export function build(site = SITE, { today = new Date().toISOString().slice(0, 10) } = {}) {
+export function build(site = SITE, { today = new Date().toISOString().slice(0, 10), redesign = REDESIGN } = {}) {
   siteDir = site;
   const problems = [];
   const files = new Map();
@@ -644,7 +644,7 @@ export function build(site = SITE, { today = new Date().toISOString().slice(0, 1
       kind === "blog"
         ? { "@type": "Blog", name: "Orchy AI blog", blogPost: list.map((e) => ({ "@type": "BlogPosting", headline: e.title, url: ORIGIN + e.path, datePublished: e.date, image: ORIGIN + e.image })) }
         : { "@type": "WebPage", name: "Orchy AI changelog", dateModified: newest };
-    if (REDESIGN) {
+    if (redesign) {
       // The redesign's blog and changelog are hand pages (content/pages.json): every entry needs its page listed there.
       for (const need of [k.index, ...(k.pages ? list.map((e) => e.path) : [])])
         if (!hand.some((h) => h.path === need)) problems.push(`content/pages.json: ${need} has content but no page; add the page and list it`);
@@ -697,8 +697,8 @@ export function staleFiles(site, files) {
 }
 
 /** The command line, as a function so the tests run it in-process. Returns the exit code. */
-export function cli(site, args, { log = console.log, error = console.error } = {}) {
-  const { files, problems } = build(site);
+export function cli(site, args, { log = console.log, error = console.error, redesign } = {}) {
+  const { files, problems } = build(site, { redesign });
   for (const p of problems) error(`build: ${p}`);
   if (problems.length) return 1;
   const check = args.includes("--check");

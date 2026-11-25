@@ -95,6 +95,7 @@
       p.querySelector('.amt').textContent = show ? p.dataset.y : p.dataset.m;
       p.querySelector('.unit').textContent = show ? '/yr' : '/mo';
       p.querySelector('.per').textContent = y ? (has ? '2 months free' : 'Monthly only') : (has ? 'or $' + p.dataset.y.slice(1) + ' a year' : 'Monthly only');
+      const go = p.querySelector('a[href*="interval="]'); if (go) go.href = go.getAttribute('href').replace(/interval=\w+/, 'interval=' + (show ? 'year' : 'month'));
     });
   }));
 
