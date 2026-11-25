@@ -21,6 +21,8 @@ const types = {
   ".woff2": "font/woff2",
   ".txt": "text/plain; charset=utf-8",
   ".mp4": "video/mp4",
+  ".webm": "video/webm",
+  ".js": "text/javascript; charset=utf-8",
 };
 const server = http.createServer(async (req, res) => {
   // The live Worker's security headers (worker/headers.mjs), so the preview runs under the same CSP. Plain http, so no HSTS.

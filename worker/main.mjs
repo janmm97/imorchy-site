@@ -4,14 +4,15 @@
 import { withSecurityHeaders } from "./headers.mjs";
 import { byteRange } from "./range.mjs";
 import { forAppCount, liveAppCount, withAppCount } from "./appcount.mjs";
+import { VIDEO_TYPES } from "./files.mjs";
 
 /** Videos live in R2 (MEDIA), under their site path: too big for static assets and kept out of git. Safari won't play an mp4 without byte ranges, so Range gets a 206. */
-async function video(request, env, url) {
+async function video(request, env, url, ext) {
   const key = url.pathname.slice(1);
   const head = await env.MEDIA.head(key);
   if (!head) return new Response("Not found", { status: 404 });
   const headers = new Headers({
-    "Content-Type": head.httpMetadata?.contentType || "video/mp4",
+    "Content-Type": head.httpMetadata?.contentType || VIDEO_TYPES[ext],
     "Accept-Ranges": "bytes",
     "Cache-Control": "public, max-age=86400",
     ETag: head.httpEtag,
@@ -64,7 +65,8 @@ async function route(request, env, url) {
     return Response.redirect("https://imorchy.dev" + url.pathname + url.search, 301);
   if (RETIRED.test(url.pathname)) return Response.redirect("https://imorchy.dev/", 301);
   if (CTA_HOPS.has(url.pathname)) return signUp(url);
-  if (url.pathname.endsWith(".mp4") && ["GET", "HEAD"].includes(request.method)) return video(request, env, url);
+  const ext = /\.(mp4|webm)$/.exec(url.pathname)?.[0];
+  if (ext && ["GET", "HEAD"].includes(request.method)) return video(request, env, url, ext);
   // Google Search Console's verification file must answer 200 at its .html path; static assets would redirect it to the bare name.
   if (/^\/google[0-9a-f]+\.html$/.test(url.pathname)) return env.ASSETS.fetch(url.origin + url.pathname.slice(0, -5));
   return env.ASSETS.fetch(request);
