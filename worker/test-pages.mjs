@@ -51,6 +51,8 @@ assert.equal(pages.length, 23, "the 23 site pages");
 // ── search markup backed by the page: FAQ parity, prices, no GitHub, no open-licence claim ──
 const pricing = read("pricing.html");
 const plans = pricing.match(/<li class="plan\b/g)?.length ?? 0;
+// On sale now; Pro and Business say "Coming soon" until seats and the model-tier lock ship (Jan, 2026-11-26).
+const SOLD = ["starter", "solo"], SOON = ["pro", "business"];
 const pricingText = visibleText(pricing);
 let checked = 0, offers = 0;
 for (const page of pages) {
@@ -76,7 +78,7 @@ for (const page of pages) {
         assert.ok(new RegExp(`\\$${offer[key]}\\b`).test(pricingText), `${page}: JSON-LD ${key} $${offer[key]} is shown on pricing.html`);
       }
       if (offer.priceCurrency) assert.equal(offer.priceCurrency, "USD", `${page}: offers are in USD`);
-      if (offer.offerCount !== undefined) assert.equal(offer.offerCount, plans, `${page}: offerCount equals the ${plans} plans on pricing.html`);
+      if (offer.offerCount !== undefined) assert.equal(offer.offerCount, SOLD.length, `${page}: offerCount equals the ${SOLD.length} plans on sale`);
     }
   }
   assert.ok(!/github\.com/i.test(html), `${page}: no GitHub links (no public GitHub)`);
@@ -88,7 +90,7 @@ assert.equal(plans, 4, "pricing.html shows the four plans");
 assert.ok(offers >= 1, "at least one page has Offer markup to check");
 assert.ok(jsonLd(read("index.html")).some((n) => n["@type"] === "FAQPage"), "index.html has a FAQPage");
 ok(`FAQPage JSON-LD matches the visible FAQ (${checked} Q&As on ${pages.length} pages)`);
-ok(`${offers} JSON-LD offer(s): every price is on pricing.html and offerCount is the ${plans} visible plans`);
+ok(`${offers} JSON-LD offer(s): every price is on pricing.html and offerCount is the ${SOLD.length} plans on sale`);
 ok("no GitHub links, no open-licence claim and no \"Canada\" on any page");
 
 // ── every page: one H1, self-canonical at the extensionless path, og:url and og:image, a unique title and
@@ -135,13 +137,15 @@ ok(`all ${pages.length} pages: one H1, self-canonical, og image, unique title an
 // /go/start (main.mjs forwards plan and interval); Starter is monthly only ──
 for (const plan of ["Starter", "Solo", "Pro", "Business"]) assert.ok(pricing.includes(`<h3>${plan}</h3>`), `pricing: the ${plan} plan`);
 for (const [page, from] of [["pricing.html", "pricing"], ["index.html", "home"]]) {
-  for (const plan of ["starter", "solo", "pro", "business"])
+  for (const plan of SOLD)
     assert.ok(read(page).includes(`href="/go/start?from=${from}-${plan}&amp;plan=${plan}&amp;interval=month"`), `${page}: ${plan} card links to the app's plan picker`);
+  for (const plan of SOON) assert.ok(!read(page).includes(`plan=${plan}`), `${page}: ${plan} has no checkout link (coming soon)`);
+  assert.equal(read(page).match(/aria-disabled="true"><span>Coming soon<\/span>/g)?.length, SOON.length, `${page}: Pro and Business say Coming soon`);
 }
 assert.ok(!pricing.includes('data-m="$9" data-y'), "pricing: Starter has no yearly price");
 assert.match(read("shared/site.js"), /interval=' \+ \(show \? 'year' : 'month'\)/, "the Monthly/Yearly toggle switches the cards' interval");
 assert.ok(jsonLd(pricing).some((n) => n["@type"] === "FAQPage"), "pricing: FAQPage JSON-LD");
-ok("pricing: four plans, plan picker links (Yearly switches the interval), FAQPage");
+ok("pricing: four plans, Starter and Solo link to the plan picker, Pro and Business coming soon (Yearly switches the interval), FAQPage");
 
 // ── the legal pages (Jan, 2026-11-04): indexable, a WebPage node, no draft markers, headings in order, every table in
 // a labelled, focusable scroll box (readable at 360px), Version 3.x with a short "What changed" box ──
