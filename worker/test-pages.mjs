@@ -57,6 +57,7 @@ const pricingText = visibleText(pricing);
 let checked = 0, offers = 0;
 for (const page of pages) {
   const html = read(page);
+  for (const plan of SOON) assert.doesNotMatch(html, new RegExp(`/go/start\\?[^"]*plan(=|%3D)${plan}\\b`, "i"), `${page}: no checkout link for ${plan} (coming soon)`);
   const nodes = jsonLd(html);
   const text = visibleText(html);
   for (const faq of nodes.filter((n) => n["@type"] === "FAQPage")) {
@@ -139,7 +140,6 @@ for (const plan of ["Starter", "Solo", "Pro", "Business"]) assert.ok(pricing.inc
 for (const [page, from] of [["pricing.html", "pricing"], ["index.html", "home"]]) {
   for (const plan of SOLD)
     assert.ok(read(page).includes(`href="/go/start?from=${from}-${plan}&amp;plan=${plan}&amp;interval=month"`), `${page}: ${plan} card links to the app's plan picker`);
-  for (const plan of SOON) assert.ok(!read(page).includes(`plan=${plan}`), `${page}: ${plan} has no checkout link (coming soon)`);
   assert.equal(read(page).match(/aria-disabled="true"><span>Coming soon<\/span>/g)?.length, SOON.length, `${page}: Pro and Business say Coming soon`);
 }
 assert.ok(!pricing.includes('data-m="$9" data-y'), "pricing: Starter has no yearly price");
