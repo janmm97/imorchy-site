@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { build, fileFor } from "../build.mjs";
+import { build, fileFor, webpSize } from "../build.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
 const ok = (name) => console.log(`ok - ${name}`);
@@ -127,6 +127,26 @@ for (const page of pages) {
   if (page !== "changelog.html") assert.doesNotMatch(main.replace(/<h2 id="v3-changes">[\s\S]*?<\/ul>/, ""), /early.access|in beta|bring.your.own (AI )?key|own AI key/i, `${page}: launch copy, no early access, beta or own key (the legal "What changed" box is history)`);
   assert.ok(html.includes('href="/go/start?from=final"') && html.includes('href="/go/start?from=nav"'), `${page}: nav and final CTAs go through /go/start`);
 }
+// #31: no page body links the app directly (CTAs hop through /go/start; only the header's Sign in goes to the app),
+// every WebP <img>'s width/height have the file's aspect ratio (no layout shift), and /security links the RFC 9116 contact file.
+let sized = 0;
+for (const page of pages) {
+  const html = read(page);
+  const main = html.match(/<main\b[\s\S]*<\/main>/)?.[0] ?? "";
+  assert.ok(!/href="https?:\/\/app\.imorchy\.dev/.test(main), `${page}: no direct app link in the page body (use /go/start?from=…)`);
+  for (const [tag] of html.matchAll(/<img\b[^>]*>/g)) {
+    const src = tag.match(/\ssrc="(\/[^"]+\.webp)"/)?.[1], w = tag.match(/\swidth="(\d+)"/)?.[1], h = tag.match(/\sheight="(\d+)"/)?.[1];
+    if (!src || !w || !h || !fs.existsSync(SITE + src.slice(1))) continue;
+    const size = webpSize(fs.readFileSync(SITE + src.slice(1)));
+    // Icons may be drawn smaller than their file (a 128px logo at 28px); the box's shape must match the image's.
+    assert.ok(Math.abs(w / h - size.width / size.height) < 0.01, `${page}: <img ${src}> is ${w}x${h} but the WebP is ${size.width}x${size.height} (wrong aspect ratio, layout shift)`);
+    sized++;
+  }
+}
+assert.ok(sized >= 2, "the blog cover <img>s are size-checked");
+assert.ok(read("security.html").includes('href="/.well-known/security.txt"'), "security.html links /.well-known/security.txt");
+ok(`no direct app links in page bodies; ${sized} WebP <img>s match their file's aspect ratio; /security links security.txt`);
+
 // /local and /claude-code-orchestrator are retired: the Worker 301s them home (test-urls.mjs), so no file ships.
 for (const gone of ["local", "claude-code-orchestrator"]) assert.ok(!pages.includes(`${gone}.html`), `${gone}.html is retired`);
 ok(`all ${pages.length} pages: one H1, self-canonical, og image, unique title and description, own scripts only, in the sitemap, CTAs via /go/start`);
