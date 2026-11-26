@@ -3,18 +3,36 @@
 // handed to the static assets untouched. Fake ASSETS and MEDIA (R2) bindings stand in for Cloudflare. No network, no
 // keys, no installed packages. Routing (run_worker_first) and the deploy file list are checked in test-deploy.mjs.
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { cli } from "../build.mjs";
 import worker from "./main.mjs";
 import { byteRange } from "./range.mjs";
+import { forAppCount } from "./appcount.mjs";
+import { VIDEO_TYPES, videoExt, videoType } from "./media.mjs";
 
 const ok = (name) => console.log(`ok - ${name}`);
 const seen = [];
 // The video in R2: 5000 known bytes under its site path, with the fields the Worker reads from an R2 object.
 const VIDEO = Uint8Array.from({ length: 5000 }, (_, i) => i % 251);
-const media = { "assets/video.mp4": VIDEO, "shared/media/clip.webm": VIDEO.slice(0, 3000) };
+const CLIP = VIDEO.slice(0, 3000);
+const media = {
+  "assets/video.mp4": VIDEO,
+  "shared/media/clip.webm": CLIP,
+  "shared/media/octet.webm": CLIP,
+  "shared/media/mislabelled.mp4": CLIP,
+  "shared/media/codecs.webm": CLIP,
+  "shared/media/LOUD.WEBM": CLIP,
+};
+// The Content-Type each object was uploaded with (none for clip.webm and LOUD.WEBM).
+const stored = {
+  "assets/video.mp4": "video/mp4",
+  "shared/media/octet.webm": "application/octet-stream",
+  "shared/media/mislabelled.mp4": "video/webm",
+  "shared/media/codecs.webm": 'video/webm; codecs="vp9"',
+};
 const r2 = [];
-const object = (key) => ({ key, size: media[key].length, httpEtag: '"v1"', uploaded: new Date("2026-10-31T00:00:00Z"), httpMetadata: key.endsWith(".webm") ? {} : { contentType: "video/mp4" } });
+const object = (key) => ({ key, size: media[key].length, httpEtag: '"v1"', uploaded: new Date("2026-10-31T00:00:00Z"), httpMetadata: stored[key] ? { contentType: stored[key] } : {} });
 const env = {
   ASSETS: {
     fetch: async (input) => {
@@ -144,6 +162,89 @@ res = await get("/shared/media/missing.webm");
 assert.equal(res.status, 404);
 assert.equal(seen.length, seenBefore);
 ok("*.webm comes from R2 like *.mp4: 206 with Content-Range, video/webm when the object has no type, 404 when missing");
+
+// #32: .webm gets the same answers as .mp4: no-Range 200, HEAD, 304 and 416, and HEAD and 304 never read the body.
+res = await get("/shared/media/clip.webm");
+assert.equal(res.status, 200);
+assert.equal(res.headers.get("Content-Type"), "video/webm");
+assert.equal(res.headers.get("Accept-Ranges"), "bytes");
+assert.equal(res.headers.get("Content-Length"), "3000");
+assert.equal(res.headers.get("Content-Range"), null);
+assert.equal(res.headers.get("ETag"), '"v1"');
+assert.deepEqual(await bytes(res), CLIP);
+const webmReads = r2.filter(([op]) => op === "get").length;
+res = await get("/shared/media/clip.webm", "HEAD");
+assert.equal(res.status, 200);
+assert.equal(res.headers.get("Content-Type"), "video/webm");
+assert.equal(res.headers.get("Content-Length"), "3000");
+assert.equal(await res.text(), "");
+res = await get("/shared/media/clip.webm", "HEAD", undefined, { Range: "bytes=10-19" });
+assert.equal(res.status, 206);
+assert.equal(res.headers.get("Content-Range"), "bytes 10-19/3000");
+assert.equal(res.headers.get("Content-Length"), "10");
+res = await get("/shared/media/clip.webm", "GET", undefined, { "If-None-Match": '"v1"' });
+assert.equal(res.status, 304);
+assert.equal(res.headers.get("ETag"), '"v1"');
+assert.equal(r2.filter(([op]) => op === "get").length, webmReads);
+res = await get("/shared/media/clip.webm", "GET", undefined, { Range: "bytes=3000-" });
+assert.equal(res.status, 416);
+assert.equal(res.headers.get("Content-Range"), "bytes */3000");
+assert.equal(r2.filter(([op]) => op === "get").length, webmReads);
+ok("*.webm: 200 with the whole clip without Range, HEAD answers headers only (200, or 206 with a Range), 304 on a matching ETag, 416 past the end; HEAD, 304 and 416 never read R2");
+
+// While a live app count is shown, a video request keeps its conditionals, so a .webm (any case) still gets its 304.
+for (const p of ["/shared/media/clip.webm", "/assets/video.mp4", "/shared/media/LOUD.WEBM"]) {
+  const req = new Request("https://imorchy.dev" + p, { headers: { "If-None-Match": '"v1"' } });
+  assert.equal(forAppCount(req, new URL(req.url), "1,200+"), req, `${p}: conditionals kept while a live count is shown`);
+}
+ok("a live app count never strips If-None-Match from a video request (.mp4 or .webm, any case)");
+
+// The stored Content-Type is used only when it names the extension's type; else the extension's type wins.
+for (const [path, type] of [
+  ["/shared/media/octet.webm", "video/webm"],
+  ["/shared/media/mislabelled.mp4", "video/mp4"],
+  ["/shared/media/codecs.webm", 'video/webm; codecs="vp9"'],
+  ["/assets/video.mp4", "video/mp4"],
+]) {
+  res = await get(path, "HEAD");
+  assert.equal(res.status, 200, path);
+  assert.equal(res.headers.get("Content-Type"), type, path);
+}
+assert.equal(videoType(".webm", undefined), "video/webm");
+assert.equal(videoType(".webm", ""), "video/webm");
+assert.equal(videoType(".mp4", "Video/MP4"), "Video/MP4");
+ok("video Content-Type: a missing, application/octet-stream or mismatched stored type gets the extension's type; a matching one (codecs too) is kept");
+
+// Extensions match in any case: /…/LOUD.WEBM comes from R2 as video/webm, never from the static assets.
+const seenCase = seen.length;
+res = await get("/shared/media/LOUD.WEBM", "GET", undefined, { Range: "bytes=0-9" });
+assert.equal(res.status, 206);
+assert.equal(res.headers.get("Content-Type"), "video/webm");
+assert.deepEqual(r2.at(-1), ["get", "shared/media/LOUD.WEBM", { offset: 0, length: 10 }]);
+res = await get("/shared/media/missing.MP4");
+assert.equal(res.status, 404);
+assert.equal(seen.length, seenCase);
+assert.equal(videoExt("/a/b.Mp4"), ".mp4");
+for (const p of ["/a/b.mp4.html", "/mp4", "/a.mp4/x", "/a/b.mov", "/a/b."]) assert.equal(videoExt(p), undefined, p);
+ok("video extensions match in any case (.WEBM, .MP4), only at the end of the path");
+
+// The Worker bundle carries no node code: nothing main.mjs imports (followed through every relative import) reaches
+// node:*, and media.mjs, which the deploy side shares with it, imports nothing.
+const reached = new Set();
+const follow = (file) => {
+  if (reached.has(file)) return;
+  reached.add(file);
+  const src = fs.readFileSync(new URL(file, import.meta.url), "utf8");
+  for (const [, spec] of src.matchAll(/^\s*(?:import|export)\b[^"'`;]*?from\s*["']([^"']+)["']/gm)) {
+    assert.ok(!/^node:|^(fs|path|os|child_process|url)$/.test(spec), `${file} imports ${spec}: node code would ride into the Worker bundle`);
+    if (spec.startsWith("./")) follow(spec);
+  }
+};
+follow("./main.mjs");
+assert.ok(reached.has("./media.mjs") && !reached.has("./files.mjs"), "main.mjs reads media.mjs, never files.mjs");
+assert.doesNotMatch(fs.readFileSync(new URL("./media.mjs", import.meta.url), "utf8"), /^\s*import\b/m, "media.mjs imports nothing");
+assert.deepEqual(VIDEO_TYPES, { ".mp4": "video/mp4", ".webm": "video/webm" });
+ok(`the Worker's modules (${[...reached].join(", ")}) import no node:* module; media.mjs is side-effect free`);
 
 // ── everything else ──
 res = await get("/styles.css");

@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { IN_R2, SKIP, TYPES, siteFiles, skipDir } from "./files.mjs";
+import { IN_R2, SKIP, TYPES, extOf, siteFiles, skipDir } from "./files.mjs";
 import { RUN_WORKER_FIRST } from "./routes.mjs";
 
 const SITE = fileURLToPath(new URL("..", import.meta.url));
@@ -20,7 +20,7 @@ const onDisk = (dir = SITE) =>
     const full = path.join(dir, entry.name);
     const rel = path.relative(SITE, full).split(path.sep).join("/");
     if (entry.isDirectory()) return skipDir(rel, entry.name) ? [] : onDisk(full);
-    return SKIP.has(rel) || IN_R2.has(path.extname(rel)) ? [] : [rel];
+    return SKIP.has(rel) || IN_R2.has(extOf(rel)) ? [] : [rel];
   });
 const files = onDisk();
 const deployed = new Set(siteFiles(SITE).map((f) => f.rel));

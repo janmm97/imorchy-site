@@ -3,6 +3,7 @@
 // entry is skipped, so it 404s live while serve.mjs still shows it locally: add the type here too.
 import fs from "node:fs";
 import path from "node:path";
+import { VIDEO_TYPES } from "./media.mjs";
 
 export const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -23,10 +24,11 @@ export const SKIP_DIRS = new Set(["worker", "content", ".git", ".github"]);
 export const skipDir = (rel, name) => SKIP_DIRS.has(rel) || name === "node_modules";
 // Videos are git-ignored and too big for static assets (25 MiB per file), so they're never uploaded: the Worker
 // serves them from the R2 bucket bound as MEDIA, under the same path (assets/video.mp4). serve.mjs reads the file
-// on disk for the local preview. The redesign gives each clip a .webm next to its .mp4: both come from R2.
-export const IN_R2 = new Set([".mp4", ".webm"]);
-/** The Content-Type for a video in R2 when its object has none set at upload. */
-export const VIDEO_TYPES = { ".mp4": "video/mp4", ".webm": "video/webm" };
+// on disk for the local preview. The redesign gives each clip a .webm next to its .mp4: both come from R2. Their
+// types live in media.mjs (no node imports), which the Worker bundle reads too.
+export const IN_R2 = new Set(Object.keys(VIDEO_TYPES));
+/** A file's extension, lower-cased, so CLIP.MP4 or LOGO.PNG is matched like clip.mp4 and logo.png. */
+export const extOf = (rel) => path.extname(rel).toLowerCase();
 export const MEDIA_BUCKET = "orchy-site-media";
 
 // Every file to upload, as { rel, data, type }.
@@ -35,8 +37,9 @@ export function siteFiles(site, dir = site) {
     const full = path.join(dir, entry.name);
     const rel = path.relative(site, full).split(path.sep).join("/");
     if (entry.isDirectory()) return skipDir(rel, entry.name) ? [] : siteFiles(site, full);
-    if (SKIP.has(rel) || IN_R2.has(path.extname(rel)) || !TYPES[path.extname(rel)]) return [];
-    return [{ rel, data: fs.readFileSync(full), type: TYPES[path.extname(rel)] }];
+    const ext = extOf(rel);
+    if (SKIP.has(rel) || IN_R2.has(ext) || !Object.hasOwn(TYPES, ext)) return [];
+    return [{ rel, data: fs.readFileSync(full), type: TYPES[ext] }];
   });
 }
 
