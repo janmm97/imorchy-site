@@ -6,7 +6,7 @@
 - Hosted for you at OVHcloud, one isolated container per customer. Nothing to install.
 - 1,100+ apps through One, which is part of Orchy.
 - AI runs on Orchy's own account and is paid from the AI credits in your plan. There is no separate AI key to bring.
-- Plans: Starter $9/month (1 seat, 100 AI credits, monthly only); Solo $19/month or $190/year (1 seat, 300 credits); Pro $39/month or $390/year (2 seats, 800 credits); Business $99/month or $990/year (5 seats, 2,000 credits). Pro and Business are coming soon: today you can buy Starter or Solo. Yearly = 2 months free. Warning at 80% of credits, pause at 100%, no rollover. 14-day refund from first payment if no AI credits have been used.
+- Plans: Starter $9/month (1 seat, 150 AI credits a month, monthly only); Solo $19/month or $190/year (1 seat, 700 AI credits a month); Pro $39/month or $390/year (2 seats, 1,000 AI credits a month); Business $99/month or $990/year (5 seats, 3,000 AI credits a month). Pro and Business are coming soon: today you can buy Starter or Solo. Yearly = 2 months free. Warning at 80% of credits, pause at 100%. Unused credits roll over to next month while your plan is active. 14-day refund from first payment if no AI credits have been used.
 - No SOC 2 or ISO 27001 certification today.
 - Orchy is a product of One Systems, Inc. Sign in: https://app.imorchy.dev/
 

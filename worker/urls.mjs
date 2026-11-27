@@ -44,7 +44,7 @@ export const PAGES = [
   { path: "/llms.txt", type: "text/plain", markers: ["# Orchy AI", "https://imorchy.dev/security"] },
   // The legal pages and security.txt (RFC 9116): direct 200, no redirect.
   { path: "/privacy", type: "text/html", profile: "page", markers: ["<h1 id=\"h-hero\">Privacy Policy</h1>", "One Systems, Inc.", "Version 3.2"] },
-  { path: "/terms", type: "text/html", profile: "page", markers: ["<h1 id=\"h-hero\">Terms of Use</h1>", "One Systems, Inc.", "Version 3.1"] },
+  { path: "/terms", type: "text/html", profile: "page", markers: ["<h1 id=\"h-hero\">Terms of Use</h1>", "One Systems, Inc.", "Version 3.2"] },
   { path: "/security", type: "text/html", profile: "page", markers: ["<h1 id=\"h-hero\" class=\"rv\">Where your work lives. Who sees it.</h1>"] },
   { path: "/data-privacy", type: "text/html", profile: "page", markers: ["<h1 id=\"h-hero\">Data Privacy: DPA and sub-processors</h1>", "href=\"/dpa\"", "Version 3.1"] },
   { path: "/dpa", type: "text/html", profile: "page", markers: ["<h1 id=\"h-hero\">Data Processing Agreement (DPA)</h1>", "One Systems, Inc.", "Version 3.1"] },
